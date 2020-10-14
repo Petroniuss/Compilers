@@ -1,7 +1,7 @@
 import sys
 import ply.lex as lex
 
-import scanner
+from scanner import Scanner
 
 if __name__ == '__main__':
     try:
@@ -12,13 +12,10 @@ if __name__ == '__main__':
         sys.exit(0)
 
     text = file.read()
-    lexer = scanner.lexer
-    lexer.input(text)  # Give the lexer some input
+    lexer = Scanner()
+
+    # Give the lexer some input
+    lexer.input(text)
 
     # Tokenize
-    while True:
-        tok = lexer.token()
-        if not tok:
-            break    # No more input
-        column = scanner.find_column(text, tok)
-        print("(%d,%d): %s(%s)" % (tok.lineno, column, tok.type, tok.value))
+    lexer.test()
