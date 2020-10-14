@@ -1,7 +1,7 @@
 import sys
 import ply.lex as lex
 
-from scanner import Scanner
+from Lexer import Lexer
 
 if __name__ == '__main__':
     try:
@@ -12,10 +12,7 @@ if __name__ == '__main__':
         sys.exit(0)
 
     text = file.read()
-    lexer = Scanner()
 
-    # Give the lexer some input
-    lexer.input(text)
-
-    # Tokenize
-    lexer.test()
+    lexer = Lexer()
+    lexer.input(text)  # Give the lexer some input
+    lexer.printTokens()
