@@ -6,27 +6,82 @@
 # ------------------------------------------------------------
 import ply.lex as lex
 
-# List of token names.   This is always required
-tokens = (
-    'NUMBER',
-    'PLUS',
-    'MINUS',
-    'TIMES',
-    'DIVIDE',
-    'LPAREN',
-    'RPAREN',
+# -------------------------------------------------------------
+# Literals
+# -------------------------------------------------------------
+
+# Todo: move them to tokens since I don't like the output..
+binaryOperators = [
+    '+',  # Plus
+    '-',  # Minus
+    '*',  # Times
+    '/',  # Divde
+]
+
+literals = binaryOperators + [
+    '<',  # Less than
+    '>',  # Greater than
+    ':',  # Colon
+    ',',  # Coma
+    ';',  # Semicolon
+    '(', ')',  # Parentheses
+    '[', ']',  # Square Brackets
+    '{', '}',  # Curly  Brackets
+]
+
+
+# Todo
+# Make sure that strings are correctly defined!
+
+# -------------------------------------------------------------
+# Tokens
+# -------------------------------------------------------------
+
+matrixBinaryOperations = (
+    'DOTADD',       # .+
+    'DOTSUB',       # .-
+    'DOTMUL',       # .*
+    'DOTDIV'        # ./
 )
 
-# Regular expression rules for simple tokens
-t_PLUS = r'\+'
-t_MINUS = r'-'
-t_TIMES = r'\*'
-t_DIVIDE = r'/'
-t_LPAREN = r'\('
-t_RPAREN = r'\)'
+assignmentOperations = (
+    'ASSIGN',  # =
+    'SUBASSIGN',  # -=
+    'ADDASSGIN',  # +=
+    'DIVASSIGN',  # /=
+    'MULTASSIGN'  # \ *=
+)
+
+
+# List of token names.   This is always required
+tokens = (
+    'INTNUM',       # int
+    'FLOATNUM',     # float
+)
+
+# -------------------------------------------------------------
+# Reserved Tokens
+# -------------------------------------------------------------
+
+matrixReservedKeywords = {
+    'eye':      'EYE',
+    'zeros':    'ZEROS',
+    'ones':     'ONES'
+}
+reserved = {
+    'if':       'IF',
+    'then':     'THEN',
+    'else':     'ELSE',
+    'for':      'FOR',
+    'while':    'WHILE',
+    'break':    'BREAK',
+    'continue': 'CONTINUE',
+    'return':   'RETURN',
+    'print':    'PRINT'
+} + matrixReservedKeywords
+
 
 # A regular expression rule with some action code
-
 
 def t_NUMBER(t):
     r'\d+'
