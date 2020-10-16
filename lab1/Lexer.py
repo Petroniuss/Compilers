@@ -179,14 +179,15 @@ def t_STR(t):
     # Todo
     # Make sure that strings are correctly defined!
     # This one might cause problems
-    r'".*"'
-    t.value = str(t.value[1: len(t.value) - 1])
+    r'"((\\")|[^"])*"'
+    t.value = str(t.value[1: len(t.value) - 1]) \
+        .replace(r'\"', "\"")
     return t
 
 
 def t_FLOATNUM(t):
     # It also allows for leading zeros and for scientific notation.
-    r'[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?'
+    r'[+-]?(\d+(\.\d*)|\.\d+)([eE][+-]?\d+)?'
     t.value = float(t.value)
     return t
 

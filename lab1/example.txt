@@ -6,8 +6,6 @@ D2 -= A.-B' ; # substract element-wise A with transpose of B
 D3 *= A.*B' ; # multiply element-wise A with transpose of B
 D4 /= A./B' ; # divide element-wise A with transpose of B
 
-X = "#Hello#"
-
 E1 = [ [ 1, 2, 3],
        [ 4, 5, 6],
        [ 7, 8, 9] ];
@@ -22,3 +20,15 @@ if (m==n) {
     if (m >= n) 
         print res;
 }
+
+
+# Few edge cases:
+# "foo"             1. String after a comment.
+X = "\"\""; #       2. Escaping (") char within a string.
+Y = "Hash # Hash #" 3. Hash wihtin a string.
+Z = "
+    $ 
+    $2jrj 
+
+    fa0s9jt
+"; #                3. Multiline string
