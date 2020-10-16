@@ -176,9 +176,7 @@ t_NEQ = r'!='
 
 
 def t_STR(t):
-    # Todo
-    # Make sure that strings are correctly defined!
-    # This one might cause problems
+    # We allow for escaping (") within a string using (\")
     r'"((\\")|[^"])*"'
     t.value = str(t.value[1: len(t.value) - 1]) \
         .replace(r'\"', "\"")
