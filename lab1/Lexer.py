@@ -5,6 +5,8 @@ import ply.lex as lex
 # -------------------------------------------------------------
 
 
+# Todo create some sort of an iterator over tokens and add error handling capabilities.
+# It's easiest to set attribute on lexer object!
 class Lexer:
     def __init__(self, **kwargs):
         self.lexer = lex.lex()
@@ -25,10 +27,15 @@ class Lexer:
 
 
 def formatToken(tok, tokenColumnNo=None):
-    linenoStr = f'({tok.lineno}):'.ljust(8)
+    space = 10
+    linenoStr = f'({tok.lineno}):'.ljust(space)
     if tokenColumnNo is not None:
-        linenoStr = f'({tok.lineno}, {tokenColumnNo}):'.ljust(10)
+        linenoStr = f'({tok.lineno}, {tokenColumnNo}):'.ljust(space)
     return linenoStr + ' ' + f'{tok.type}( {tok.value} )'
+
+
+def formatError(t):
+    return f'Error: Unexpected character {t.value[0]} at {t.lineno}'
 
 
 def findColumn(text, token):
@@ -40,7 +47,6 @@ def findColumn(text, token):
 # -------------------------------------------------------------
 
 
-# Todo: move them to tokens since I don't like the output..
 binaryOperators = [
     '+',  # Plus
     '-',  # Minus
@@ -146,13 +152,6 @@ tokens = \
 #   - strings are sorted based on pattern length.
 
 
-# Make sure that variables such as ___ are okay.
-def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z_0-9]*'
-    t.type = reserved.get(t.value, 'ID')
-    return t
-
-
 t_DOTADD = r'\.\+'       # .+
 t_DOTSUB = r'\.-'       # .-
 t_DOTMUL = r'\.\*'       # .*
@@ -173,6 +172,13 @@ t_LTE = r'<='
 t_GTE = r'>='
 t_EQL = r'=='
 t_NEQ = r'!='
+
+
+def t_ID(t):
+    # I reject id containg only __
+    r'(([a-zA-Z])|(_+[a-zA-Z0-9]+))[a-zA-Z_0-9]*'
+    t.type = reserved.get(t.value, 'ID')
+    return t
 
 
 def t_STR(t):
@@ -209,7 +215,9 @@ def t_COMMENT(t):
 
 
 def t_error(t):
-    print("Illegal character '%s'" % t.value[0])
+    print(formatError(t))
+    # We could maybe combine errors into one msg instead of reporting single characters.
+    t.lexer.lex_error = True
     t.lexer.skip(1)
 
 
