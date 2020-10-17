@@ -5,48 +5,76 @@ import ply.lex as lex
 # -------------------------------------------------------------
 
 
-# Todo create some sort of an iterator over tokens and add error handling capabilities.
-# It's easiest to set attribute on lexer object!
 class Lexer:
     def __init__(self, **kwargs):
         self.lexer = lex.lex()
+        self.text = None
+        self.lexer.errors = []
+        self.parsedTokens = []
 
     def input(self, text):
         self.text = text
         self.lexer.input(text)
 
-    def token(self):
-        return self.lexer.token()
+        return self
 
-    def printTokens(self):
-        while True:
-            tok = self.token()
-            if not tok:
-                break    # No more input
-            print(formatToken(tok, tokenColumnNo=findColumn(self.text, tok)))
+    def parseInput(self):
+        if not self.text:
+            raise Exception('There\' no input!')
 
+        tok = self.lexer.token()
+        while tok is not None:
+            lineno, tpe, value = tok.lineno, tok.type, tok.value
+            token = Token(tpe, value, lineno, findColumn(self.text, tok))
 
-def formatToken(tok, tokenColumnNo=None):
-    space = 10
-    linenoStr = f'({tok.lineno}):'.ljust(space)
-    if tokenColumnNo is not None:
-        linenoStr = f'({tok.lineno}, {tokenColumnNo}):'.ljust(space)
-    return linenoStr + ' ' + f'{tok.type}( {tok.value} )'
+            self.parsedTokens.append(token)
 
+            tok = self.lexer.token()
 
-def formatError(t):
-    return f'Error: Unexpected character {t.value[0]} at {t.lineno}'
+        return self
+
+    def tokens(self):
+        return self.parsedTokens
+
+    def errors(self):
+        return self.lexer.errors
 
 
 def findColumn(text, token):
     lineStart = text.rfind('\n', 0, token.lexpos) + 1
     return (token.lexpos - lineStart) + 1
 
+
+class Token:
+    space = 10
+
+    def __init__(self, tpe, value, lineno, colno):
+        self.type = tpe
+        self.value = value
+        self.lineno = lineno
+        self.colno = colno
+
+    def formatted(self):
+        linenoStr = f'({self.lineno}):'.ljust(Token.space)
+        linenoStr = f'({self.lineno}, {self.colno}):'.ljust(Token.space)
+        return linenoStr + ' ' + f'{self.type}( {self.value} )'
+
+
+class LexError:
+    CRED = '\033[91m'
+    CEND = '\033[0m'
+
+    def __init__(self, value, lineno):
+        self.value = value
+        self.lineno = lineno
+
+    def formatted(self):
+        return f'{LexError.CRED}Error{LexError.CEND}: Unexpected character {self.value} at {self.lineno}'
+
+
 # -------------------------------------------------------------
 # Literals
 # -------------------------------------------------------------
-
-
 binaryOperators = [
     '+',  # Plus
     '-',  # Minus
@@ -183,7 +211,8 @@ def t_ID(t):
 
 def t_STR(t):
     # We allow for escaping (") within a string using (\")
-    r'"((\\")|[^"])*"'
+    # Multiline strings are disallowed.
+    r'"((\\")|[^"\n])*"'
     t.value = str(t.value[1: len(t.value) - 1]) \
         .replace(r'\"', "\"")
     return t
@@ -215,9 +244,8 @@ def t_COMMENT(t):
 
 
 def t_error(t):
-    print(formatError(t))
     # We could maybe combine errors into one msg instead of reporting single characters.
-    t.lexer.lex_error = True
+    t.lexer.errors.append(LexError(t.value[0], t.lineno))
     t.lexer.skip(1)
 
 
