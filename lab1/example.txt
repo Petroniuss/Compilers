@@ -11,11 +11,12 @@ E1 = [ [ 1, 2, 3],
        [ 7, 8, 9] ];
 
 __x = "s";
-_1  = "s";
+_1_ = "s";
 
-# ___ = 12; # This is invalid
-# 12_ = "x"; also invalid
+# ___ = 12;  # This is invalid
+# 12_ = "x"; # also invalid
 
+# res0 = .   # such lexem invalid
 res1 = 60.500;
 res2 = 60.;
 res3 = .500;
@@ -31,5 +32,5 @@ if (m==n) {
 # Few edge cases:
 # "foo"                             # 1. String after a comment.
 X = "\"\"";                         # 2. Escaping (") char within a string.
-Y = "Hash # Hash"                   # 3. Hash wihtin a string.
+Y = "Hash # Hash"                   # 3. Hash within a string.
 Z = " $ $2jrj fa0s9jt \n ala \n";   # 4. String with newline characters.

@@ -19,12 +19,10 @@ if __name__ == '__main__':
 
     text = file.read()
 
-    lexer = Lexer() \
+    errors, tokens = Lexer() \
         .input(text) \
         .parseInput() \
 
-    tokens = lexer.tokens()
-    errors = lexer.errors()
 
     # For now we're just printing parsed tokens and lexems
     if len(errors) > 0:

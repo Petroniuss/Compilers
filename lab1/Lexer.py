@@ -31,7 +31,7 @@ class Lexer:
 
             tok = self.lexer.token()
 
-        return self
+        return self.errors(), self.tokens()
 
     def tokens(self):
         return self.parsedTokens
@@ -43,6 +43,21 @@ class Lexer:
 def findColumn(text, token):
     lineStart = text.rfind('\n', 0, token.lexpos) + 1
     return (token.lexpos - lineStart) + 1
+
+
+class AnsiColor:
+    RED = '\033[91m'
+    BLUE = '\033[94m'
+    CYAN = '\033[96m'
+    GREEN = '\033[92m'
+
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+    END = '\033[0m'
 
 
 class Token:
@@ -57,19 +72,17 @@ class Token:
     def formatted(self):
         linenoStr = f'({self.lineno}):'.ljust(Token.space)
         linenoStr = f'({self.lineno}, {self.colno}):'.ljust(Token.space)
-        return linenoStr + ' ' + f'{self.type}( {self.value} )'
+        return linenoStr + ' ' + \
+            f'{AnsiColor.BLUE}{self.type}{AnsiColor.END}( {AnsiColor.GREEN}{self.value}{AnsiColor.END} )'
 
 
 class LexError:
-    CRED = '\033[91m'
-    CEND = '\033[0m'
-
     def __init__(self, value, lineno):
         self.value = value
         self.lineno = lineno
 
     def formatted(self):
-        return f'{LexError.CRED}Error{LexError.CEND}: Unexpected character {self.value} at {self.lineno}'
+        return f'{AnsiColor.RED}Error{AnsiColor.END}: Unexpected character {self.value} at {self.lineno}'
 
 
 # -------------------------------------------------------------
