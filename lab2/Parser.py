@@ -54,6 +54,7 @@ def p_for(p):
     """
         for : FOR ID ASSIGN expression ':' expression nested
     """
+    debug(p[1])
     pass
 
 
@@ -61,6 +62,7 @@ def p_while(p):
     """
         while : WHILE condition nested
     """
+    debug(p[1])
     pass
 
 
@@ -68,6 +70,7 @@ def p_break(p):
     """
         break : BREAK
     """
+    debug(p[1])
     pass
 
 
@@ -75,6 +78,7 @@ def p_return(p):
     """
         return : RETURN expression 
     """
+    debug(p[1])
     pass
 
 
@@ -82,6 +86,7 @@ def p_continue(p):
     """
         continue : CONTINUE
     """
+    debug(p[1])
     pass
 
 
@@ -89,6 +94,7 @@ def p_print(p):
     """
         print : PRINT coma_separated
     """
+    debug(p[1])
     pass
 
 
@@ -243,7 +249,8 @@ def debug(o):
 
 
 precedence = (
-    # ('nonassoc', 'LESSTHAN', 'GREATERTHAN'),  # Nonassociative operators
+    ('nonassoc', 'EQL', 'NEQ', 'GT', 'GTE',
+        'LT', 'LTE'),  # Nonassociative operators
     ('left', '+', '-'),
     ('left', '/', '*'),
     ('left', 'TRANSPOSE'),
@@ -251,9 +258,8 @@ precedence = (
     # # this order is incorrect but for some reason it does parse input..
     ("nonassoc", 'IFx'),
     ("nonassoc", '1'),
-    # ("nonassoc", '2'),
-    ("nonassoc", 'ELSE'),
     ("nonassoc", '3'),
+    ("nonassoc", 'ELSE', 'IF'),
 )
 
 
@@ -275,8 +281,8 @@ def p_if(p):
 
 def p_optional_else_ifs(p):
     """
-        optional_else_ifs : else_ifs %prec 3
-                          | %prec 1
+        optional_else_ifs : else_ifs 
+                          | %prec 3
     """
     if len(p) < 2:
         debug('empty optional else ifs!')
@@ -301,7 +307,7 @@ def p_else_if(p):
 
 def p_optional_else(p):
     """
-        optional_else : else 
+        optional_else : else %prec 3
                       | %prec 1
     """
     if len(p) < 2:

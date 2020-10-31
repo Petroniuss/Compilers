@@ -1249,7 +1249,7 @@ state 52
     (64) else_ifs -> else_ifs . else_if
     (65) else_if -> . ELSE IF condition nested
 
-    ELSE            reduce using rule 61 (optional_else_ifs -> else_ifs .)
+  ! shift/reduce conflict for ELSE resolved as shift
     ID              reduce using rule 61 (optional_else_ifs -> else_ifs .)
     PRINT           reduce using rule 61 (optional_else_ifs -> else_ifs .)
     CONTINUE        reduce using rule 61 (optional_else_ifs -> else_ifs .)
@@ -1260,8 +1260,9 @@ state 52
     IF              reduce using rule 61 (optional_else_ifs -> else_ifs .)
     $end            reduce using rule 61 (optional_else_ifs -> else_ifs .)
     }               reduce using rule 61 (optional_else_ifs -> else_ifs .)
+    ELSE            shift and go to state 54
 
-  ! ELSE            [ shift and go to state 54 ]
+  ! ELSE            [ reduce using rule 61 (optional_else_ifs -> else_ifs .) ]
 
     else_if                        shift and go to state 95
 
@@ -3384,3 +3385,7 @@ state 138
     ELSE            reduce using rule 12 (for -> FOR ID ASSIGN expression : expression nested .)
     }               reduce using rule 12 (for -> FOR ID ASSIGN expression : expression nested .)
 
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for ELSE in state 52 resolved as shift
