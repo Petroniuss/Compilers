@@ -61,7 +61,7 @@ class For(Ast):
 
 class While(Ast):
     def __init__(self, condition, block):
-        super().__init__('Break', children=[condition, block])
+        super().__init__('While', children=[condition, block])
 
     def condition(self):
         return self.children[0]
@@ -272,7 +272,6 @@ class Leaf(Ast):
 
 class CodeBlock(Ast):
     def __init__(self, statements):
-        print('CodeBlock\' children', statements)
         super().__init__('CodeBlock', children=statements)
 
 
