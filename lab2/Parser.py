@@ -15,6 +15,17 @@ def LRParser():
 # Parser
 # -------------------------------------------------------------------
 
+precedence = (
+    ('nonassoc', 'EQL', 'NEQ', 'GT', 'GTE',
+        'LT', 'LTE'),
+    ('left', '+', '-'),
+    ('left', '/', '*'),
+    ('left', 'TRANSPOSE'),
+    ('right', 'UMINUS'),
+    ("nonassoc", 'IFx'),
+    ("nonassoc", 'ELSE')
+)
+
 
 def p_start(p):
     """
@@ -128,9 +139,16 @@ def p_assign(p):
 
 def p_expression_built_in_function(p):
     """
-        expression : built_in_function '(' term ')'
+        expression : built_in_function '(' term_list ')'
     """
     pass
+
+
+def p_term_list(p):
+    """
+        term_list : term
+                  | term_list ',' term
+    """
 
 
 def p_expression_term(p):
@@ -238,18 +256,6 @@ def p_range(p):
 
 def debug(o):
     print('DEBUG: ' + o.rjust(36))
-
-
-precedence = (
-    ('nonassoc', 'EQL', 'NEQ', 'GT', 'GTE',
-        'LT', 'LTE'),
-    ('left', '+', '-'),
-    ('left', '/', '*'),
-    ('left', 'TRANSPOSE'),
-    ('right', 'UMINUS'),
-    ("nonassoc", 'IFx'),
-    ("nonassoc", 'ELSE')
-)
 
 
 def p_if(p):

@@ -29,100 +29,102 @@ Rule 23    assign_symbol -> SUBASSIGN
 Rule 24    assign_symbol -> ADDASSIGN
 Rule 25    assign_symbol -> DIVASSIGN
 Rule 26    assign_symbol -> MULTASSIGN
-Rule 27    expression -> built_in_function ( term )
-Rule 28    expression -> term
-Rule 29    expression -> expression + term
-Rule 30    expression -> expression - term
-Rule 31    expression -> expression / term
-Rule 32    expression -> expression * term
-Rule 33    expression -> expression EQL term
-Rule 34    expression -> expression NEQ term
-Rule 35    expression -> expression GT term
-Rule 36    expression -> expression GTE term
-Rule 37    expression -> expression LT term
-Rule 38    expression -> expression LTE term
-Rule 39    expression -> - term
-Rule 40    vector -> ID TRANSPOSE
-Rule 41    vector -> vector TRANSPOSE
-Rule 42    expression -> ID dot_operation term
-Rule 43    expression -> vector dot_operation term
-Rule 44    dot_operation -> DOTADD
-Rule 45    dot_operation -> DOTSUB
-Rule 46    dot_operation -> DOTMUL
-Rule 47    dot_operation -> DOTDIV
-Rule 48    vector -> [ vector_contents ]
-Rule 49    vector_contents -> vector_element
-Rule 50    vector_contents -> vector_contents , vector_element
-Rule 51    vector_element -> term
-Rule 52    slice -> [ slice_contents ]
-Rule 53    slice_contents -> range
-Rule 54    slice_contents -> slice_contents , range
-Rule 55    range -> term : term
-Rule 56    range -> term :
-Rule 57    range -> : term
-Rule 58    range -> term
-Rule 59    if -> IF condition nested
-Rule 60    if -> IF condition nested ELSE nested
-Rule 61    condition -> ( expression )
-Rule 62    nested -> { statements }
-Rule 63    nested -> statement
-Rule 64    term -> ( expression )
-Rule 65    term -> vector
-Rule 66    term -> INTNUM
-Rule 67    term -> STR
-Rule 68    term -> FLOATNUM
-Rule 69    term -> ID
-Rule 70    built_in_function -> EYE
-Rule 71    built_in_function -> ONES
-Rule 72    built_in_function -> ZEROS
+Rule 27    expression -> built_in_function ( term_list )
+Rule 28    term_list -> term
+Rule 29    term_list -> term_list , term
+Rule 30    expression -> term
+Rule 31    expression -> expression + term
+Rule 32    expression -> expression - term
+Rule 33    expression -> expression / term
+Rule 34    expression -> expression * term
+Rule 35    expression -> expression EQL term
+Rule 36    expression -> expression NEQ term
+Rule 37    expression -> expression GT term
+Rule 38    expression -> expression GTE term
+Rule 39    expression -> expression LT term
+Rule 40    expression -> expression LTE term
+Rule 41    expression -> - term
+Rule 42    vector -> ID TRANSPOSE
+Rule 43    vector -> vector TRANSPOSE
+Rule 44    expression -> ID dot_operation term
+Rule 45    expression -> vector dot_operation term
+Rule 46    dot_operation -> DOTADD
+Rule 47    dot_operation -> DOTSUB
+Rule 48    dot_operation -> DOTMUL
+Rule 49    dot_operation -> DOTDIV
+Rule 50    vector -> [ vector_contents ]
+Rule 51    vector_contents -> vector_element
+Rule 52    vector_contents -> vector_contents , vector_element
+Rule 53    vector_element -> term
+Rule 54    slice -> [ slice_contents ]
+Rule 55    slice_contents -> range
+Rule 56    slice_contents -> slice_contents , range
+Rule 57    range -> term : term
+Rule 58    range -> term :
+Rule 59    range -> : term
+Rule 60    range -> term
+Rule 61    if -> IF condition nested
+Rule 62    if -> IF condition nested ELSE nested
+Rule 63    condition -> ( expression )
+Rule 64    nested -> { statements }
+Rule 65    nested -> statement
+Rule 66    term -> ( expression )
+Rule 67    term -> vector
+Rule 68    term -> INTNUM
+Rule 69    term -> STR
+Rule 70    term -> FLOATNUM
+Rule 71    term -> ID
+Rule 72    built_in_function -> EYE
+Rule 73    built_in_function -> ONES
+Rule 74    built_in_function -> ZEROS
 
 Terminals, with rules where they appear
 
-(                    : 27 61 64
-)                    : 27 61 64
-*                    : 32
-+                    : 29
-,                    : 19 50 54
--                    : 30 39
-/                    : 31
-:                    : 12 55 56 57
+(                    : 27 63 66
+)                    : 27 63 66
+*                    : 34
++                    : 31
+,                    : 19 29 52 56
+-                    : 32 41
+/                    : 33
+:                    : 12 57 58 59
 ;                    : 4 5 6 7 8
 ADDASSIGN            : 24
 ASSIGN               : 12 22
 BREAK                : 14
 CONTINUE             : 16
 DIVASSIGN            : 25
-DOTADD               : 44
-DOTDIV               : 47
-DOTMUL               : 46
-DOTSUB               : 45
-ELSE                 : 60
-EQL                  : 33
-EYE                  : 70
-FLOATNUM             : 68
+DOTADD               : 46
+DOTDIV               : 49
+DOTMUL               : 48
+DOTSUB               : 47
+ELSE                 : 62
+EQL                  : 35
+EYE                  : 72
+FLOATNUM             : 70
 FOR                  : 12
-GT                   : 35
-GTE                  : 36
-ID                   : 12 20 21 40 42 69
-IF                   : 59 60
-INTNUM               : 66
-LT                   : 37
-LTE                  : 38
+GT                   : 37
+GTE                  : 38
+ID                   : 12 20 21 42 44 71
+IF                   : 61 62
+INTNUM               : 68
+LT                   : 39
+LTE                  : 40
 MULTASSIGN           : 26
-NEQ                  : 34
-ONES                 : 71
+NEQ                  : 36
+ONES                 : 73
 PRINT                : 17
 RETURN               : 15
-STR                  : 67
+STR                  : 69
 SUBASSIGN            : 23
-TRANSPOSE            : 40 41
+TRANSPOSE            : 42 43
 WHILE                : 13
-ZEROS                : 72
-[                    : 48 52
-]                    : 48 52
+ZEROS                : 74
+[                    : 50 54
+]                    : 50 54
 error                : 
-{                    : 62
-}                    : 62
+{                    : 64
+}                    : 64
 
 Nonterminals, with rules where they appear
 
@@ -131,25 +133,26 @@ assignment           : 4
 break                : 7
 built_in_function    : 27
 coma_separated       : 17 19
-condition            : 13 59 60
+condition            : 13 61 62
 continue             : 6
-dot_operation        : 42 43
-expression           : 12 12 15 18 19 20 21 29 30 31 32 33 34 35 36 37 38 61 64
+dot_operation        : 44 45
+expression           : 12 12 15 18 19 20 21 31 32 33 34 35 36 37 38 39 40 63 66
 for                  : 10
 if                   : 9
-nested               : 12 13 59 60 60
+nested               : 12 13 61 62 62
 print                : 5
-range                : 53 54
+range                : 55 56
 return               : 8
 slice                : 21
-slice_contents       : 52 54
+slice_contents       : 54 56
 start                : 0
-statement            : 2 3 63
-statements           : 1 3 62
-term                 : 27 28 29 30 31 32 33 34 35 36 37 38 39 42 43 51 55 55 56 57 58
-vector               : 41 43 65
-vector_contents      : 48 50
-vector_element       : 49 50
+statement            : 2 3 65
+statements           : 1 3 64
+term                 : 28 29 30 31 32 33 34 35 36 37 38 39 40 41 44 45 53 57 57 58 59 60
+term_list            : 27 29
+vector               : 43 45 67
+vector_contents      : 50 52
+vector_element       : 51 52
 while                : 11
 
 Parsing method: LALR
@@ -174,8 +177,8 @@ state 0
     (16) continue -> . CONTINUE
     (14) break -> . BREAK
     (15) return -> . RETURN expression
-    (59) if -> . IF condition nested
-    (60) if -> . IF condition nested ELSE nested
+    (61) if -> . IF condition nested
+    (62) if -> . IF condition nested ELSE nested
     (12) for -> . FOR ID ASSIGN expression : expression nested
     (13) while -> . WHILE condition nested
 
@@ -224,8 +227,8 @@ state 2
     (16) continue -> . CONTINUE
     (14) break -> . BREAK
     (15) return -> . RETURN expression
-    (59) if -> . IF condition nested
-    (60) if -> . IF condition nested ELSE nested
+    (61) if -> . IF condition nested
+    (62) if -> . IF condition nested ELSE nested
     (12) for -> . FOR ID ASSIGN expression : expression nested
     (13) while -> . WHILE condition nested
 
@@ -360,7 +363,7 @@ state 12
     (24) assign_symbol -> . ADDASSIGN
     (25) assign_symbol -> . DIVASSIGN
     (26) assign_symbol -> . MULTASSIGN
-    (52) slice -> . [ slice_contents ]
+    (54) slice -> . [ slice_contents ]
 
     ASSIGN          shift and go to state 28
     SUBASSIGN       shift and go to state 29
@@ -377,33 +380,33 @@ state 13
     (17) print -> PRINT . coma_separated
     (18) coma_separated -> . expression
     (19) coma_separated -> . coma_separated , expression
-    (27) expression -> . built_in_function ( term )
-    (28) expression -> . term
-    (29) expression -> . expression + term
-    (30) expression -> . expression - term
-    (31) expression -> . expression / term
-    (32) expression -> . expression * term
-    (33) expression -> . expression EQL term
-    (34) expression -> . expression NEQ term
-    (35) expression -> . expression GT term
-    (36) expression -> . expression GTE term
-    (37) expression -> . expression LT term
-    (38) expression -> . expression LTE term
-    (39) expression -> . - term
-    (42) expression -> . ID dot_operation term
-    (43) expression -> . vector dot_operation term
-    (70) built_in_function -> . EYE
-    (71) built_in_function -> . ONES
-    (72) built_in_function -> . ZEROS
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (27) expression -> . built_in_function ( term_list )
+    (30) expression -> . term
+    (31) expression -> . expression + term
+    (32) expression -> . expression - term
+    (33) expression -> . expression / term
+    (34) expression -> . expression * term
+    (35) expression -> . expression EQL term
+    (36) expression -> . expression NEQ term
+    (37) expression -> . expression GT term
+    (38) expression -> . expression GTE term
+    (39) expression -> . expression LT term
+    (40) expression -> . expression LTE term
+    (41) expression -> . - term
+    (44) expression -> . ID dot_operation term
+    (45) expression -> . vector dot_operation term
+    (72) built_in_function -> . EYE
+    (73) built_in_function -> . ONES
+    (74) built_in_function -> . ZEROS
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     -               shift and go to state 39
     ID              shift and go to state 40
@@ -439,33 +442,33 @@ state 15
 state 16
 
     (15) return -> RETURN . expression
-    (27) expression -> . built_in_function ( term )
-    (28) expression -> . term
-    (29) expression -> . expression + term
-    (30) expression -> . expression - term
-    (31) expression -> . expression / term
-    (32) expression -> . expression * term
-    (33) expression -> . expression EQL term
-    (34) expression -> . expression NEQ term
-    (35) expression -> . expression GT term
-    (36) expression -> . expression GTE term
-    (37) expression -> . expression LT term
-    (38) expression -> . expression LTE term
-    (39) expression -> . - term
-    (42) expression -> . ID dot_operation term
-    (43) expression -> . vector dot_operation term
-    (70) built_in_function -> . EYE
-    (71) built_in_function -> . ONES
-    (72) built_in_function -> . ZEROS
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (27) expression -> . built_in_function ( term_list )
+    (30) expression -> . term
+    (31) expression -> . expression + term
+    (32) expression -> . expression - term
+    (33) expression -> . expression / term
+    (34) expression -> . expression * term
+    (35) expression -> . expression EQL term
+    (36) expression -> . expression NEQ term
+    (37) expression -> . expression GT term
+    (38) expression -> . expression GTE term
+    (39) expression -> . expression LT term
+    (40) expression -> . expression LTE term
+    (41) expression -> . - term
+    (44) expression -> . ID dot_operation term
+    (45) expression -> . vector dot_operation term
+    (72) built_in_function -> . EYE
+    (73) built_in_function -> . ONES
+    (74) built_in_function -> . ZEROS
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     -               shift and go to state 39
     ID              shift and go to state 40
@@ -485,9 +488,9 @@ state 16
 
 state 17
 
-    (59) if -> IF . condition nested
-    (60) if -> IF . condition nested ELSE nested
-    (61) condition -> . ( expression )
+    (61) if -> IF . condition nested
+    (62) if -> IF . condition nested ELSE nested
+    (63) condition -> . ( expression )
 
     (               shift and go to state 51
 
@@ -503,7 +506,7 @@ state 18
 state 19
 
     (13) while -> WHILE . condition nested
-    (61) condition -> . ( expression )
+    (63) condition -> . ( expression )
 
     (               shift and go to state 51
 
@@ -613,33 +616,33 @@ state 25
 state 26
 
     (20) assignment -> ID assign_symbol . expression
-    (27) expression -> . built_in_function ( term )
-    (28) expression -> . term
-    (29) expression -> . expression + term
-    (30) expression -> . expression - term
-    (31) expression -> . expression / term
-    (32) expression -> . expression * term
-    (33) expression -> . expression EQL term
-    (34) expression -> . expression NEQ term
-    (35) expression -> . expression GT term
-    (36) expression -> . expression GTE term
-    (37) expression -> . expression LT term
-    (38) expression -> . expression LTE term
-    (39) expression -> . - term
-    (42) expression -> . ID dot_operation term
-    (43) expression -> . vector dot_operation term
-    (70) built_in_function -> . EYE
-    (71) built_in_function -> . ONES
-    (72) built_in_function -> . ZEROS
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (27) expression -> . built_in_function ( term_list )
+    (30) expression -> . term
+    (31) expression -> . expression + term
+    (32) expression -> . expression - term
+    (33) expression -> . expression / term
+    (34) expression -> . expression * term
+    (35) expression -> . expression EQL term
+    (36) expression -> . expression NEQ term
+    (37) expression -> . expression GT term
+    (38) expression -> . expression GTE term
+    (39) expression -> . expression LT term
+    (40) expression -> . expression LTE term
+    (41) expression -> . - term
+    (44) expression -> . ID dot_operation term
+    (45) expression -> . vector dot_operation term
+    (72) built_in_function -> . EYE
+    (73) built_in_function -> . ONES
+    (74) built_in_function -> . ZEROS
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     -               shift and go to state 39
     ID              shift and go to state 40
@@ -756,22 +759,22 @@ state 32
 
 state 33
 
-    (52) slice -> [ . slice_contents ]
-    (53) slice_contents -> . range
-    (54) slice_contents -> . slice_contents , range
-    (55) range -> . term : term
-    (56) range -> . term :
-    (57) range -> . : term
-    (58) range -> . term
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (54) slice -> [ . slice_contents ]
+    (55) slice_contents -> . range
+    (56) slice_contents -> . slice_contents , range
+    (57) range -> . term : term
+    (58) range -> . term :
+    (59) range -> . : term
+    (60) range -> . term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     :               shift and go to state 59
     (               shift and go to state 37
@@ -798,16 +801,16 @@ state 34
 state 35
 
     (18) coma_separated -> expression .
-    (29) expression -> expression . + term
-    (30) expression -> expression . - term
-    (31) expression -> expression . / term
-    (32) expression -> expression . * term
-    (33) expression -> expression . EQL term
-    (34) expression -> expression . NEQ term
-    (35) expression -> expression . GT term
-    (36) expression -> expression . GTE term
-    (37) expression -> expression . LT term
-    (38) expression -> expression . LTE term
+    (31) expression -> expression . + term
+    (32) expression -> expression . - term
+    (33) expression -> expression . / term
+    (34) expression -> expression . * term
+    (35) expression -> expression . EQL term
+    (36) expression -> expression . NEQ term
+    (37) expression -> expression . GT term
+    (38) expression -> expression . GTE term
+    (39) expression -> expression . LT term
+    (40) expression -> expression . LTE term
 
     ,               reduce using rule 18 (coma_separated -> expression .)
     ;               reduce using rule 18 (coma_separated -> expression .)
@@ -825,41 +828,41 @@ state 35
 
 state 36
 
-    (27) expression -> built_in_function . ( term )
+    (27) expression -> built_in_function . ( term_list )
 
     (               shift and go to state 73
 
 
 state 37
 
-    (64) term -> ( . expression )
-    (27) expression -> . built_in_function ( term )
-    (28) expression -> . term
-    (29) expression -> . expression + term
-    (30) expression -> . expression - term
-    (31) expression -> . expression / term
-    (32) expression -> . expression * term
-    (33) expression -> . expression EQL term
-    (34) expression -> . expression NEQ term
-    (35) expression -> . expression GT term
-    (36) expression -> . expression GTE term
-    (37) expression -> . expression LT term
-    (38) expression -> . expression LTE term
-    (39) expression -> . - term
-    (42) expression -> . ID dot_operation term
-    (43) expression -> . vector dot_operation term
-    (70) built_in_function -> . EYE
-    (71) built_in_function -> . ONES
-    (72) built_in_function -> . ZEROS
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (66) term -> ( . expression )
+    (27) expression -> . built_in_function ( term_list )
+    (30) expression -> . term
+    (31) expression -> . expression + term
+    (32) expression -> . expression - term
+    (33) expression -> . expression / term
+    (34) expression -> . expression * term
+    (35) expression -> . expression EQL term
+    (36) expression -> . expression NEQ term
+    (37) expression -> . expression GT term
+    (38) expression -> . expression GTE term
+    (39) expression -> . expression LT term
+    (40) expression -> . expression LTE term
+    (41) expression -> . - term
+    (44) expression -> . ID dot_operation term
+    (45) expression -> . vector dot_operation term
+    (72) built_in_function -> . EYE
+    (73) built_in_function -> . ONES
+    (74) built_in_function -> . ZEROS
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     -               shift and go to state 39
     ID              shift and go to state 40
@@ -879,45 +882,45 @@ state 37
 
 state 38
 
-    (28) expression -> term .
+    (30) expression -> term .
 
-    +               reduce using rule 28 (expression -> term .)
-    -               reduce using rule 28 (expression -> term .)
-    /               reduce using rule 28 (expression -> term .)
-    *               reduce using rule 28 (expression -> term .)
-    EQL             reduce using rule 28 (expression -> term .)
-    NEQ             reduce using rule 28 (expression -> term .)
-    GT              reduce using rule 28 (expression -> term .)
-    GTE             reduce using rule 28 (expression -> term .)
-    LT              reduce using rule 28 (expression -> term .)
-    LTE             reduce using rule 28 (expression -> term .)
-    ,               reduce using rule 28 (expression -> term .)
-    ;               reduce using rule 28 (expression -> term .)
-    )               reduce using rule 28 (expression -> term .)
-    :               reduce using rule 28 (expression -> term .)
-    {               reduce using rule 28 (expression -> term .)
-    ID              reduce using rule 28 (expression -> term .)
-    PRINT           reduce using rule 28 (expression -> term .)
-    CONTINUE        reduce using rule 28 (expression -> term .)
-    BREAK           reduce using rule 28 (expression -> term .)
-    RETURN          reduce using rule 28 (expression -> term .)
-    IF              reduce using rule 28 (expression -> term .)
-    FOR             reduce using rule 28 (expression -> term .)
-    WHILE           reduce using rule 28 (expression -> term .)
+    +               reduce using rule 30 (expression -> term .)
+    -               reduce using rule 30 (expression -> term .)
+    /               reduce using rule 30 (expression -> term .)
+    *               reduce using rule 30 (expression -> term .)
+    EQL             reduce using rule 30 (expression -> term .)
+    NEQ             reduce using rule 30 (expression -> term .)
+    GT              reduce using rule 30 (expression -> term .)
+    GTE             reduce using rule 30 (expression -> term .)
+    LT              reduce using rule 30 (expression -> term .)
+    LTE             reduce using rule 30 (expression -> term .)
+    ,               reduce using rule 30 (expression -> term .)
+    ;               reduce using rule 30 (expression -> term .)
+    )               reduce using rule 30 (expression -> term .)
+    :               reduce using rule 30 (expression -> term .)
+    {               reduce using rule 30 (expression -> term .)
+    ID              reduce using rule 30 (expression -> term .)
+    PRINT           reduce using rule 30 (expression -> term .)
+    CONTINUE        reduce using rule 30 (expression -> term .)
+    BREAK           reduce using rule 30 (expression -> term .)
+    RETURN          reduce using rule 30 (expression -> term .)
+    IF              reduce using rule 30 (expression -> term .)
+    FOR             reduce using rule 30 (expression -> term .)
+    WHILE           reduce using rule 30 (expression -> term .)
 
 
 state 39
 
-    (39) expression -> - . term
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (41) expression -> - . term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     (               shift and go to state 37
     INTNUM          shift and go to state 45
@@ -931,37 +934,37 @@ state 39
 
 state 40
 
-    (42) expression -> ID . dot_operation term
-    (69) term -> ID .
-    (40) vector -> ID . TRANSPOSE
-    (44) dot_operation -> . DOTADD
-    (45) dot_operation -> . DOTSUB
-    (46) dot_operation -> . DOTMUL
-    (47) dot_operation -> . DOTDIV
+    (44) expression -> ID . dot_operation term
+    (71) term -> ID .
+    (42) vector -> ID . TRANSPOSE
+    (46) dot_operation -> . DOTADD
+    (47) dot_operation -> . DOTSUB
+    (48) dot_operation -> . DOTMUL
+    (49) dot_operation -> . DOTDIV
 
-    +               reduce using rule 69 (term -> ID .)
-    -               reduce using rule 69 (term -> ID .)
-    /               reduce using rule 69 (term -> ID .)
-    *               reduce using rule 69 (term -> ID .)
-    EQL             reduce using rule 69 (term -> ID .)
-    NEQ             reduce using rule 69 (term -> ID .)
-    GT              reduce using rule 69 (term -> ID .)
-    GTE             reduce using rule 69 (term -> ID .)
-    LT              reduce using rule 69 (term -> ID .)
-    LTE             reduce using rule 69 (term -> ID .)
-    ,               reduce using rule 69 (term -> ID .)
-    ;               reduce using rule 69 (term -> ID .)
-    )               reduce using rule 69 (term -> ID .)
-    :               reduce using rule 69 (term -> ID .)
-    {               reduce using rule 69 (term -> ID .)
-    ID              reduce using rule 69 (term -> ID .)
-    PRINT           reduce using rule 69 (term -> ID .)
-    CONTINUE        reduce using rule 69 (term -> ID .)
-    BREAK           reduce using rule 69 (term -> ID .)
-    RETURN          reduce using rule 69 (term -> ID .)
-    IF              reduce using rule 69 (term -> ID .)
-    FOR             reduce using rule 69 (term -> ID .)
-    WHILE           reduce using rule 69 (term -> ID .)
+    +               reduce using rule 71 (term -> ID .)
+    -               reduce using rule 71 (term -> ID .)
+    /               reduce using rule 71 (term -> ID .)
+    *               reduce using rule 71 (term -> ID .)
+    EQL             reduce using rule 71 (term -> ID .)
+    NEQ             reduce using rule 71 (term -> ID .)
+    GT              reduce using rule 71 (term -> ID .)
+    GTE             reduce using rule 71 (term -> ID .)
+    LT              reduce using rule 71 (term -> ID .)
+    LTE             reduce using rule 71 (term -> ID .)
+    ,               reduce using rule 71 (term -> ID .)
+    ;               reduce using rule 71 (term -> ID .)
+    )               reduce using rule 71 (term -> ID .)
+    :               reduce using rule 71 (term -> ID .)
+    {               reduce using rule 71 (term -> ID .)
+    ID              reduce using rule 71 (term -> ID .)
+    PRINT           reduce using rule 71 (term -> ID .)
+    CONTINUE        reduce using rule 71 (term -> ID .)
+    BREAK           reduce using rule 71 (term -> ID .)
+    RETURN          reduce using rule 71 (term -> ID .)
+    IF              reduce using rule 71 (term -> ID .)
+    FOR             reduce using rule 71 (term -> ID .)
+    WHILE           reduce using rule 71 (term -> ID .)
     TRANSPOSE       shift and go to state 77
     DOTADD          shift and go to state 78
     DOTSUB          shift and go to state 79
@@ -972,37 +975,37 @@ state 40
 
 state 41
 
-    (43) expression -> vector . dot_operation term
-    (65) term -> vector .
-    (41) vector -> vector . TRANSPOSE
-    (44) dot_operation -> . DOTADD
-    (45) dot_operation -> . DOTSUB
-    (46) dot_operation -> . DOTMUL
-    (47) dot_operation -> . DOTDIV
+    (45) expression -> vector . dot_operation term
+    (67) term -> vector .
+    (43) vector -> vector . TRANSPOSE
+    (46) dot_operation -> . DOTADD
+    (47) dot_operation -> . DOTSUB
+    (48) dot_operation -> . DOTMUL
+    (49) dot_operation -> . DOTDIV
 
-    +               reduce using rule 65 (term -> vector .)
-    -               reduce using rule 65 (term -> vector .)
-    /               reduce using rule 65 (term -> vector .)
-    *               reduce using rule 65 (term -> vector .)
-    EQL             reduce using rule 65 (term -> vector .)
-    NEQ             reduce using rule 65 (term -> vector .)
-    GT              reduce using rule 65 (term -> vector .)
-    GTE             reduce using rule 65 (term -> vector .)
-    LT              reduce using rule 65 (term -> vector .)
-    LTE             reduce using rule 65 (term -> vector .)
-    ,               reduce using rule 65 (term -> vector .)
-    ;               reduce using rule 65 (term -> vector .)
-    )               reduce using rule 65 (term -> vector .)
-    :               reduce using rule 65 (term -> vector .)
-    {               reduce using rule 65 (term -> vector .)
-    ID              reduce using rule 65 (term -> vector .)
-    PRINT           reduce using rule 65 (term -> vector .)
-    CONTINUE        reduce using rule 65 (term -> vector .)
-    BREAK           reduce using rule 65 (term -> vector .)
-    RETURN          reduce using rule 65 (term -> vector .)
-    IF              reduce using rule 65 (term -> vector .)
-    FOR             reduce using rule 65 (term -> vector .)
-    WHILE           reduce using rule 65 (term -> vector .)
+    +               reduce using rule 67 (term -> vector .)
+    -               reduce using rule 67 (term -> vector .)
+    /               reduce using rule 67 (term -> vector .)
+    *               reduce using rule 67 (term -> vector .)
+    EQL             reduce using rule 67 (term -> vector .)
+    NEQ             reduce using rule 67 (term -> vector .)
+    GT              reduce using rule 67 (term -> vector .)
+    GTE             reduce using rule 67 (term -> vector .)
+    LT              reduce using rule 67 (term -> vector .)
+    LTE             reduce using rule 67 (term -> vector .)
+    ,               reduce using rule 67 (term -> vector .)
+    ;               reduce using rule 67 (term -> vector .)
+    )               reduce using rule 67 (term -> vector .)
+    :               reduce using rule 67 (term -> vector .)
+    {               reduce using rule 67 (term -> vector .)
+    ID              reduce using rule 67 (term -> vector .)
+    PRINT           reduce using rule 67 (term -> vector .)
+    CONTINUE        reduce using rule 67 (term -> vector .)
+    BREAK           reduce using rule 67 (term -> vector .)
+    RETURN          reduce using rule 67 (term -> vector .)
+    IF              reduce using rule 67 (term -> vector .)
+    FOR             reduce using rule 67 (term -> vector .)
+    WHILE           reduce using rule 67 (term -> vector .)
     TRANSPOSE       shift and go to state 83
     DOTADD          shift and go to state 78
     DOTSUB          shift and go to state 79
@@ -1013,130 +1016,130 @@ state 41
 
 state 42
 
-    (70) built_in_function -> EYE .
+    (72) built_in_function -> EYE .
 
-    (               reduce using rule 70 (built_in_function -> EYE .)
+    (               reduce using rule 72 (built_in_function -> EYE .)
 
 
 state 43
 
-    (71) built_in_function -> ONES .
+    (73) built_in_function -> ONES .
 
-    (               reduce using rule 71 (built_in_function -> ONES .)
+    (               reduce using rule 73 (built_in_function -> ONES .)
 
 
 state 44
 
-    (72) built_in_function -> ZEROS .
+    (74) built_in_function -> ZEROS .
 
-    (               reduce using rule 72 (built_in_function -> ZEROS .)
+    (               reduce using rule 74 (built_in_function -> ZEROS .)
 
 
 state 45
 
-    (66) term -> INTNUM .
+    (68) term -> INTNUM .
 
-    +               reduce using rule 66 (term -> INTNUM .)
-    -               reduce using rule 66 (term -> INTNUM .)
-    /               reduce using rule 66 (term -> INTNUM .)
-    *               reduce using rule 66 (term -> INTNUM .)
-    EQL             reduce using rule 66 (term -> INTNUM .)
-    NEQ             reduce using rule 66 (term -> INTNUM .)
-    GT              reduce using rule 66 (term -> INTNUM .)
-    GTE             reduce using rule 66 (term -> INTNUM .)
-    LT              reduce using rule 66 (term -> INTNUM .)
-    LTE             reduce using rule 66 (term -> INTNUM .)
-    ,               reduce using rule 66 (term -> INTNUM .)
-    ;               reduce using rule 66 (term -> INTNUM .)
-    :               reduce using rule 66 (term -> INTNUM .)
-    ]               reduce using rule 66 (term -> INTNUM .)
-    )               reduce using rule 66 (term -> INTNUM .)
-    {               reduce using rule 66 (term -> INTNUM .)
-    ID              reduce using rule 66 (term -> INTNUM .)
-    PRINT           reduce using rule 66 (term -> INTNUM .)
-    CONTINUE        reduce using rule 66 (term -> INTNUM .)
-    BREAK           reduce using rule 66 (term -> INTNUM .)
-    RETURN          reduce using rule 66 (term -> INTNUM .)
-    IF              reduce using rule 66 (term -> INTNUM .)
-    FOR             reduce using rule 66 (term -> INTNUM .)
-    WHILE           reduce using rule 66 (term -> INTNUM .)
+    +               reduce using rule 68 (term -> INTNUM .)
+    -               reduce using rule 68 (term -> INTNUM .)
+    /               reduce using rule 68 (term -> INTNUM .)
+    *               reduce using rule 68 (term -> INTNUM .)
+    EQL             reduce using rule 68 (term -> INTNUM .)
+    NEQ             reduce using rule 68 (term -> INTNUM .)
+    GT              reduce using rule 68 (term -> INTNUM .)
+    GTE             reduce using rule 68 (term -> INTNUM .)
+    LT              reduce using rule 68 (term -> INTNUM .)
+    LTE             reduce using rule 68 (term -> INTNUM .)
+    ,               reduce using rule 68 (term -> INTNUM .)
+    ;               reduce using rule 68 (term -> INTNUM .)
+    :               reduce using rule 68 (term -> INTNUM .)
+    ]               reduce using rule 68 (term -> INTNUM .)
+    )               reduce using rule 68 (term -> INTNUM .)
+    {               reduce using rule 68 (term -> INTNUM .)
+    ID              reduce using rule 68 (term -> INTNUM .)
+    PRINT           reduce using rule 68 (term -> INTNUM .)
+    CONTINUE        reduce using rule 68 (term -> INTNUM .)
+    BREAK           reduce using rule 68 (term -> INTNUM .)
+    RETURN          reduce using rule 68 (term -> INTNUM .)
+    IF              reduce using rule 68 (term -> INTNUM .)
+    FOR             reduce using rule 68 (term -> INTNUM .)
+    WHILE           reduce using rule 68 (term -> INTNUM .)
 
 
 state 46
 
-    (67) term -> STR .
+    (69) term -> STR .
 
-    +               reduce using rule 67 (term -> STR .)
-    -               reduce using rule 67 (term -> STR .)
-    /               reduce using rule 67 (term -> STR .)
-    *               reduce using rule 67 (term -> STR .)
-    EQL             reduce using rule 67 (term -> STR .)
-    NEQ             reduce using rule 67 (term -> STR .)
-    GT              reduce using rule 67 (term -> STR .)
-    GTE             reduce using rule 67 (term -> STR .)
-    LT              reduce using rule 67 (term -> STR .)
-    LTE             reduce using rule 67 (term -> STR .)
-    ,               reduce using rule 67 (term -> STR .)
-    ;               reduce using rule 67 (term -> STR .)
-    :               reduce using rule 67 (term -> STR .)
-    ]               reduce using rule 67 (term -> STR .)
-    )               reduce using rule 67 (term -> STR .)
-    {               reduce using rule 67 (term -> STR .)
-    ID              reduce using rule 67 (term -> STR .)
-    PRINT           reduce using rule 67 (term -> STR .)
-    CONTINUE        reduce using rule 67 (term -> STR .)
-    BREAK           reduce using rule 67 (term -> STR .)
-    RETURN          reduce using rule 67 (term -> STR .)
-    IF              reduce using rule 67 (term -> STR .)
-    FOR             reduce using rule 67 (term -> STR .)
-    WHILE           reduce using rule 67 (term -> STR .)
+    +               reduce using rule 69 (term -> STR .)
+    -               reduce using rule 69 (term -> STR .)
+    /               reduce using rule 69 (term -> STR .)
+    *               reduce using rule 69 (term -> STR .)
+    EQL             reduce using rule 69 (term -> STR .)
+    NEQ             reduce using rule 69 (term -> STR .)
+    GT              reduce using rule 69 (term -> STR .)
+    GTE             reduce using rule 69 (term -> STR .)
+    LT              reduce using rule 69 (term -> STR .)
+    LTE             reduce using rule 69 (term -> STR .)
+    ,               reduce using rule 69 (term -> STR .)
+    ;               reduce using rule 69 (term -> STR .)
+    :               reduce using rule 69 (term -> STR .)
+    ]               reduce using rule 69 (term -> STR .)
+    )               reduce using rule 69 (term -> STR .)
+    {               reduce using rule 69 (term -> STR .)
+    ID              reduce using rule 69 (term -> STR .)
+    PRINT           reduce using rule 69 (term -> STR .)
+    CONTINUE        reduce using rule 69 (term -> STR .)
+    BREAK           reduce using rule 69 (term -> STR .)
+    RETURN          reduce using rule 69 (term -> STR .)
+    IF              reduce using rule 69 (term -> STR .)
+    FOR             reduce using rule 69 (term -> STR .)
+    WHILE           reduce using rule 69 (term -> STR .)
 
 
 state 47
 
-    (68) term -> FLOATNUM .
+    (70) term -> FLOATNUM .
 
-    +               reduce using rule 68 (term -> FLOATNUM .)
-    -               reduce using rule 68 (term -> FLOATNUM .)
-    /               reduce using rule 68 (term -> FLOATNUM .)
-    *               reduce using rule 68 (term -> FLOATNUM .)
-    EQL             reduce using rule 68 (term -> FLOATNUM .)
-    NEQ             reduce using rule 68 (term -> FLOATNUM .)
-    GT              reduce using rule 68 (term -> FLOATNUM .)
-    GTE             reduce using rule 68 (term -> FLOATNUM .)
-    LT              reduce using rule 68 (term -> FLOATNUM .)
-    LTE             reduce using rule 68 (term -> FLOATNUM .)
-    ,               reduce using rule 68 (term -> FLOATNUM .)
-    ;               reduce using rule 68 (term -> FLOATNUM .)
-    :               reduce using rule 68 (term -> FLOATNUM .)
-    ]               reduce using rule 68 (term -> FLOATNUM .)
-    )               reduce using rule 68 (term -> FLOATNUM .)
-    {               reduce using rule 68 (term -> FLOATNUM .)
-    ID              reduce using rule 68 (term -> FLOATNUM .)
-    PRINT           reduce using rule 68 (term -> FLOATNUM .)
-    CONTINUE        reduce using rule 68 (term -> FLOATNUM .)
-    BREAK           reduce using rule 68 (term -> FLOATNUM .)
-    RETURN          reduce using rule 68 (term -> FLOATNUM .)
-    IF              reduce using rule 68 (term -> FLOATNUM .)
-    FOR             reduce using rule 68 (term -> FLOATNUM .)
-    WHILE           reduce using rule 68 (term -> FLOATNUM .)
+    +               reduce using rule 70 (term -> FLOATNUM .)
+    -               reduce using rule 70 (term -> FLOATNUM .)
+    /               reduce using rule 70 (term -> FLOATNUM .)
+    *               reduce using rule 70 (term -> FLOATNUM .)
+    EQL             reduce using rule 70 (term -> FLOATNUM .)
+    NEQ             reduce using rule 70 (term -> FLOATNUM .)
+    GT              reduce using rule 70 (term -> FLOATNUM .)
+    GTE             reduce using rule 70 (term -> FLOATNUM .)
+    LT              reduce using rule 70 (term -> FLOATNUM .)
+    LTE             reduce using rule 70 (term -> FLOATNUM .)
+    ,               reduce using rule 70 (term -> FLOATNUM .)
+    ;               reduce using rule 70 (term -> FLOATNUM .)
+    :               reduce using rule 70 (term -> FLOATNUM .)
+    ]               reduce using rule 70 (term -> FLOATNUM .)
+    )               reduce using rule 70 (term -> FLOATNUM .)
+    {               reduce using rule 70 (term -> FLOATNUM .)
+    ID              reduce using rule 70 (term -> FLOATNUM .)
+    PRINT           reduce using rule 70 (term -> FLOATNUM .)
+    CONTINUE        reduce using rule 70 (term -> FLOATNUM .)
+    BREAK           reduce using rule 70 (term -> FLOATNUM .)
+    RETURN          reduce using rule 70 (term -> FLOATNUM .)
+    IF              reduce using rule 70 (term -> FLOATNUM .)
+    FOR             reduce using rule 70 (term -> FLOATNUM .)
+    WHILE           reduce using rule 70 (term -> FLOATNUM .)
 
 
 state 48
 
-    (48) vector -> [ . vector_contents ]
-    (49) vector_contents -> . vector_element
-    (50) vector_contents -> . vector_contents , vector_element
-    (51) vector_element -> . term
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (50) vector -> [ . vector_contents ]
+    (51) vector_contents -> . vector_element
+    (52) vector_contents -> . vector_contents , vector_element
+    (53) vector_element -> . term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     (               shift and go to state 37
     INTNUM          shift and go to state 45
@@ -1153,16 +1156,16 @@ state 48
 state 49
 
     (15) return -> RETURN expression .
-    (29) expression -> expression . + term
-    (30) expression -> expression . - term
-    (31) expression -> expression . / term
-    (32) expression -> expression . * term
-    (33) expression -> expression . EQL term
-    (34) expression -> expression . NEQ term
-    (35) expression -> expression . GT term
-    (36) expression -> expression . GTE term
-    (37) expression -> expression . LT term
-    (38) expression -> expression . LTE term
+    (31) expression -> expression . + term
+    (32) expression -> expression . - term
+    (33) expression -> expression . / term
+    (34) expression -> expression . * term
+    (35) expression -> expression . EQL term
+    (36) expression -> expression . NEQ term
+    (37) expression -> expression . GT term
+    (38) expression -> expression . GTE term
+    (39) expression -> expression . LT term
+    (40) expression -> expression . LTE term
 
     ;               reduce using rule 15 (return -> RETURN expression .)
     +               shift and go to state 63
@@ -1179,10 +1182,10 @@ state 49
 
 state 50
 
-    (59) if -> IF condition . nested
-    (60) if -> IF condition . nested ELSE nested
-    (62) nested -> . { statements }
-    (63) nested -> . statement
+    (61) if -> IF condition . nested
+    (62) if -> IF condition . nested ELSE nested
+    (64) nested -> . { statements }
+    (65) nested -> . statement
     (4) statement -> . assignment ;
     (5) statement -> . print ;
     (6) statement -> . continue ;
@@ -1197,8 +1200,8 @@ state 50
     (16) continue -> . CONTINUE
     (14) break -> . BREAK
     (15) return -> . RETURN expression
-    (59) if -> . IF condition nested
-    (60) if -> . IF condition nested ELSE nested
+    (61) if -> . IF condition nested
+    (62) if -> . IF condition nested ELSE nested
     (12) for -> . FOR ID ASSIGN expression : expression nested
     (13) while -> . WHILE condition nested
 
@@ -1225,34 +1228,34 @@ state 50
 
 state 51
 
-    (61) condition -> ( . expression )
-    (27) expression -> . built_in_function ( term )
-    (28) expression -> . term
-    (29) expression -> . expression + term
-    (30) expression -> . expression - term
-    (31) expression -> . expression / term
-    (32) expression -> . expression * term
-    (33) expression -> . expression EQL term
-    (34) expression -> . expression NEQ term
-    (35) expression -> . expression GT term
-    (36) expression -> . expression GTE term
-    (37) expression -> . expression LT term
-    (38) expression -> . expression LTE term
-    (39) expression -> . - term
-    (42) expression -> . ID dot_operation term
-    (43) expression -> . vector dot_operation term
-    (70) built_in_function -> . EYE
-    (71) built_in_function -> . ONES
-    (72) built_in_function -> . ZEROS
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (63) condition -> ( . expression )
+    (27) expression -> . built_in_function ( term_list )
+    (30) expression -> . term
+    (31) expression -> . expression + term
+    (32) expression -> . expression - term
+    (33) expression -> . expression / term
+    (34) expression -> . expression * term
+    (35) expression -> . expression EQL term
+    (36) expression -> . expression NEQ term
+    (37) expression -> . expression GT term
+    (38) expression -> . expression GTE term
+    (39) expression -> . expression LT term
+    (40) expression -> . expression LTE term
+    (41) expression -> . - term
+    (44) expression -> . ID dot_operation term
+    (45) expression -> . vector dot_operation term
+    (72) built_in_function -> . EYE
+    (73) built_in_function -> . ONES
+    (74) built_in_function -> . ZEROS
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     -               shift and go to state 39
     ID              shift and go to state 40
@@ -1280,8 +1283,8 @@ state 52
 state 53
 
     (13) while -> WHILE condition . nested
-    (62) nested -> . { statements }
-    (63) nested -> . statement
+    (64) nested -> . { statements }
+    (65) nested -> . statement
     (4) statement -> . assignment ;
     (5) statement -> . print ;
     (6) statement -> . continue ;
@@ -1296,8 +1299,8 @@ state 53
     (16) continue -> . CONTINUE
     (14) break -> . BREAK
     (15) return -> . RETURN expression
-    (59) if -> . IF condition nested
-    (60) if -> . IF condition nested ELSE nested
+    (61) if -> . IF condition nested
+    (62) if -> . IF condition nested ELSE nested
     (12) for -> . FOR ID ASSIGN expression : expression nested
     (13) while -> . WHILE condition nested
 
@@ -1325,16 +1328,16 @@ state 53
 state 54
 
     (20) assignment -> ID assign_symbol expression .
-    (29) expression -> expression . + term
-    (30) expression -> expression . - term
-    (31) expression -> expression . / term
-    (32) expression -> expression . * term
-    (33) expression -> expression . EQL term
-    (34) expression -> expression . NEQ term
-    (35) expression -> expression . GT term
-    (36) expression -> expression . GTE term
-    (37) expression -> expression . LT term
-    (38) expression -> expression . LTE term
+    (31) expression -> expression . + term
+    (32) expression -> expression . - term
+    (33) expression -> expression . / term
+    (34) expression -> expression . * term
+    (35) expression -> expression . EQL term
+    (36) expression -> expression . NEQ term
+    (37) expression -> expression . GT term
+    (38) expression -> expression . GTE term
+    (39) expression -> expression . LT term
+    (40) expression -> expression . LTE term
 
     ;               reduce using rule 20 (assignment -> ID assign_symbol expression .)
     +               shift and go to state 63
@@ -1352,33 +1355,33 @@ state 54
 state 55
 
     (21) assignment -> ID slice assign_symbol . expression
-    (27) expression -> . built_in_function ( term )
-    (28) expression -> . term
-    (29) expression -> . expression + term
-    (30) expression -> . expression - term
-    (31) expression -> . expression / term
-    (32) expression -> . expression * term
-    (33) expression -> . expression EQL term
-    (34) expression -> . expression NEQ term
-    (35) expression -> . expression GT term
-    (36) expression -> . expression GTE term
-    (37) expression -> . expression LT term
-    (38) expression -> . expression LTE term
-    (39) expression -> . - term
-    (42) expression -> . ID dot_operation term
-    (43) expression -> . vector dot_operation term
-    (70) built_in_function -> . EYE
-    (71) built_in_function -> . ONES
-    (72) built_in_function -> . ZEROS
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (27) expression -> . built_in_function ( term_list )
+    (30) expression -> . term
+    (31) expression -> . expression + term
+    (32) expression -> . expression - term
+    (33) expression -> . expression / term
+    (34) expression -> . expression * term
+    (35) expression -> . expression EQL term
+    (36) expression -> . expression NEQ term
+    (37) expression -> . expression GT term
+    (38) expression -> . expression GTE term
+    (39) expression -> . expression LT term
+    (40) expression -> . expression LTE term
+    (41) expression -> . - term
+    (44) expression -> . ID dot_operation term
+    (45) expression -> . vector dot_operation term
+    (72) built_in_function -> . EYE
+    (73) built_in_function -> . ONES
+    (74) built_in_function -> . ZEROS
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     -               shift and go to state 39
     ID              shift and go to state 40
@@ -1398,8 +1401,8 @@ state 55
 
 state 56
 
-    (52) slice -> [ slice_contents . ]
-    (54) slice_contents -> slice_contents . , range
+    (54) slice -> [ slice_contents . ]
+    (56) slice_contents -> slice_contents . , range
 
     ]               shift and go to state 94
     ,               shift and go to state 95
@@ -1407,35 +1410,35 @@ state 56
 
 state 57
 
-    (53) slice_contents -> range .
+    (55) slice_contents -> range .
 
-    ]               reduce using rule 53 (slice_contents -> range .)
-    ,               reduce using rule 53 (slice_contents -> range .)
+    ]               reduce using rule 55 (slice_contents -> range .)
+    ,               reduce using rule 55 (slice_contents -> range .)
 
 
 state 58
 
-    (55) range -> term . : term
-    (56) range -> term . :
-    (58) range -> term .
+    (57) range -> term . : term
+    (58) range -> term . :
+    (60) range -> term .
 
     :               shift and go to state 96
-    ]               reduce using rule 58 (range -> term .)
-    ,               reduce using rule 58 (range -> term .)
+    ]               reduce using rule 60 (range -> term .)
+    ,               reduce using rule 60 (range -> term .)
 
 
 state 59
 
-    (57) range -> : . term
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (59) range -> : . term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     (               shift and go to state 37
     INTNUM          shift and go to state 45
@@ -1449,98 +1452,98 @@ state 59
 
 state 60
 
-    (65) term -> vector .
-    (41) vector -> vector . TRANSPOSE
+    (67) term -> vector .
+    (43) vector -> vector . TRANSPOSE
 
-    :               reduce using rule 65 (term -> vector .)
-    ]               reduce using rule 65 (term -> vector .)
-    ,               reduce using rule 65 (term -> vector .)
-    +               reduce using rule 65 (term -> vector .)
-    -               reduce using rule 65 (term -> vector .)
-    /               reduce using rule 65 (term -> vector .)
-    *               reduce using rule 65 (term -> vector .)
-    EQL             reduce using rule 65 (term -> vector .)
-    NEQ             reduce using rule 65 (term -> vector .)
-    GT              reduce using rule 65 (term -> vector .)
-    GTE             reduce using rule 65 (term -> vector .)
-    LT              reduce using rule 65 (term -> vector .)
-    LTE             reduce using rule 65 (term -> vector .)
-    ;               reduce using rule 65 (term -> vector .)
-    )               reduce using rule 65 (term -> vector .)
-    {               reduce using rule 65 (term -> vector .)
-    ID              reduce using rule 65 (term -> vector .)
-    PRINT           reduce using rule 65 (term -> vector .)
-    CONTINUE        reduce using rule 65 (term -> vector .)
-    BREAK           reduce using rule 65 (term -> vector .)
-    RETURN          reduce using rule 65 (term -> vector .)
-    IF              reduce using rule 65 (term -> vector .)
-    FOR             reduce using rule 65 (term -> vector .)
-    WHILE           reduce using rule 65 (term -> vector .)
+    :               reduce using rule 67 (term -> vector .)
+    ]               reduce using rule 67 (term -> vector .)
+    ,               reduce using rule 67 (term -> vector .)
+    +               reduce using rule 67 (term -> vector .)
+    -               reduce using rule 67 (term -> vector .)
+    /               reduce using rule 67 (term -> vector .)
+    *               reduce using rule 67 (term -> vector .)
+    EQL             reduce using rule 67 (term -> vector .)
+    NEQ             reduce using rule 67 (term -> vector .)
+    GT              reduce using rule 67 (term -> vector .)
+    GTE             reduce using rule 67 (term -> vector .)
+    LT              reduce using rule 67 (term -> vector .)
+    LTE             reduce using rule 67 (term -> vector .)
+    ;               reduce using rule 67 (term -> vector .)
+    )               reduce using rule 67 (term -> vector .)
+    {               reduce using rule 67 (term -> vector .)
+    ID              reduce using rule 67 (term -> vector .)
+    PRINT           reduce using rule 67 (term -> vector .)
+    CONTINUE        reduce using rule 67 (term -> vector .)
+    BREAK           reduce using rule 67 (term -> vector .)
+    RETURN          reduce using rule 67 (term -> vector .)
+    IF              reduce using rule 67 (term -> vector .)
+    FOR             reduce using rule 67 (term -> vector .)
+    WHILE           reduce using rule 67 (term -> vector .)
     TRANSPOSE       shift and go to state 83
 
 
 state 61
 
-    (69) term -> ID .
-    (40) vector -> ID . TRANSPOSE
+    (71) term -> ID .
+    (42) vector -> ID . TRANSPOSE
 
-    :               reduce using rule 69 (term -> ID .)
-    ]               reduce using rule 69 (term -> ID .)
-    ,               reduce using rule 69 (term -> ID .)
-    +               reduce using rule 69 (term -> ID .)
-    -               reduce using rule 69 (term -> ID .)
-    /               reduce using rule 69 (term -> ID .)
-    *               reduce using rule 69 (term -> ID .)
-    EQL             reduce using rule 69 (term -> ID .)
-    NEQ             reduce using rule 69 (term -> ID .)
-    GT              reduce using rule 69 (term -> ID .)
-    GTE             reduce using rule 69 (term -> ID .)
-    LT              reduce using rule 69 (term -> ID .)
-    LTE             reduce using rule 69 (term -> ID .)
-    ;               reduce using rule 69 (term -> ID .)
-    )               reduce using rule 69 (term -> ID .)
-    {               reduce using rule 69 (term -> ID .)
-    ID              reduce using rule 69 (term -> ID .)
-    PRINT           reduce using rule 69 (term -> ID .)
-    CONTINUE        reduce using rule 69 (term -> ID .)
-    BREAK           reduce using rule 69 (term -> ID .)
-    RETURN          reduce using rule 69 (term -> ID .)
-    IF              reduce using rule 69 (term -> ID .)
-    FOR             reduce using rule 69 (term -> ID .)
-    WHILE           reduce using rule 69 (term -> ID .)
+    :               reduce using rule 71 (term -> ID .)
+    ]               reduce using rule 71 (term -> ID .)
+    ,               reduce using rule 71 (term -> ID .)
+    +               reduce using rule 71 (term -> ID .)
+    -               reduce using rule 71 (term -> ID .)
+    /               reduce using rule 71 (term -> ID .)
+    *               reduce using rule 71 (term -> ID .)
+    EQL             reduce using rule 71 (term -> ID .)
+    NEQ             reduce using rule 71 (term -> ID .)
+    GT              reduce using rule 71 (term -> ID .)
+    GTE             reduce using rule 71 (term -> ID .)
+    LT              reduce using rule 71 (term -> ID .)
+    LTE             reduce using rule 71 (term -> ID .)
+    ;               reduce using rule 71 (term -> ID .)
+    )               reduce using rule 71 (term -> ID .)
+    {               reduce using rule 71 (term -> ID .)
+    ID              reduce using rule 71 (term -> ID .)
+    PRINT           reduce using rule 71 (term -> ID .)
+    CONTINUE        reduce using rule 71 (term -> ID .)
+    BREAK           reduce using rule 71 (term -> ID .)
+    RETURN          reduce using rule 71 (term -> ID .)
+    IF              reduce using rule 71 (term -> ID .)
+    FOR             reduce using rule 71 (term -> ID .)
+    WHILE           reduce using rule 71 (term -> ID .)
     TRANSPOSE       shift and go to state 77
 
 
 state 62
 
     (19) coma_separated -> coma_separated , . expression
-    (27) expression -> . built_in_function ( term )
-    (28) expression -> . term
-    (29) expression -> . expression + term
-    (30) expression -> . expression - term
-    (31) expression -> . expression / term
-    (32) expression -> . expression * term
-    (33) expression -> . expression EQL term
-    (34) expression -> . expression NEQ term
-    (35) expression -> . expression GT term
-    (36) expression -> . expression GTE term
-    (37) expression -> . expression LT term
-    (38) expression -> . expression LTE term
-    (39) expression -> . - term
-    (42) expression -> . ID dot_operation term
-    (43) expression -> . vector dot_operation term
-    (70) built_in_function -> . EYE
-    (71) built_in_function -> . ONES
-    (72) built_in_function -> . ZEROS
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (27) expression -> . built_in_function ( term_list )
+    (30) expression -> . term
+    (31) expression -> . expression + term
+    (32) expression -> . expression - term
+    (33) expression -> . expression / term
+    (34) expression -> . expression * term
+    (35) expression -> . expression EQL term
+    (36) expression -> . expression NEQ term
+    (37) expression -> . expression GT term
+    (38) expression -> . expression GTE term
+    (39) expression -> . expression LT term
+    (40) expression -> . expression LTE term
+    (41) expression -> . - term
+    (44) expression -> . ID dot_operation term
+    (45) expression -> . vector dot_operation term
+    (72) built_in_function -> . EYE
+    (73) built_in_function -> . ONES
+    (74) built_in_function -> . ZEROS
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     -               shift and go to state 39
     ID              shift and go to state 40
@@ -1560,16 +1563,16 @@ state 62
 
 state 63
 
-    (29) expression -> expression + . term
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (31) expression -> expression + . term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     (               shift and go to state 37
     INTNUM          shift and go to state 45
@@ -1583,16 +1586,16 @@ state 63
 
 state 64
 
-    (30) expression -> expression - . term
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (32) expression -> expression - . term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     (               shift and go to state 37
     INTNUM          shift and go to state 45
@@ -1606,16 +1609,16 @@ state 64
 
 state 65
 
-    (31) expression -> expression / . term
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (33) expression -> expression / . term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     (               shift and go to state 37
     INTNUM          shift and go to state 45
@@ -1629,16 +1632,16 @@ state 65
 
 state 66
 
-    (32) expression -> expression * . term
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (34) expression -> expression * . term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     (               shift and go to state 37
     INTNUM          shift and go to state 45
@@ -1652,16 +1655,16 @@ state 66
 
 state 67
 
-    (33) expression -> expression EQL . term
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (35) expression -> expression EQL . term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     (               shift and go to state 37
     INTNUM          shift and go to state 45
@@ -1675,16 +1678,16 @@ state 67
 
 state 68
 
-    (34) expression -> expression NEQ . term
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (36) expression -> expression NEQ . term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     (               shift and go to state 37
     INTNUM          shift and go to state 45
@@ -1698,16 +1701,16 @@ state 68
 
 state 69
 
-    (35) expression -> expression GT . term
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (37) expression -> expression GT . term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     (               shift and go to state 37
     INTNUM          shift and go to state 45
@@ -1721,16 +1724,16 @@ state 69
 
 state 70
 
-    (36) expression -> expression GTE . term
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (38) expression -> expression GTE . term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     (               shift and go to state 37
     INTNUM          shift and go to state 45
@@ -1744,16 +1747,16 @@ state 70
 
 state 71
 
-    (37) expression -> expression LT . term
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (39) expression -> expression LT . term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     (               shift and go to state 37
     INTNUM          shift and go to state 45
@@ -1767,16 +1770,16 @@ state 71
 
 state 72
 
-    (38) expression -> expression LTE . term
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (40) expression -> expression LTE . term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     (               shift and go to state 37
     INTNUM          shift and go to state 45
@@ -1790,16 +1793,18 @@ state 72
 
 state 73
 
-    (27) expression -> built_in_function ( . term )
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (27) expression -> built_in_function ( . term_list )
+    (28) term_list -> . term
+    (29) term_list -> . term_list , term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     (               shift and go to state 37
     INTNUM          shift and go to state 45
@@ -1808,24 +1813,25 @@ state 73
     ID              shift and go to state 61
     [               shift and go to state 48
 
-    term                           shift and go to state 109
+    term_list                      shift and go to state 109
+    term                           shift and go to state 110
     vector                         shift and go to state 60
 
 state 74
 
-    (64) term -> ( expression . )
-    (29) expression -> expression . + term
-    (30) expression -> expression . - term
-    (31) expression -> expression . / term
-    (32) expression -> expression . * term
-    (33) expression -> expression . EQL term
-    (34) expression -> expression . NEQ term
-    (35) expression -> expression . GT term
-    (36) expression -> expression . GTE term
-    (37) expression -> expression . LT term
-    (38) expression -> expression . LTE term
+    (66) term -> ( expression . )
+    (31) expression -> expression . + term
+    (32) expression -> expression . - term
+    (33) expression -> expression . / term
+    (34) expression -> expression . * term
+    (35) expression -> expression . EQL term
+    (36) expression -> expression . NEQ term
+    (37) expression -> expression . GT term
+    (38) expression -> expression . GTE term
+    (39) expression -> expression . LT term
+    (40) expression -> expression . LTE term
 
-    )               shift and go to state 110
+    )               shift and go to state 111
     +               shift and go to state 63
     -               shift and go to state 64
     /               shift and go to state 65
@@ -1840,45 +1846,45 @@ state 74
 
 state 75
 
-    (39) expression -> - term .
+    (41) expression -> - term .
 
-    +               reduce using rule 39 (expression -> - term .)
-    -               reduce using rule 39 (expression -> - term .)
-    /               reduce using rule 39 (expression -> - term .)
-    *               reduce using rule 39 (expression -> - term .)
-    EQL             reduce using rule 39 (expression -> - term .)
-    NEQ             reduce using rule 39 (expression -> - term .)
-    GT              reduce using rule 39 (expression -> - term .)
-    GTE             reduce using rule 39 (expression -> - term .)
-    LT              reduce using rule 39 (expression -> - term .)
-    LTE             reduce using rule 39 (expression -> - term .)
-    ,               reduce using rule 39 (expression -> - term .)
-    ;               reduce using rule 39 (expression -> - term .)
-    )               reduce using rule 39 (expression -> - term .)
-    :               reduce using rule 39 (expression -> - term .)
-    {               reduce using rule 39 (expression -> - term .)
-    ID              reduce using rule 39 (expression -> - term .)
-    PRINT           reduce using rule 39 (expression -> - term .)
-    CONTINUE        reduce using rule 39 (expression -> - term .)
-    BREAK           reduce using rule 39 (expression -> - term .)
-    RETURN          reduce using rule 39 (expression -> - term .)
-    IF              reduce using rule 39 (expression -> - term .)
-    FOR             reduce using rule 39 (expression -> - term .)
-    WHILE           reduce using rule 39 (expression -> - term .)
+    +               reduce using rule 41 (expression -> - term .)
+    -               reduce using rule 41 (expression -> - term .)
+    /               reduce using rule 41 (expression -> - term .)
+    *               reduce using rule 41 (expression -> - term .)
+    EQL             reduce using rule 41 (expression -> - term .)
+    NEQ             reduce using rule 41 (expression -> - term .)
+    GT              reduce using rule 41 (expression -> - term .)
+    GTE             reduce using rule 41 (expression -> - term .)
+    LT              reduce using rule 41 (expression -> - term .)
+    LTE             reduce using rule 41 (expression -> - term .)
+    ,               reduce using rule 41 (expression -> - term .)
+    ;               reduce using rule 41 (expression -> - term .)
+    )               reduce using rule 41 (expression -> - term .)
+    :               reduce using rule 41 (expression -> - term .)
+    {               reduce using rule 41 (expression -> - term .)
+    ID              reduce using rule 41 (expression -> - term .)
+    PRINT           reduce using rule 41 (expression -> - term .)
+    CONTINUE        reduce using rule 41 (expression -> - term .)
+    BREAK           reduce using rule 41 (expression -> - term .)
+    RETURN          reduce using rule 41 (expression -> - term .)
+    IF              reduce using rule 41 (expression -> - term .)
+    FOR             reduce using rule 41 (expression -> - term .)
+    WHILE           reduce using rule 41 (expression -> - term .)
 
 
 state 76
 
-    (42) expression -> ID dot_operation . term
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (44) expression -> ID dot_operation . term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     (               shift and go to state 37
     INTNUM          shift and go to state 45
@@ -1887,104 +1893,104 @@ state 76
     ID              shift and go to state 61
     [               shift and go to state 48
 
-    term                           shift and go to state 111
+    term                           shift and go to state 112
     vector                         shift and go to state 60
 
 state 77
 
-    (40) vector -> ID TRANSPOSE .
+    (42) vector -> ID TRANSPOSE .
 
-    TRANSPOSE       reduce using rule 40 (vector -> ID TRANSPOSE .)
-    DOTADD          reduce using rule 40 (vector -> ID TRANSPOSE .)
-    DOTSUB          reduce using rule 40 (vector -> ID TRANSPOSE .)
-    DOTMUL          reduce using rule 40 (vector -> ID TRANSPOSE .)
-    DOTDIV          reduce using rule 40 (vector -> ID TRANSPOSE .)
-    +               reduce using rule 40 (vector -> ID TRANSPOSE .)
-    -               reduce using rule 40 (vector -> ID TRANSPOSE .)
-    /               reduce using rule 40 (vector -> ID TRANSPOSE .)
-    *               reduce using rule 40 (vector -> ID TRANSPOSE .)
-    EQL             reduce using rule 40 (vector -> ID TRANSPOSE .)
-    NEQ             reduce using rule 40 (vector -> ID TRANSPOSE .)
-    GT              reduce using rule 40 (vector -> ID TRANSPOSE .)
-    GTE             reduce using rule 40 (vector -> ID TRANSPOSE .)
-    LT              reduce using rule 40 (vector -> ID TRANSPOSE .)
-    LTE             reduce using rule 40 (vector -> ID TRANSPOSE .)
-    ,               reduce using rule 40 (vector -> ID TRANSPOSE .)
-    ;               reduce using rule 40 (vector -> ID TRANSPOSE .)
-    :               reduce using rule 40 (vector -> ID TRANSPOSE .)
-    ]               reduce using rule 40 (vector -> ID TRANSPOSE .)
-    )               reduce using rule 40 (vector -> ID TRANSPOSE .)
-    {               reduce using rule 40 (vector -> ID TRANSPOSE .)
-    ID              reduce using rule 40 (vector -> ID TRANSPOSE .)
-    PRINT           reduce using rule 40 (vector -> ID TRANSPOSE .)
-    CONTINUE        reduce using rule 40 (vector -> ID TRANSPOSE .)
-    BREAK           reduce using rule 40 (vector -> ID TRANSPOSE .)
-    RETURN          reduce using rule 40 (vector -> ID TRANSPOSE .)
-    IF              reduce using rule 40 (vector -> ID TRANSPOSE .)
-    FOR             reduce using rule 40 (vector -> ID TRANSPOSE .)
-    WHILE           reduce using rule 40 (vector -> ID TRANSPOSE .)
+    TRANSPOSE       reduce using rule 42 (vector -> ID TRANSPOSE .)
+    DOTADD          reduce using rule 42 (vector -> ID TRANSPOSE .)
+    DOTSUB          reduce using rule 42 (vector -> ID TRANSPOSE .)
+    DOTMUL          reduce using rule 42 (vector -> ID TRANSPOSE .)
+    DOTDIV          reduce using rule 42 (vector -> ID TRANSPOSE .)
+    +               reduce using rule 42 (vector -> ID TRANSPOSE .)
+    -               reduce using rule 42 (vector -> ID TRANSPOSE .)
+    /               reduce using rule 42 (vector -> ID TRANSPOSE .)
+    *               reduce using rule 42 (vector -> ID TRANSPOSE .)
+    EQL             reduce using rule 42 (vector -> ID TRANSPOSE .)
+    NEQ             reduce using rule 42 (vector -> ID TRANSPOSE .)
+    GT              reduce using rule 42 (vector -> ID TRANSPOSE .)
+    GTE             reduce using rule 42 (vector -> ID TRANSPOSE .)
+    LT              reduce using rule 42 (vector -> ID TRANSPOSE .)
+    LTE             reduce using rule 42 (vector -> ID TRANSPOSE .)
+    ,               reduce using rule 42 (vector -> ID TRANSPOSE .)
+    ;               reduce using rule 42 (vector -> ID TRANSPOSE .)
+    :               reduce using rule 42 (vector -> ID TRANSPOSE .)
+    ]               reduce using rule 42 (vector -> ID TRANSPOSE .)
+    )               reduce using rule 42 (vector -> ID TRANSPOSE .)
+    {               reduce using rule 42 (vector -> ID TRANSPOSE .)
+    ID              reduce using rule 42 (vector -> ID TRANSPOSE .)
+    PRINT           reduce using rule 42 (vector -> ID TRANSPOSE .)
+    CONTINUE        reduce using rule 42 (vector -> ID TRANSPOSE .)
+    BREAK           reduce using rule 42 (vector -> ID TRANSPOSE .)
+    RETURN          reduce using rule 42 (vector -> ID TRANSPOSE .)
+    IF              reduce using rule 42 (vector -> ID TRANSPOSE .)
+    FOR             reduce using rule 42 (vector -> ID TRANSPOSE .)
+    WHILE           reduce using rule 42 (vector -> ID TRANSPOSE .)
 
 
 state 78
 
-    (44) dot_operation -> DOTADD .
+    (46) dot_operation -> DOTADD .
 
-    (               reduce using rule 44 (dot_operation -> DOTADD .)
-    INTNUM          reduce using rule 44 (dot_operation -> DOTADD .)
-    STR             reduce using rule 44 (dot_operation -> DOTADD .)
-    FLOATNUM        reduce using rule 44 (dot_operation -> DOTADD .)
-    ID              reduce using rule 44 (dot_operation -> DOTADD .)
-    [               reduce using rule 44 (dot_operation -> DOTADD .)
+    (               reduce using rule 46 (dot_operation -> DOTADD .)
+    INTNUM          reduce using rule 46 (dot_operation -> DOTADD .)
+    STR             reduce using rule 46 (dot_operation -> DOTADD .)
+    FLOATNUM        reduce using rule 46 (dot_operation -> DOTADD .)
+    ID              reduce using rule 46 (dot_operation -> DOTADD .)
+    [               reduce using rule 46 (dot_operation -> DOTADD .)
 
 
 state 79
 
-    (45) dot_operation -> DOTSUB .
+    (47) dot_operation -> DOTSUB .
 
-    (               reduce using rule 45 (dot_operation -> DOTSUB .)
-    INTNUM          reduce using rule 45 (dot_operation -> DOTSUB .)
-    STR             reduce using rule 45 (dot_operation -> DOTSUB .)
-    FLOATNUM        reduce using rule 45 (dot_operation -> DOTSUB .)
-    ID              reduce using rule 45 (dot_operation -> DOTSUB .)
-    [               reduce using rule 45 (dot_operation -> DOTSUB .)
+    (               reduce using rule 47 (dot_operation -> DOTSUB .)
+    INTNUM          reduce using rule 47 (dot_operation -> DOTSUB .)
+    STR             reduce using rule 47 (dot_operation -> DOTSUB .)
+    FLOATNUM        reduce using rule 47 (dot_operation -> DOTSUB .)
+    ID              reduce using rule 47 (dot_operation -> DOTSUB .)
+    [               reduce using rule 47 (dot_operation -> DOTSUB .)
 
 
 state 80
 
-    (46) dot_operation -> DOTMUL .
+    (48) dot_operation -> DOTMUL .
 
-    (               reduce using rule 46 (dot_operation -> DOTMUL .)
-    INTNUM          reduce using rule 46 (dot_operation -> DOTMUL .)
-    STR             reduce using rule 46 (dot_operation -> DOTMUL .)
-    FLOATNUM        reduce using rule 46 (dot_operation -> DOTMUL .)
-    ID              reduce using rule 46 (dot_operation -> DOTMUL .)
-    [               reduce using rule 46 (dot_operation -> DOTMUL .)
+    (               reduce using rule 48 (dot_operation -> DOTMUL .)
+    INTNUM          reduce using rule 48 (dot_operation -> DOTMUL .)
+    STR             reduce using rule 48 (dot_operation -> DOTMUL .)
+    FLOATNUM        reduce using rule 48 (dot_operation -> DOTMUL .)
+    ID              reduce using rule 48 (dot_operation -> DOTMUL .)
+    [               reduce using rule 48 (dot_operation -> DOTMUL .)
 
 
 state 81
 
-    (47) dot_operation -> DOTDIV .
+    (49) dot_operation -> DOTDIV .
 
-    (               reduce using rule 47 (dot_operation -> DOTDIV .)
-    INTNUM          reduce using rule 47 (dot_operation -> DOTDIV .)
-    STR             reduce using rule 47 (dot_operation -> DOTDIV .)
-    FLOATNUM        reduce using rule 47 (dot_operation -> DOTDIV .)
-    ID              reduce using rule 47 (dot_operation -> DOTDIV .)
-    [               reduce using rule 47 (dot_operation -> DOTDIV .)
+    (               reduce using rule 49 (dot_operation -> DOTDIV .)
+    INTNUM          reduce using rule 49 (dot_operation -> DOTDIV .)
+    STR             reduce using rule 49 (dot_operation -> DOTDIV .)
+    FLOATNUM        reduce using rule 49 (dot_operation -> DOTDIV .)
+    ID              reduce using rule 49 (dot_operation -> DOTDIV .)
+    [               reduce using rule 49 (dot_operation -> DOTDIV .)
 
 
 state 82
 
-    (43) expression -> vector dot_operation . term
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (45) expression -> vector dot_operation . term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     (               shift and go to state 37
     INTNUM          shift and go to state 45
@@ -1994,91 +2000,91 @@ state 82
     [               shift and go to state 48
 
     vector                         shift and go to state 60
-    term                           shift and go to state 112
+    term                           shift and go to state 113
 
 state 83
 
-    (41) vector -> vector TRANSPOSE .
+    (43) vector -> vector TRANSPOSE .
 
-    TRANSPOSE       reduce using rule 41 (vector -> vector TRANSPOSE .)
-    DOTADD          reduce using rule 41 (vector -> vector TRANSPOSE .)
-    DOTSUB          reduce using rule 41 (vector -> vector TRANSPOSE .)
-    DOTMUL          reduce using rule 41 (vector -> vector TRANSPOSE .)
-    DOTDIV          reduce using rule 41 (vector -> vector TRANSPOSE .)
-    +               reduce using rule 41 (vector -> vector TRANSPOSE .)
-    -               reduce using rule 41 (vector -> vector TRANSPOSE .)
-    /               reduce using rule 41 (vector -> vector TRANSPOSE .)
-    *               reduce using rule 41 (vector -> vector TRANSPOSE .)
-    EQL             reduce using rule 41 (vector -> vector TRANSPOSE .)
-    NEQ             reduce using rule 41 (vector -> vector TRANSPOSE .)
-    GT              reduce using rule 41 (vector -> vector TRANSPOSE .)
-    GTE             reduce using rule 41 (vector -> vector TRANSPOSE .)
-    LT              reduce using rule 41 (vector -> vector TRANSPOSE .)
-    LTE             reduce using rule 41 (vector -> vector TRANSPOSE .)
-    ,               reduce using rule 41 (vector -> vector TRANSPOSE .)
-    ;               reduce using rule 41 (vector -> vector TRANSPOSE .)
-    :               reduce using rule 41 (vector -> vector TRANSPOSE .)
-    ]               reduce using rule 41 (vector -> vector TRANSPOSE .)
-    )               reduce using rule 41 (vector -> vector TRANSPOSE .)
-    {               reduce using rule 41 (vector -> vector TRANSPOSE .)
-    ID              reduce using rule 41 (vector -> vector TRANSPOSE .)
-    PRINT           reduce using rule 41 (vector -> vector TRANSPOSE .)
-    CONTINUE        reduce using rule 41 (vector -> vector TRANSPOSE .)
-    BREAK           reduce using rule 41 (vector -> vector TRANSPOSE .)
-    RETURN          reduce using rule 41 (vector -> vector TRANSPOSE .)
-    IF              reduce using rule 41 (vector -> vector TRANSPOSE .)
-    FOR             reduce using rule 41 (vector -> vector TRANSPOSE .)
-    WHILE           reduce using rule 41 (vector -> vector TRANSPOSE .)
+    TRANSPOSE       reduce using rule 43 (vector -> vector TRANSPOSE .)
+    DOTADD          reduce using rule 43 (vector -> vector TRANSPOSE .)
+    DOTSUB          reduce using rule 43 (vector -> vector TRANSPOSE .)
+    DOTMUL          reduce using rule 43 (vector -> vector TRANSPOSE .)
+    DOTDIV          reduce using rule 43 (vector -> vector TRANSPOSE .)
+    +               reduce using rule 43 (vector -> vector TRANSPOSE .)
+    -               reduce using rule 43 (vector -> vector TRANSPOSE .)
+    /               reduce using rule 43 (vector -> vector TRANSPOSE .)
+    *               reduce using rule 43 (vector -> vector TRANSPOSE .)
+    EQL             reduce using rule 43 (vector -> vector TRANSPOSE .)
+    NEQ             reduce using rule 43 (vector -> vector TRANSPOSE .)
+    GT              reduce using rule 43 (vector -> vector TRANSPOSE .)
+    GTE             reduce using rule 43 (vector -> vector TRANSPOSE .)
+    LT              reduce using rule 43 (vector -> vector TRANSPOSE .)
+    LTE             reduce using rule 43 (vector -> vector TRANSPOSE .)
+    ,               reduce using rule 43 (vector -> vector TRANSPOSE .)
+    ;               reduce using rule 43 (vector -> vector TRANSPOSE .)
+    :               reduce using rule 43 (vector -> vector TRANSPOSE .)
+    ]               reduce using rule 43 (vector -> vector TRANSPOSE .)
+    )               reduce using rule 43 (vector -> vector TRANSPOSE .)
+    {               reduce using rule 43 (vector -> vector TRANSPOSE .)
+    ID              reduce using rule 43 (vector -> vector TRANSPOSE .)
+    PRINT           reduce using rule 43 (vector -> vector TRANSPOSE .)
+    CONTINUE        reduce using rule 43 (vector -> vector TRANSPOSE .)
+    BREAK           reduce using rule 43 (vector -> vector TRANSPOSE .)
+    RETURN          reduce using rule 43 (vector -> vector TRANSPOSE .)
+    IF              reduce using rule 43 (vector -> vector TRANSPOSE .)
+    FOR             reduce using rule 43 (vector -> vector TRANSPOSE .)
+    WHILE           reduce using rule 43 (vector -> vector TRANSPOSE .)
 
 
 state 84
 
-    (48) vector -> [ vector_contents . ]
-    (50) vector_contents -> vector_contents . , vector_element
+    (50) vector -> [ vector_contents . ]
+    (52) vector_contents -> vector_contents . , vector_element
 
-    ]               shift and go to state 113
-    ,               shift and go to state 114
+    ]               shift and go to state 114
+    ,               shift and go to state 115
 
 
 state 85
 
-    (49) vector_contents -> vector_element .
+    (51) vector_contents -> vector_element .
 
-    ]               reduce using rule 49 (vector_contents -> vector_element .)
-    ,               reduce using rule 49 (vector_contents -> vector_element .)
+    ]               reduce using rule 51 (vector_contents -> vector_element .)
+    ,               reduce using rule 51 (vector_contents -> vector_element .)
 
 
 state 86
 
-    (51) vector_element -> term .
+    (53) vector_element -> term .
 
-    ]               reduce using rule 51 (vector_element -> term .)
-    ,               reduce using rule 51 (vector_element -> term .)
+    ]               reduce using rule 53 (vector_element -> term .)
+    ,               reduce using rule 53 (vector_element -> term .)
 
 
 state 87
 
-    (59) if -> IF condition nested .
-    (60) if -> IF condition nested . ELSE nested
+    (61) if -> IF condition nested .
+    (62) if -> IF condition nested . ELSE nested
 
-    ID              reduce using rule 59 (if -> IF condition nested .)
-    PRINT           reduce using rule 59 (if -> IF condition nested .)
-    CONTINUE        reduce using rule 59 (if -> IF condition nested .)
-    BREAK           reduce using rule 59 (if -> IF condition nested .)
-    RETURN          reduce using rule 59 (if -> IF condition nested .)
-    IF              reduce using rule 59 (if -> IF condition nested .)
-    FOR             reduce using rule 59 (if -> IF condition nested .)
-    WHILE           reduce using rule 59 (if -> IF condition nested .)
-    $end            reduce using rule 59 (if -> IF condition nested .)
-    }               reduce using rule 59 (if -> IF condition nested .)
-    ELSE            shift and go to state 115
+    ID              reduce using rule 61 (if -> IF condition nested .)
+    PRINT           reduce using rule 61 (if -> IF condition nested .)
+    CONTINUE        reduce using rule 61 (if -> IF condition nested .)
+    BREAK           reduce using rule 61 (if -> IF condition nested .)
+    RETURN          reduce using rule 61 (if -> IF condition nested .)
+    IF              reduce using rule 61 (if -> IF condition nested .)
+    FOR             reduce using rule 61 (if -> IF condition nested .)
+    WHILE           reduce using rule 61 (if -> IF condition nested .)
+    $end            reduce using rule 61 (if -> IF condition nested .)
+    }               reduce using rule 61 (if -> IF condition nested .)
+    ELSE            shift and go to state 116
 
-  ! ELSE            [ reduce using rule 59 (if -> IF condition nested .) ]
+  ! ELSE            [ reduce using rule 61 (if -> IF condition nested .) ]
 
 
 state 88
 
-    (62) nested -> { . statements }
+    (64) nested -> { . statements }
     (2) statements -> . statement
     (3) statements -> . statements statement
     (4) statement -> . assignment ;
@@ -2095,8 +2101,8 @@ state 88
     (16) continue -> . CONTINUE
     (14) break -> . BREAK
     (15) return -> . RETURN expression
-    (59) if -> . IF condition nested
-    (60) if -> . IF condition nested ELSE nested
+    (61) if -> . IF condition nested
+    (62) if -> . IF condition nested ELSE nested
     (12) for -> . FOR ID ASSIGN expression : expression nested
     (13) while -> . WHILE condition nested
 
@@ -2109,7 +2115,7 @@ state 88
     FOR             shift and go to state 18
     WHILE           shift and go to state 19
 
-    statements                     shift and go to state 116
+    statements                     shift and go to state 117
     statement                      shift and go to state 3
     assignment                     shift and go to state 4
     print                          shift and go to state 5
@@ -2122,36 +2128,36 @@ state 88
 
 state 89
 
-    (63) nested -> statement .
+    (65) nested -> statement .
 
-    ELSE            reduce using rule 63 (nested -> statement .)
-    ID              reduce using rule 63 (nested -> statement .)
-    PRINT           reduce using rule 63 (nested -> statement .)
-    CONTINUE        reduce using rule 63 (nested -> statement .)
-    BREAK           reduce using rule 63 (nested -> statement .)
-    RETURN          reduce using rule 63 (nested -> statement .)
-    IF              reduce using rule 63 (nested -> statement .)
-    FOR             reduce using rule 63 (nested -> statement .)
-    WHILE           reduce using rule 63 (nested -> statement .)
-    $end            reduce using rule 63 (nested -> statement .)
-    }               reduce using rule 63 (nested -> statement .)
+    ELSE            reduce using rule 65 (nested -> statement .)
+    ID              reduce using rule 65 (nested -> statement .)
+    PRINT           reduce using rule 65 (nested -> statement .)
+    CONTINUE        reduce using rule 65 (nested -> statement .)
+    BREAK           reduce using rule 65 (nested -> statement .)
+    RETURN          reduce using rule 65 (nested -> statement .)
+    IF              reduce using rule 65 (nested -> statement .)
+    FOR             reduce using rule 65 (nested -> statement .)
+    WHILE           reduce using rule 65 (nested -> statement .)
+    $end            reduce using rule 65 (nested -> statement .)
+    }               reduce using rule 65 (nested -> statement .)
 
 
 state 90
 
-    (61) condition -> ( expression . )
-    (29) expression -> expression . + term
-    (30) expression -> expression . - term
-    (31) expression -> expression . / term
-    (32) expression -> expression . * term
-    (33) expression -> expression . EQL term
-    (34) expression -> expression . NEQ term
-    (35) expression -> expression . GT term
-    (36) expression -> expression . GTE term
-    (37) expression -> expression . LT term
-    (38) expression -> expression . LTE term
+    (63) condition -> ( expression . )
+    (31) expression -> expression . + term
+    (32) expression -> expression . - term
+    (33) expression -> expression . / term
+    (34) expression -> expression . * term
+    (35) expression -> expression . EQL term
+    (36) expression -> expression . NEQ term
+    (37) expression -> expression . GT term
+    (38) expression -> expression . GTE term
+    (39) expression -> expression . LT term
+    (40) expression -> expression . LTE term
 
-    )               shift and go to state 117
+    )               shift and go to state 118
     +               shift and go to state 63
     -               shift and go to state 64
     /               shift and go to state 65
@@ -2167,33 +2173,33 @@ state 90
 state 91
 
     (12) for -> FOR ID ASSIGN . expression : expression nested
-    (27) expression -> . built_in_function ( term )
-    (28) expression -> . term
-    (29) expression -> . expression + term
-    (30) expression -> . expression - term
-    (31) expression -> . expression / term
-    (32) expression -> . expression * term
-    (33) expression -> . expression EQL term
-    (34) expression -> . expression NEQ term
-    (35) expression -> . expression GT term
-    (36) expression -> . expression GTE term
-    (37) expression -> . expression LT term
-    (38) expression -> . expression LTE term
-    (39) expression -> . - term
-    (42) expression -> . ID dot_operation term
-    (43) expression -> . vector dot_operation term
-    (70) built_in_function -> . EYE
-    (71) built_in_function -> . ONES
-    (72) built_in_function -> . ZEROS
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (27) expression -> . built_in_function ( term_list )
+    (30) expression -> . term
+    (31) expression -> . expression + term
+    (32) expression -> . expression - term
+    (33) expression -> . expression / term
+    (34) expression -> . expression * term
+    (35) expression -> . expression EQL term
+    (36) expression -> . expression NEQ term
+    (37) expression -> . expression GT term
+    (38) expression -> . expression GTE term
+    (39) expression -> . expression LT term
+    (40) expression -> . expression LTE term
+    (41) expression -> . - term
+    (44) expression -> . ID dot_operation term
+    (45) expression -> . vector dot_operation term
+    (72) built_in_function -> . EYE
+    (73) built_in_function -> . ONES
+    (74) built_in_function -> . ZEROS
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     -               shift and go to state 39
     ID              shift and go to state 40
@@ -2206,7 +2212,7 @@ state 91
     FLOATNUM        shift and go to state 47
     [               shift and go to state 48
 
-    expression                     shift and go to state 118
+    expression                     shift and go to state 119
     built_in_function              shift and go to state 36
     term                           shift and go to state 38
     vector                         shift and go to state 41
@@ -2231,16 +2237,16 @@ state 92
 state 93
 
     (21) assignment -> ID slice assign_symbol expression .
-    (29) expression -> expression . + term
-    (30) expression -> expression . - term
-    (31) expression -> expression . / term
-    (32) expression -> expression . * term
-    (33) expression -> expression . EQL term
-    (34) expression -> expression . NEQ term
-    (35) expression -> expression . GT term
-    (36) expression -> expression . GTE term
-    (37) expression -> expression . LT term
-    (38) expression -> expression . LTE term
+    (31) expression -> expression . + term
+    (32) expression -> expression . - term
+    (33) expression -> expression . / term
+    (34) expression -> expression . * term
+    (35) expression -> expression . EQL term
+    (36) expression -> expression . NEQ term
+    (37) expression -> expression . GT term
+    (38) expression -> expression . GTE term
+    (39) expression -> expression . LT term
+    (40) expression -> expression . LTE term
 
     ;               reduce using rule 21 (assignment -> ID slice assign_symbol expression .)
     +               shift and go to state 63
@@ -2257,31 +2263,31 @@ state 93
 
 state 94
 
-    (52) slice -> [ slice_contents ] .
+    (54) slice -> [ slice_contents ] .
 
-    ASSIGN          reduce using rule 52 (slice -> [ slice_contents ] .)
-    SUBASSIGN       reduce using rule 52 (slice -> [ slice_contents ] .)
-    ADDASSIGN       reduce using rule 52 (slice -> [ slice_contents ] .)
-    DIVASSIGN       reduce using rule 52 (slice -> [ slice_contents ] .)
-    MULTASSIGN      reduce using rule 52 (slice -> [ slice_contents ] .)
+    ASSIGN          reduce using rule 54 (slice -> [ slice_contents ] .)
+    SUBASSIGN       reduce using rule 54 (slice -> [ slice_contents ] .)
+    ADDASSIGN       reduce using rule 54 (slice -> [ slice_contents ] .)
+    DIVASSIGN       reduce using rule 54 (slice -> [ slice_contents ] .)
+    MULTASSIGN      reduce using rule 54 (slice -> [ slice_contents ] .)
 
 
 state 95
 
-    (54) slice_contents -> slice_contents , . range
-    (55) range -> . term : term
-    (56) range -> . term :
-    (57) range -> . : term
-    (58) range -> . term
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (56) slice_contents -> slice_contents , . range
+    (57) range -> . term : term
+    (58) range -> . term :
+    (59) range -> . : term
+    (60) range -> . term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     :               shift and go to state 59
     (               shift and go to state 37
@@ -2291,26 +2297,26 @@ state 95
     ID              shift and go to state 61
     [               shift and go to state 48
 
-    range                          shift and go to state 119
+    range                          shift and go to state 120
     term                           shift and go to state 58
     vector                         shift and go to state 60
 
 state 96
 
-    (55) range -> term : . term
-    (56) range -> term : .
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (57) range -> term : . term
+    (58) range -> term : .
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
-    ]               reduce using rule 56 (range -> term : .)
-    ,               reduce using rule 56 (range -> term : .)
+    ]               reduce using rule 58 (range -> term : .)
+    ,               reduce using rule 58 (range -> term : .)
     (               shift and go to state 37
     INTNUM          shift and go to state 45
     STR             shift and go to state 46
@@ -2318,30 +2324,30 @@ state 96
     ID              shift and go to state 61
     [               shift and go to state 48
 
-    term                           shift and go to state 120
+    term                           shift and go to state 121
     vector                         shift and go to state 60
 
 state 97
 
-    (57) range -> : term .
+    (59) range -> : term .
 
-    ]               reduce using rule 57 (range -> : term .)
-    ,               reduce using rule 57 (range -> : term .)
+    ]               reduce using rule 59 (range -> : term .)
+    ,               reduce using rule 59 (range -> : term .)
 
 
 state 98
 
     (19) coma_separated -> coma_separated , expression .
-    (29) expression -> expression . + term
-    (30) expression -> expression . - term
-    (31) expression -> expression . / term
-    (32) expression -> expression . * term
-    (33) expression -> expression . EQL term
-    (34) expression -> expression . NEQ term
-    (35) expression -> expression . GT term
-    (36) expression -> expression . GTE term
-    (37) expression -> expression . LT term
-    (38) expression -> expression . LTE term
+    (31) expression -> expression . + term
+    (32) expression -> expression . - term
+    (33) expression -> expression . / term
+    (34) expression -> expression . * term
+    (35) expression -> expression . EQL term
+    (36) expression -> expression . NEQ term
+    (37) expression -> expression . GT term
+    (38) expression -> expression . GTE term
+    (39) expression -> expression . LT term
+    (40) expression -> expression . LTE term
 
     ,               reduce using rule 19 (coma_separated -> coma_separated , expression .)
     ;               reduce using rule 19 (coma_separated -> coma_separated , expression .)
@@ -2359,437 +2365,447 @@ state 98
 
 state 99
 
-    (29) expression -> expression + term .
+    (31) expression -> expression + term .
 
-    +               reduce using rule 29 (expression -> expression + term .)
-    -               reduce using rule 29 (expression -> expression + term .)
-    /               reduce using rule 29 (expression -> expression + term .)
-    *               reduce using rule 29 (expression -> expression + term .)
-    EQL             reduce using rule 29 (expression -> expression + term .)
-    NEQ             reduce using rule 29 (expression -> expression + term .)
-    GT              reduce using rule 29 (expression -> expression + term .)
-    GTE             reduce using rule 29 (expression -> expression + term .)
-    LT              reduce using rule 29 (expression -> expression + term .)
-    LTE             reduce using rule 29 (expression -> expression + term .)
-    ,               reduce using rule 29 (expression -> expression + term .)
-    ;               reduce using rule 29 (expression -> expression + term .)
-    )               reduce using rule 29 (expression -> expression + term .)
-    :               reduce using rule 29 (expression -> expression + term .)
-    {               reduce using rule 29 (expression -> expression + term .)
-    ID              reduce using rule 29 (expression -> expression + term .)
-    PRINT           reduce using rule 29 (expression -> expression + term .)
-    CONTINUE        reduce using rule 29 (expression -> expression + term .)
-    BREAK           reduce using rule 29 (expression -> expression + term .)
-    RETURN          reduce using rule 29 (expression -> expression + term .)
-    IF              reduce using rule 29 (expression -> expression + term .)
-    FOR             reduce using rule 29 (expression -> expression + term .)
-    WHILE           reduce using rule 29 (expression -> expression + term .)
+    +               reduce using rule 31 (expression -> expression + term .)
+    -               reduce using rule 31 (expression -> expression + term .)
+    /               reduce using rule 31 (expression -> expression + term .)
+    *               reduce using rule 31 (expression -> expression + term .)
+    EQL             reduce using rule 31 (expression -> expression + term .)
+    NEQ             reduce using rule 31 (expression -> expression + term .)
+    GT              reduce using rule 31 (expression -> expression + term .)
+    GTE             reduce using rule 31 (expression -> expression + term .)
+    LT              reduce using rule 31 (expression -> expression + term .)
+    LTE             reduce using rule 31 (expression -> expression + term .)
+    ,               reduce using rule 31 (expression -> expression + term .)
+    ;               reduce using rule 31 (expression -> expression + term .)
+    )               reduce using rule 31 (expression -> expression + term .)
+    :               reduce using rule 31 (expression -> expression + term .)
+    {               reduce using rule 31 (expression -> expression + term .)
+    ID              reduce using rule 31 (expression -> expression + term .)
+    PRINT           reduce using rule 31 (expression -> expression + term .)
+    CONTINUE        reduce using rule 31 (expression -> expression + term .)
+    BREAK           reduce using rule 31 (expression -> expression + term .)
+    RETURN          reduce using rule 31 (expression -> expression + term .)
+    IF              reduce using rule 31 (expression -> expression + term .)
+    FOR             reduce using rule 31 (expression -> expression + term .)
+    WHILE           reduce using rule 31 (expression -> expression + term .)
 
 
 state 100
 
-    (30) expression -> expression - term .
+    (32) expression -> expression - term .
 
-    +               reduce using rule 30 (expression -> expression - term .)
-    -               reduce using rule 30 (expression -> expression - term .)
-    /               reduce using rule 30 (expression -> expression - term .)
-    *               reduce using rule 30 (expression -> expression - term .)
-    EQL             reduce using rule 30 (expression -> expression - term .)
-    NEQ             reduce using rule 30 (expression -> expression - term .)
-    GT              reduce using rule 30 (expression -> expression - term .)
-    GTE             reduce using rule 30 (expression -> expression - term .)
-    LT              reduce using rule 30 (expression -> expression - term .)
-    LTE             reduce using rule 30 (expression -> expression - term .)
-    ,               reduce using rule 30 (expression -> expression - term .)
-    ;               reduce using rule 30 (expression -> expression - term .)
-    )               reduce using rule 30 (expression -> expression - term .)
-    :               reduce using rule 30 (expression -> expression - term .)
-    {               reduce using rule 30 (expression -> expression - term .)
-    ID              reduce using rule 30 (expression -> expression - term .)
-    PRINT           reduce using rule 30 (expression -> expression - term .)
-    CONTINUE        reduce using rule 30 (expression -> expression - term .)
-    BREAK           reduce using rule 30 (expression -> expression - term .)
-    RETURN          reduce using rule 30 (expression -> expression - term .)
-    IF              reduce using rule 30 (expression -> expression - term .)
-    FOR             reduce using rule 30 (expression -> expression - term .)
-    WHILE           reduce using rule 30 (expression -> expression - term .)
+    +               reduce using rule 32 (expression -> expression - term .)
+    -               reduce using rule 32 (expression -> expression - term .)
+    /               reduce using rule 32 (expression -> expression - term .)
+    *               reduce using rule 32 (expression -> expression - term .)
+    EQL             reduce using rule 32 (expression -> expression - term .)
+    NEQ             reduce using rule 32 (expression -> expression - term .)
+    GT              reduce using rule 32 (expression -> expression - term .)
+    GTE             reduce using rule 32 (expression -> expression - term .)
+    LT              reduce using rule 32 (expression -> expression - term .)
+    LTE             reduce using rule 32 (expression -> expression - term .)
+    ,               reduce using rule 32 (expression -> expression - term .)
+    ;               reduce using rule 32 (expression -> expression - term .)
+    )               reduce using rule 32 (expression -> expression - term .)
+    :               reduce using rule 32 (expression -> expression - term .)
+    {               reduce using rule 32 (expression -> expression - term .)
+    ID              reduce using rule 32 (expression -> expression - term .)
+    PRINT           reduce using rule 32 (expression -> expression - term .)
+    CONTINUE        reduce using rule 32 (expression -> expression - term .)
+    BREAK           reduce using rule 32 (expression -> expression - term .)
+    RETURN          reduce using rule 32 (expression -> expression - term .)
+    IF              reduce using rule 32 (expression -> expression - term .)
+    FOR             reduce using rule 32 (expression -> expression - term .)
+    WHILE           reduce using rule 32 (expression -> expression - term .)
 
 
 state 101
 
-    (31) expression -> expression / term .
+    (33) expression -> expression / term .
 
-    +               reduce using rule 31 (expression -> expression / term .)
-    -               reduce using rule 31 (expression -> expression / term .)
-    /               reduce using rule 31 (expression -> expression / term .)
-    *               reduce using rule 31 (expression -> expression / term .)
-    EQL             reduce using rule 31 (expression -> expression / term .)
-    NEQ             reduce using rule 31 (expression -> expression / term .)
-    GT              reduce using rule 31 (expression -> expression / term .)
-    GTE             reduce using rule 31 (expression -> expression / term .)
-    LT              reduce using rule 31 (expression -> expression / term .)
-    LTE             reduce using rule 31 (expression -> expression / term .)
-    ,               reduce using rule 31 (expression -> expression / term .)
-    ;               reduce using rule 31 (expression -> expression / term .)
-    )               reduce using rule 31 (expression -> expression / term .)
-    :               reduce using rule 31 (expression -> expression / term .)
-    {               reduce using rule 31 (expression -> expression / term .)
-    ID              reduce using rule 31 (expression -> expression / term .)
-    PRINT           reduce using rule 31 (expression -> expression / term .)
-    CONTINUE        reduce using rule 31 (expression -> expression / term .)
-    BREAK           reduce using rule 31 (expression -> expression / term .)
-    RETURN          reduce using rule 31 (expression -> expression / term .)
-    IF              reduce using rule 31 (expression -> expression / term .)
-    FOR             reduce using rule 31 (expression -> expression / term .)
-    WHILE           reduce using rule 31 (expression -> expression / term .)
+    +               reduce using rule 33 (expression -> expression / term .)
+    -               reduce using rule 33 (expression -> expression / term .)
+    /               reduce using rule 33 (expression -> expression / term .)
+    *               reduce using rule 33 (expression -> expression / term .)
+    EQL             reduce using rule 33 (expression -> expression / term .)
+    NEQ             reduce using rule 33 (expression -> expression / term .)
+    GT              reduce using rule 33 (expression -> expression / term .)
+    GTE             reduce using rule 33 (expression -> expression / term .)
+    LT              reduce using rule 33 (expression -> expression / term .)
+    LTE             reduce using rule 33 (expression -> expression / term .)
+    ,               reduce using rule 33 (expression -> expression / term .)
+    ;               reduce using rule 33 (expression -> expression / term .)
+    )               reduce using rule 33 (expression -> expression / term .)
+    :               reduce using rule 33 (expression -> expression / term .)
+    {               reduce using rule 33 (expression -> expression / term .)
+    ID              reduce using rule 33 (expression -> expression / term .)
+    PRINT           reduce using rule 33 (expression -> expression / term .)
+    CONTINUE        reduce using rule 33 (expression -> expression / term .)
+    BREAK           reduce using rule 33 (expression -> expression / term .)
+    RETURN          reduce using rule 33 (expression -> expression / term .)
+    IF              reduce using rule 33 (expression -> expression / term .)
+    FOR             reduce using rule 33 (expression -> expression / term .)
+    WHILE           reduce using rule 33 (expression -> expression / term .)
 
 
 state 102
 
-    (32) expression -> expression * term .
+    (34) expression -> expression * term .
 
-    +               reduce using rule 32 (expression -> expression * term .)
-    -               reduce using rule 32 (expression -> expression * term .)
-    /               reduce using rule 32 (expression -> expression * term .)
-    *               reduce using rule 32 (expression -> expression * term .)
-    EQL             reduce using rule 32 (expression -> expression * term .)
-    NEQ             reduce using rule 32 (expression -> expression * term .)
-    GT              reduce using rule 32 (expression -> expression * term .)
-    GTE             reduce using rule 32 (expression -> expression * term .)
-    LT              reduce using rule 32 (expression -> expression * term .)
-    LTE             reduce using rule 32 (expression -> expression * term .)
-    ,               reduce using rule 32 (expression -> expression * term .)
-    ;               reduce using rule 32 (expression -> expression * term .)
-    )               reduce using rule 32 (expression -> expression * term .)
-    :               reduce using rule 32 (expression -> expression * term .)
-    {               reduce using rule 32 (expression -> expression * term .)
-    ID              reduce using rule 32 (expression -> expression * term .)
-    PRINT           reduce using rule 32 (expression -> expression * term .)
-    CONTINUE        reduce using rule 32 (expression -> expression * term .)
-    BREAK           reduce using rule 32 (expression -> expression * term .)
-    RETURN          reduce using rule 32 (expression -> expression * term .)
-    IF              reduce using rule 32 (expression -> expression * term .)
-    FOR             reduce using rule 32 (expression -> expression * term .)
-    WHILE           reduce using rule 32 (expression -> expression * term .)
+    +               reduce using rule 34 (expression -> expression * term .)
+    -               reduce using rule 34 (expression -> expression * term .)
+    /               reduce using rule 34 (expression -> expression * term .)
+    *               reduce using rule 34 (expression -> expression * term .)
+    EQL             reduce using rule 34 (expression -> expression * term .)
+    NEQ             reduce using rule 34 (expression -> expression * term .)
+    GT              reduce using rule 34 (expression -> expression * term .)
+    GTE             reduce using rule 34 (expression -> expression * term .)
+    LT              reduce using rule 34 (expression -> expression * term .)
+    LTE             reduce using rule 34 (expression -> expression * term .)
+    ,               reduce using rule 34 (expression -> expression * term .)
+    ;               reduce using rule 34 (expression -> expression * term .)
+    )               reduce using rule 34 (expression -> expression * term .)
+    :               reduce using rule 34 (expression -> expression * term .)
+    {               reduce using rule 34 (expression -> expression * term .)
+    ID              reduce using rule 34 (expression -> expression * term .)
+    PRINT           reduce using rule 34 (expression -> expression * term .)
+    CONTINUE        reduce using rule 34 (expression -> expression * term .)
+    BREAK           reduce using rule 34 (expression -> expression * term .)
+    RETURN          reduce using rule 34 (expression -> expression * term .)
+    IF              reduce using rule 34 (expression -> expression * term .)
+    FOR             reduce using rule 34 (expression -> expression * term .)
+    WHILE           reduce using rule 34 (expression -> expression * term .)
 
 
 state 103
 
-    (33) expression -> expression EQL term .
+    (35) expression -> expression EQL term .
 
-    +               reduce using rule 33 (expression -> expression EQL term .)
-    -               reduce using rule 33 (expression -> expression EQL term .)
-    /               reduce using rule 33 (expression -> expression EQL term .)
-    *               reduce using rule 33 (expression -> expression EQL term .)
-    EQL             reduce using rule 33 (expression -> expression EQL term .)
-    NEQ             reduce using rule 33 (expression -> expression EQL term .)
-    GT              reduce using rule 33 (expression -> expression EQL term .)
-    GTE             reduce using rule 33 (expression -> expression EQL term .)
-    LT              reduce using rule 33 (expression -> expression EQL term .)
-    LTE             reduce using rule 33 (expression -> expression EQL term .)
-    ,               reduce using rule 33 (expression -> expression EQL term .)
-    ;               reduce using rule 33 (expression -> expression EQL term .)
-    )               reduce using rule 33 (expression -> expression EQL term .)
-    :               reduce using rule 33 (expression -> expression EQL term .)
-    {               reduce using rule 33 (expression -> expression EQL term .)
-    ID              reduce using rule 33 (expression -> expression EQL term .)
-    PRINT           reduce using rule 33 (expression -> expression EQL term .)
-    CONTINUE        reduce using rule 33 (expression -> expression EQL term .)
-    BREAK           reduce using rule 33 (expression -> expression EQL term .)
-    RETURN          reduce using rule 33 (expression -> expression EQL term .)
-    IF              reduce using rule 33 (expression -> expression EQL term .)
-    FOR             reduce using rule 33 (expression -> expression EQL term .)
-    WHILE           reduce using rule 33 (expression -> expression EQL term .)
+    +               reduce using rule 35 (expression -> expression EQL term .)
+    -               reduce using rule 35 (expression -> expression EQL term .)
+    /               reduce using rule 35 (expression -> expression EQL term .)
+    *               reduce using rule 35 (expression -> expression EQL term .)
+    EQL             reduce using rule 35 (expression -> expression EQL term .)
+    NEQ             reduce using rule 35 (expression -> expression EQL term .)
+    GT              reduce using rule 35 (expression -> expression EQL term .)
+    GTE             reduce using rule 35 (expression -> expression EQL term .)
+    LT              reduce using rule 35 (expression -> expression EQL term .)
+    LTE             reduce using rule 35 (expression -> expression EQL term .)
+    ,               reduce using rule 35 (expression -> expression EQL term .)
+    ;               reduce using rule 35 (expression -> expression EQL term .)
+    )               reduce using rule 35 (expression -> expression EQL term .)
+    :               reduce using rule 35 (expression -> expression EQL term .)
+    {               reduce using rule 35 (expression -> expression EQL term .)
+    ID              reduce using rule 35 (expression -> expression EQL term .)
+    PRINT           reduce using rule 35 (expression -> expression EQL term .)
+    CONTINUE        reduce using rule 35 (expression -> expression EQL term .)
+    BREAK           reduce using rule 35 (expression -> expression EQL term .)
+    RETURN          reduce using rule 35 (expression -> expression EQL term .)
+    IF              reduce using rule 35 (expression -> expression EQL term .)
+    FOR             reduce using rule 35 (expression -> expression EQL term .)
+    WHILE           reduce using rule 35 (expression -> expression EQL term .)
 
 
 state 104
 
-    (34) expression -> expression NEQ term .
+    (36) expression -> expression NEQ term .
 
-    +               reduce using rule 34 (expression -> expression NEQ term .)
-    -               reduce using rule 34 (expression -> expression NEQ term .)
-    /               reduce using rule 34 (expression -> expression NEQ term .)
-    *               reduce using rule 34 (expression -> expression NEQ term .)
-    EQL             reduce using rule 34 (expression -> expression NEQ term .)
-    NEQ             reduce using rule 34 (expression -> expression NEQ term .)
-    GT              reduce using rule 34 (expression -> expression NEQ term .)
-    GTE             reduce using rule 34 (expression -> expression NEQ term .)
-    LT              reduce using rule 34 (expression -> expression NEQ term .)
-    LTE             reduce using rule 34 (expression -> expression NEQ term .)
-    ,               reduce using rule 34 (expression -> expression NEQ term .)
-    ;               reduce using rule 34 (expression -> expression NEQ term .)
-    )               reduce using rule 34 (expression -> expression NEQ term .)
-    :               reduce using rule 34 (expression -> expression NEQ term .)
-    {               reduce using rule 34 (expression -> expression NEQ term .)
-    ID              reduce using rule 34 (expression -> expression NEQ term .)
-    PRINT           reduce using rule 34 (expression -> expression NEQ term .)
-    CONTINUE        reduce using rule 34 (expression -> expression NEQ term .)
-    BREAK           reduce using rule 34 (expression -> expression NEQ term .)
-    RETURN          reduce using rule 34 (expression -> expression NEQ term .)
-    IF              reduce using rule 34 (expression -> expression NEQ term .)
-    FOR             reduce using rule 34 (expression -> expression NEQ term .)
-    WHILE           reduce using rule 34 (expression -> expression NEQ term .)
+    +               reduce using rule 36 (expression -> expression NEQ term .)
+    -               reduce using rule 36 (expression -> expression NEQ term .)
+    /               reduce using rule 36 (expression -> expression NEQ term .)
+    *               reduce using rule 36 (expression -> expression NEQ term .)
+    EQL             reduce using rule 36 (expression -> expression NEQ term .)
+    NEQ             reduce using rule 36 (expression -> expression NEQ term .)
+    GT              reduce using rule 36 (expression -> expression NEQ term .)
+    GTE             reduce using rule 36 (expression -> expression NEQ term .)
+    LT              reduce using rule 36 (expression -> expression NEQ term .)
+    LTE             reduce using rule 36 (expression -> expression NEQ term .)
+    ,               reduce using rule 36 (expression -> expression NEQ term .)
+    ;               reduce using rule 36 (expression -> expression NEQ term .)
+    )               reduce using rule 36 (expression -> expression NEQ term .)
+    :               reduce using rule 36 (expression -> expression NEQ term .)
+    {               reduce using rule 36 (expression -> expression NEQ term .)
+    ID              reduce using rule 36 (expression -> expression NEQ term .)
+    PRINT           reduce using rule 36 (expression -> expression NEQ term .)
+    CONTINUE        reduce using rule 36 (expression -> expression NEQ term .)
+    BREAK           reduce using rule 36 (expression -> expression NEQ term .)
+    RETURN          reduce using rule 36 (expression -> expression NEQ term .)
+    IF              reduce using rule 36 (expression -> expression NEQ term .)
+    FOR             reduce using rule 36 (expression -> expression NEQ term .)
+    WHILE           reduce using rule 36 (expression -> expression NEQ term .)
 
 
 state 105
 
-    (35) expression -> expression GT term .
+    (37) expression -> expression GT term .
 
-    +               reduce using rule 35 (expression -> expression GT term .)
-    -               reduce using rule 35 (expression -> expression GT term .)
-    /               reduce using rule 35 (expression -> expression GT term .)
-    *               reduce using rule 35 (expression -> expression GT term .)
-    EQL             reduce using rule 35 (expression -> expression GT term .)
-    NEQ             reduce using rule 35 (expression -> expression GT term .)
-    GT              reduce using rule 35 (expression -> expression GT term .)
-    GTE             reduce using rule 35 (expression -> expression GT term .)
-    LT              reduce using rule 35 (expression -> expression GT term .)
-    LTE             reduce using rule 35 (expression -> expression GT term .)
-    ,               reduce using rule 35 (expression -> expression GT term .)
-    ;               reduce using rule 35 (expression -> expression GT term .)
-    )               reduce using rule 35 (expression -> expression GT term .)
-    :               reduce using rule 35 (expression -> expression GT term .)
-    {               reduce using rule 35 (expression -> expression GT term .)
-    ID              reduce using rule 35 (expression -> expression GT term .)
-    PRINT           reduce using rule 35 (expression -> expression GT term .)
-    CONTINUE        reduce using rule 35 (expression -> expression GT term .)
-    BREAK           reduce using rule 35 (expression -> expression GT term .)
-    RETURN          reduce using rule 35 (expression -> expression GT term .)
-    IF              reduce using rule 35 (expression -> expression GT term .)
-    FOR             reduce using rule 35 (expression -> expression GT term .)
-    WHILE           reduce using rule 35 (expression -> expression GT term .)
+    +               reduce using rule 37 (expression -> expression GT term .)
+    -               reduce using rule 37 (expression -> expression GT term .)
+    /               reduce using rule 37 (expression -> expression GT term .)
+    *               reduce using rule 37 (expression -> expression GT term .)
+    EQL             reduce using rule 37 (expression -> expression GT term .)
+    NEQ             reduce using rule 37 (expression -> expression GT term .)
+    GT              reduce using rule 37 (expression -> expression GT term .)
+    GTE             reduce using rule 37 (expression -> expression GT term .)
+    LT              reduce using rule 37 (expression -> expression GT term .)
+    LTE             reduce using rule 37 (expression -> expression GT term .)
+    ,               reduce using rule 37 (expression -> expression GT term .)
+    ;               reduce using rule 37 (expression -> expression GT term .)
+    )               reduce using rule 37 (expression -> expression GT term .)
+    :               reduce using rule 37 (expression -> expression GT term .)
+    {               reduce using rule 37 (expression -> expression GT term .)
+    ID              reduce using rule 37 (expression -> expression GT term .)
+    PRINT           reduce using rule 37 (expression -> expression GT term .)
+    CONTINUE        reduce using rule 37 (expression -> expression GT term .)
+    BREAK           reduce using rule 37 (expression -> expression GT term .)
+    RETURN          reduce using rule 37 (expression -> expression GT term .)
+    IF              reduce using rule 37 (expression -> expression GT term .)
+    FOR             reduce using rule 37 (expression -> expression GT term .)
+    WHILE           reduce using rule 37 (expression -> expression GT term .)
 
 
 state 106
 
-    (36) expression -> expression GTE term .
+    (38) expression -> expression GTE term .
 
-    +               reduce using rule 36 (expression -> expression GTE term .)
-    -               reduce using rule 36 (expression -> expression GTE term .)
-    /               reduce using rule 36 (expression -> expression GTE term .)
-    *               reduce using rule 36 (expression -> expression GTE term .)
-    EQL             reduce using rule 36 (expression -> expression GTE term .)
-    NEQ             reduce using rule 36 (expression -> expression GTE term .)
-    GT              reduce using rule 36 (expression -> expression GTE term .)
-    GTE             reduce using rule 36 (expression -> expression GTE term .)
-    LT              reduce using rule 36 (expression -> expression GTE term .)
-    LTE             reduce using rule 36 (expression -> expression GTE term .)
-    ,               reduce using rule 36 (expression -> expression GTE term .)
-    ;               reduce using rule 36 (expression -> expression GTE term .)
-    )               reduce using rule 36 (expression -> expression GTE term .)
-    :               reduce using rule 36 (expression -> expression GTE term .)
-    {               reduce using rule 36 (expression -> expression GTE term .)
-    ID              reduce using rule 36 (expression -> expression GTE term .)
-    PRINT           reduce using rule 36 (expression -> expression GTE term .)
-    CONTINUE        reduce using rule 36 (expression -> expression GTE term .)
-    BREAK           reduce using rule 36 (expression -> expression GTE term .)
-    RETURN          reduce using rule 36 (expression -> expression GTE term .)
-    IF              reduce using rule 36 (expression -> expression GTE term .)
-    FOR             reduce using rule 36 (expression -> expression GTE term .)
-    WHILE           reduce using rule 36 (expression -> expression GTE term .)
+    +               reduce using rule 38 (expression -> expression GTE term .)
+    -               reduce using rule 38 (expression -> expression GTE term .)
+    /               reduce using rule 38 (expression -> expression GTE term .)
+    *               reduce using rule 38 (expression -> expression GTE term .)
+    EQL             reduce using rule 38 (expression -> expression GTE term .)
+    NEQ             reduce using rule 38 (expression -> expression GTE term .)
+    GT              reduce using rule 38 (expression -> expression GTE term .)
+    GTE             reduce using rule 38 (expression -> expression GTE term .)
+    LT              reduce using rule 38 (expression -> expression GTE term .)
+    LTE             reduce using rule 38 (expression -> expression GTE term .)
+    ,               reduce using rule 38 (expression -> expression GTE term .)
+    ;               reduce using rule 38 (expression -> expression GTE term .)
+    )               reduce using rule 38 (expression -> expression GTE term .)
+    :               reduce using rule 38 (expression -> expression GTE term .)
+    {               reduce using rule 38 (expression -> expression GTE term .)
+    ID              reduce using rule 38 (expression -> expression GTE term .)
+    PRINT           reduce using rule 38 (expression -> expression GTE term .)
+    CONTINUE        reduce using rule 38 (expression -> expression GTE term .)
+    BREAK           reduce using rule 38 (expression -> expression GTE term .)
+    RETURN          reduce using rule 38 (expression -> expression GTE term .)
+    IF              reduce using rule 38 (expression -> expression GTE term .)
+    FOR             reduce using rule 38 (expression -> expression GTE term .)
+    WHILE           reduce using rule 38 (expression -> expression GTE term .)
 
 
 state 107
 
-    (37) expression -> expression LT term .
+    (39) expression -> expression LT term .
 
-    +               reduce using rule 37 (expression -> expression LT term .)
-    -               reduce using rule 37 (expression -> expression LT term .)
-    /               reduce using rule 37 (expression -> expression LT term .)
-    *               reduce using rule 37 (expression -> expression LT term .)
-    EQL             reduce using rule 37 (expression -> expression LT term .)
-    NEQ             reduce using rule 37 (expression -> expression LT term .)
-    GT              reduce using rule 37 (expression -> expression LT term .)
-    GTE             reduce using rule 37 (expression -> expression LT term .)
-    LT              reduce using rule 37 (expression -> expression LT term .)
-    LTE             reduce using rule 37 (expression -> expression LT term .)
-    ,               reduce using rule 37 (expression -> expression LT term .)
-    ;               reduce using rule 37 (expression -> expression LT term .)
-    )               reduce using rule 37 (expression -> expression LT term .)
-    :               reduce using rule 37 (expression -> expression LT term .)
-    {               reduce using rule 37 (expression -> expression LT term .)
-    ID              reduce using rule 37 (expression -> expression LT term .)
-    PRINT           reduce using rule 37 (expression -> expression LT term .)
-    CONTINUE        reduce using rule 37 (expression -> expression LT term .)
-    BREAK           reduce using rule 37 (expression -> expression LT term .)
-    RETURN          reduce using rule 37 (expression -> expression LT term .)
-    IF              reduce using rule 37 (expression -> expression LT term .)
-    FOR             reduce using rule 37 (expression -> expression LT term .)
-    WHILE           reduce using rule 37 (expression -> expression LT term .)
+    +               reduce using rule 39 (expression -> expression LT term .)
+    -               reduce using rule 39 (expression -> expression LT term .)
+    /               reduce using rule 39 (expression -> expression LT term .)
+    *               reduce using rule 39 (expression -> expression LT term .)
+    EQL             reduce using rule 39 (expression -> expression LT term .)
+    NEQ             reduce using rule 39 (expression -> expression LT term .)
+    GT              reduce using rule 39 (expression -> expression LT term .)
+    GTE             reduce using rule 39 (expression -> expression LT term .)
+    LT              reduce using rule 39 (expression -> expression LT term .)
+    LTE             reduce using rule 39 (expression -> expression LT term .)
+    ,               reduce using rule 39 (expression -> expression LT term .)
+    ;               reduce using rule 39 (expression -> expression LT term .)
+    )               reduce using rule 39 (expression -> expression LT term .)
+    :               reduce using rule 39 (expression -> expression LT term .)
+    {               reduce using rule 39 (expression -> expression LT term .)
+    ID              reduce using rule 39 (expression -> expression LT term .)
+    PRINT           reduce using rule 39 (expression -> expression LT term .)
+    CONTINUE        reduce using rule 39 (expression -> expression LT term .)
+    BREAK           reduce using rule 39 (expression -> expression LT term .)
+    RETURN          reduce using rule 39 (expression -> expression LT term .)
+    IF              reduce using rule 39 (expression -> expression LT term .)
+    FOR             reduce using rule 39 (expression -> expression LT term .)
+    WHILE           reduce using rule 39 (expression -> expression LT term .)
 
 
 state 108
 
-    (38) expression -> expression LTE term .
+    (40) expression -> expression LTE term .
 
-    +               reduce using rule 38 (expression -> expression LTE term .)
-    -               reduce using rule 38 (expression -> expression LTE term .)
-    /               reduce using rule 38 (expression -> expression LTE term .)
-    *               reduce using rule 38 (expression -> expression LTE term .)
-    EQL             reduce using rule 38 (expression -> expression LTE term .)
-    NEQ             reduce using rule 38 (expression -> expression LTE term .)
-    GT              reduce using rule 38 (expression -> expression LTE term .)
-    GTE             reduce using rule 38 (expression -> expression LTE term .)
-    LT              reduce using rule 38 (expression -> expression LTE term .)
-    LTE             reduce using rule 38 (expression -> expression LTE term .)
-    ,               reduce using rule 38 (expression -> expression LTE term .)
-    ;               reduce using rule 38 (expression -> expression LTE term .)
-    )               reduce using rule 38 (expression -> expression LTE term .)
-    :               reduce using rule 38 (expression -> expression LTE term .)
-    {               reduce using rule 38 (expression -> expression LTE term .)
-    ID              reduce using rule 38 (expression -> expression LTE term .)
-    PRINT           reduce using rule 38 (expression -> expression LTE term .)
-    CONTINUE        reduce using rule 38 (expression -> expression LTE term .)
-    BREAK           reduce using rule 38 (expression -> expression LTE term .)
-    RETURN          reduce using rule 38 (expression -> expression LTE term .)
-    IF              reduce using rule 38 (expression -> expression LTE term .)
-    FOR             reduce using rule 38 (expression -> expression LTE term .)
-    WHILE           reduce using rule 38 (expression -> expression LTE term .)
+    +               reduce using rule 40 (expression -> expression LTE term .)
+    -               reduce using rule 40 (expression -> expression LTE term .)
+    /               reduce using rule 40 (expression -> expression LTE term .)
+    *               reduce using rule 40 (expression -> expression LTE term .)
+    EQL             reduce using rule 40 (expression -> expression LTE term .)
+    NEQ             reduce using rule 40 (expression -> expression LTE term .)
+    GT              reduce using rule 40 (expression -> expression LTE term .)
+    GTE             reduce using rule 40 (expression -> expression LTE term .)
+    LT              reduce using rule 40 (expression -> expression LTE term .)
+    LTE             reduce using rule 40 (expression -> expression LTE term .)
+    ,               reduce using rule 40 (expression -> expression LTE term .)
+    ;               reduce using rule 40 (expression -> expression LTE term .)
+    )               reduce using rule 40 (expression -> expression LTE term .)
+    :               reduce using rule 40 (expression -> expression LTE term .)
+    {               reduce using rule 40 (expression -> expression LTE term .)
+    ID              reduce using rule 40 (expression -> expression LTE term .)
+    PRINT           reduce using rule 40 (expression -> expression LTE term .)
+    CONTINUE        reduce using rule 40 (expression -> expression LTE term .)
+    BREAK           reduce using rule 40 (expression -> expression LTE term .)
+    RETURN          reduce using rule 40 (expression -> expression LTE term .)
+    IF              reduce using rule 40 (expression -> expression LTE term .)
+    FOR             reduce using rule 40 (expression -> expression LTE term .)
+    WHILE           reduce using rule 40 (expression -> expression LTE term .)
 
 
 state 109
 
-    (27) expression -> built_in_function ( term . )
+    (27) expression -> built_in_function ( term_list . )
+    (29) term_list -> term_list . , term
 
-    )               shift and go to state 121
+    )               shift and go to state 122
+    ,               shift and go to state 123
 
 
 state 110
 
-    (64) term -> ( expression ) .
+    (28) term_list -> term .
 
-    +               reduce using rule 64 (term -> ( expression ) .)
-    -               reduce using rule 64 (term -> ( expression ) .)
-    /               reduce using rule 64 (term -> ( expression ) .)
-    *               reduce using rule 64 (term -> ( expression ) .)
-    EQL             reduce using rule 64 (term -> ( expression ) .)
-    NEQ             reduce using rule 64 (term -> ( expression ) .)
-    GT              reduce using rule 64 (term -> ( expression ) .)
-    GTE             reduce using rule 64 (term -> ( expression ) .)
-    LT              reduce using rule 64 (term -> ( expression ) .)
-    LTE             reduce using rule 64 (term -> ( expression ) .)
-    ,               reduce using rule 64 (term -> ( expression ) .)
-    ;               reduce using rule 64 (term -> ( expression ) .)
-    :               reduce using rule 64 (term -> ( expression ) .)
-    ]               reduce using rule 64 (term -> ( expression ) .)
-    )               reduce using rule 64 (term -> ( expression ) .)
-    {               reduce using rule 64 (term -> ( expression ) .)
-    ID              reduce using rule 64 (term -> ( expression ) .)
-    PRINT           reduce using rule 64 (term -> ( expression ) .)
-    CONTINUE        reduce using rule 64 (term -> ( expression ) .)
-    BREAK           reduce using rule 64 (term -> ( expression ) .)
-    RETURN          reduce using rule 64 (term -> ( expression ) .)
-    IF              reduce using rule 64 (term -> ( expression ) .)
-    FOR             reduce using rule 64 (term -> ( expression ) .)
-    WHILE           reduce using rule 64 (term -> ( expression ) .)
+    )               reduce using rule 28 (term_list -> term .)
+    ,               reduce using rule 28 (term_list -> term .)
 
 
 state 111
 
-    (42) expression -> ID dot_operation term .
+    (66) term -> ( expression ) .
 
-    +               reduce using rule 42 (expression -> ID dot_operation term .)
-    -               reduce using rule 42 (expression -> ID dot_operation term .)
-    /               reduce using rule 42 (expression -> ID dot_operation term .)
-    *               reduce using rule 42 (expression -> ID dot_operation term .)
-    EQL             reduce using rule 42 (expression -> ID dot_operation term .)
-    NEQ             reduce using rule 42 (expression -> ID dot_operation term .)
-    GT              reduce using rule 42 (expression -> ID dot_operation term .)
-    GTE             reduce using rule 42 (expression -> ID dot_operation term .)
-    LT              reduce using rule 42 (expression -> ID dot_operation term .)
-    LTE             reduce using rule 42 (expression -> ID dot_operation term .)
-    ,               reduce using rule 42 (expression -> ID dot_operation term .)
-    ;               reduce using rule 42 (expression -> ID dot_operation term .)
-    )               reduce using rule 42 (expression -> ID dot_operation term .)
-    :               reduce using rule 42 (expression -> ID dot_operation term .)
-    {               reduce using rule 42 (expression -> ID dot_operation term .)
-    ID              reduce using rule 42 (expression -> ID dot_operation term .)
-    PRINT           reduce using rule 42 (expression -> ID dot_operation term .)
-    CONTINUE        reduce using rule 42 (expression -> ID dot_operation term .)
-    BREAK           reduce using rule 42 (expression -> ID dot_operation term .)
-    RETURN          reduce using rule 42 (expression -> ID dot_operation term .)
-    IF              reduce using rule 42 (expression -> ID dot_operation term .)
-    FOR             reduce using rule 42 (expression -> ID dot_operation term .)
-    WHILE           reduce using rule 42 (expression -> ID dot_operation term .)
+    +               reduce using rule 66 (term -> ( expression ) .)
+    -               reduce using rule 66 (term -> ( expression ) .)
+    /               reduce using rule 66 (term -> ( expression ) .)
+    *               reduce using rule 66 (term -> ( expression ) .)
+    EQL             reduce using rule 66 (term -> ( expression ) .)
+    NEQ             reduce using rule 66 (term -> ( expression ) .)
+    GT              reduce using rule 66 (term -> ( expression ) .)
+    GTE             reduce using rule 66 (term -> ( expression ) .)
+    LT              reduce using rule 66 (term -> ( expression ) .)
+    LTE             reduce using rule 66 (term -> ( expression ) .)
+    ,               reduce using rule 66 (term -> ( expression ) .)
+    ;               reduce using rule 66 (term -> ( expression ) .)
+    :               reduce using rule 66 (term -> ( expression ) .)
+    ]               reduce using rule 66 (term -> ( expression ) .)
+    )               reduce using rule 66 (term -> ( expression ) .)
+    {               reduce using rule 66 (term -> ( expression ) .)
+    ID              reduce using rule 66 (term -> ( expression ) .)
+    PRINT           reduce using rule 66 (term -> ( expression ) .)
+    CONTINUE        reduce using rule 66 (term -> ( expression ) .)
+    BREAK           reduce using rule 66 (term -> ( expression ) .)
+    RETURN          reduce using rule 66 (term -> ( expression ) .)
+    IF              reduce using rule 66 (term -> ( expression ) .)
+    FOR             reduce using rule 66 (term -> ( expression ) .)
+    WHILE           reduce using rule 66 (term -> ( expression ) .)
 
 
 state 112
 
-    (43) expression -> vector dot_operation term .
+    (44) expression -> ID dot_operation term .
 
-    +               reduce using rule 43 (expression -> vector dot_operation term .)
-    -               reduce using rule 43 (expression -> vector dot_operation term .)
-    /               reduce using rule 43 (expression -> vector dot_operation term .)
-    *               reduce using rule 43 (expression -> vector dot_operation term .)
-    EQL             reduce using rule 43 (expression -> vector dot_operation term .)
-    NEQ             reduce using rule 43 (expression -> vector dot_operation term .)
-    GT              reduce using rule 43 (expression -> vector dot_operation term .)
-    GTE             reduce using rule 43 (expression -> vector dot_operation term .)
-    LT              reduce using rule 43 (expression -> vector dot_operation term .)
-    LTE             reduce using rule 43 (expression -> vector dot_operation term .)
-    ,               reduce using rule 43 (expression -> vector dot_operation term .)
-    ;               reduce using rule 43 (expression -> vector dot_operation term .)
-    )               reduce using rule 43 (expression -> vector dot_operation term .)
-    :               reduce using rule 43 (expression -> vector dot_operation term .)
-    {               reduce using rule 43 (expression -> vector dot_operation term .)
-    ID              reduce using rule 43 (expression -> vector dot_operation term .)
-    PRINT           reduce using rule 43 (expression -> vector dot_operation term .)
-    CONTINUE        reduce using rule 43 (expression -> vector dot_operation term .)
-    BREAK           reduce using rule 43 (expression -> vector dot_operation term .)
-    RETURN          reduce using rule 43 (expression -> vector dot_operation term .)
-    IF              reduce using rule 43 (expression -> vector dot_operation term .)
-    FOR             reduce using rule 43 (expression -> vector dot_operation term .)
-    WHILE           reduce using rule 43 (expression -> vector dot_operation term .)
+    +               reduce using rule 44 (expression -> ID dot_operation term .)
+    -               reduce using rule 44 (expression -> ID dot_operation term .)
+    /               reduce using rule 44 (expression -> ID dot_operation term .)
+    *               reduce using rule 44 (expression -> ID dot_operation term .)
+    EQL             reduce using rule 44 (expression -> ID dot_operation term .)
+    NEQ             reduce using rule 44 (expression -> ID dot_operation term .)
+    GT              reduce using rule 44 (expression -> ID dot_operation term .)
+    GTE             reduce using rule 44 (expression -> ID dot_operation term .)
+    LT              reduce using rule 44 (expression -> ID dot_operation term .)
+    LTE             reduce using rule 44 (expression -> ID dot_operation term .)
+    ,               reduce using rule 44 (expression -> ID dot_operation term .)
+    ;               reduce using rule 44 (expression -> ID dot_operation term .)
+    )               reduce using rule 44 (expression -> ID dot_operation term .)
+    :               reduce using rule 44 (expression -> ID dot_operation term .)
+    {               reduce using rule 44 (expression -> ID dot_operation term .)
+    ID              reduce using rule 44 (expression -> ID dot_operation term .)
+    PRINT           reduce using rule 44 (expression -> ID dot_operation term .)
+    CONTINUE        reduce using rule 44 (expression -> ID dot_operation term .)
+    BREAK           reduce using rule 44 (expression -> ID dot_operation term .)
+    RETURN          reduce using rule 44 (expression -> ID dot_operation term .)
+    IF              reduce using rule 44 (expression -> ID dot_operation term .)
+    FOR             reduce using rule 44 (expression -> ID dot_operation term .)
+    WHILE           reduce using rule 44 (expression -> ID dot_operation term .)
 
 
 state 113
 
-    (48) vector -> [ vector_contents ] .
+    (45) expression -> vector dot_operation term .
 
-    TRANSPOSE       reduce using rule 48 (vector -> [ vector_contents ] .)
-    DOTADD          reduce using rule 48 (vector -> [ vector_contents ] .)
-    DOTSUB          reduce using rule 48 (vector -> [ vector_contents ] .)
-    DOTMUL          reduce using rule 48 (vector -> [ vector_contents ] .)
-    DOTDIV          reduce using rule 48 (vector -> [ vector_contents ] .)
-    +               reduce using rule 48 (vector -> [ vector_contents ] .)
-    -               reduce using rule 48 (vector -> [ vector_contents ] .)
-    /               reduce using rule 48 (vector -> [ vector_contents ] .)
-    *               reduce using rule 48 (vector -> [ vector_contents ] .)
-    EQL             reduce using rule 48 (vector -> [ vector_contents ] .)
-    NEQ             reduce using rule 48 (vector -> [ vector_contents ] .)
-    GT              reduce using rule 48 (vector -> [ vector_contents ] .)
-    GTE             reduce using rule 48 (vector -> [ vector_contents ] .)
-    LT              reduce using rule 48 (vector -> [ vector_contents ] .)
-    LTE             reduce using rule 48 (vector -> [ vector_contents ] .)
-    ,               reduce using rule 48 (vector -> [ vector_contents ] .)
-    ;               reduce using rule 48 (vector -> [ vector_contents ] .)
-    :               reduce using rule 48 (vector -> [ vector_contents ] .)
-    ]               reduce using rule 48 (vector -> [ vector_contents ] .)
-    )               reduce using rule 48 (vector -> [ vector_contents ] .)
-    {               reduce using rule 48 (vector -> [ vector_contents ] .)
-    ID              reduce using rule 48 (vector -> [ vector_contents ] .)
-    PRINT           reduce using rule 48 (vector -> [ vector_contents ] .)
-    CONTINUE        reduce using rule 48 (vector -> [ vector_contents ] .)
-    BREAK           reduce using rule 48 (vector -> [ vector_contents ] .)
-    RETURN          reduce using rule 48 (vector -> [ vector_contents ] .)
-    IF              reduce using rule 48 (vector -> [ vector_contents ] .)
-    FOR             reduce using rule 48 (vector -> [ vector_contents ] .)
-    WHILE           reduce using rule 48 (vector -> [ vector_contents ] .)
+    +               reduce using rule 45 (expression -> vector dot_operation term .)
+    -               reduce using rule 45 (expression -> vector dot_operation term .)
+    /               reduce using rule 45 (expression -> vector dot_operation term .)
+    *               reduce using rule 45 (expression -> vector dot_operation term .)
+    EQL             reduce using rule 45 (expression -> vector dot_operation term .)
+    NEQ             reduce using rule 45 (expression -> vector dot_operation term .)
+    GT              reduce using rule 45 (expression -> vector dot_operation term .)
+    GTE             reduce using rule 45 (expression -> vector dot_operation term .)
+    LT              reduce using rule 45 (expression -> vector dot_operation term .)
+    LTE             reduce using rule 45 (expression -> vector dot_operation term .)
+    ,               reduce using rule 45 (expression -> vector dot_operation term .)
+    ;               reduce using rule 45 (expression -> vector dot_operation term .)
+    )               reduce using rule 45 (expression -> vector dot_operation term .)
+    :               reduce using rule 45 (expression -> vector dot_operation term .)
+    {               reduce using rule 45 (expression -> vector dot_operation term .)
+    ID              reduce using rule 45 (expression -> vector dot_operation term .)
+    PRINT           reduce using rule 45 (expression -> vector dot_operation term .)
+    CONTINUE        reduce using rule 45 (expression -> vector dot_operation term .)
+    BREAK           reduce using rule 45 (expression -> vector dot_operation term .)
+    RETURN          reduce using rule 45 (expression -> vector dot_operation term .)
+    IF              reduce using rule 45 (expression -> vector dot_operation term .)
+    FOR             reduce using rule 45 (expression -> vector dot_operation term .)
+    WHILE           reduce using rule 45 (expression -> vector dot_operation term .)
 
 
 state 114
 
-    (50) vector_contents -> vector_contents , . vector_element
-    (51) vector_element -> . term
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (50) vector -> [ vector_contents ] .
+
+    TRANSPOSE       reduce using rule 50 (vector -> [ vector_contents ] .)
+    DOTADD          reduce using rule 50 (vector -> [ vector_contents ] .)
+    DOTSUB          reduce using rule 50 (vector -> [ vector_contents ] .)
+    DOTMUL          reduce using rule 50 (vector -> [ vector_contents ] .)
+    DOTDIV          reduce using rule 50 (vector -> [ vector_contents ] .)
+    +               reduce using rule 50 (vector -> [ vector_contents ] .)
+    -               reduce using rule 50 (vector -> [ vector_contents ] .)
+    /               reduce using rule 50 (vector -> [ vector_contents ] .)
+    *               reduce using rule 50 (vector -> [ vector_contents ] .)
+    EQL             reduce using rule 50 (vector -> [ vector_contents ] .)
+    NEQ             reduce using rule 50 (vector -> [ vector_contents ] .)
+    GT              reduce using rule 50 (vector -> [ vector_contents ] .)
+    GTE             reduce using rule 50 (vector -> [ vector_contents ] .)
+    LT              reduce using rule 50 (vector -> [ vector_contents ] .)
+    LTE             reduce using rule 50 (vector -> [ vector_contents ] .)
+    ,               reduce using rule 50 (vector -> [ vector_contents ] .)
+    ;               reduce using rule 50 (vector -> [ vector_contents ] .)
+    :               reduce using rule 50 (vector -> [ vector_contents ] .)
+    ]               reduce using rule 50 (vector -> [ vector_contents ] .)
+    )               reduce using rule 50 (vector -> [ vector_contents ] .)
+    {               reduce using rule 50 (vector -> [ vector_contents ] .)
+    ID              reduce using rule 50 (vector -> [ vector_contents ] .)
+    PRINT           reduce using rule 50 (vector -> [ vector_contents ] .)
+    CONTINUE        reduce using rule 50 (vector -> [ vector_contents ] .)
+    BREAK           reduce using rule 50 (vector -> [ vector_contents ] .)
+    RETURN          reduce using rule 50 (vector -> [ vector_contents ] .)
+    IF              reduce using rule 50 (vector -> [ vector_contents ] .)
+    FOR             reduce using rule 50 (vector -> [ vector_contents ] .)
+    WHILE           reduce using rule 50 (vector -> [ vector_contents ] .)
+
+
+state 115
+
+    (52) vector_contents -> vector_contents , . vector_element
+    (53) vector_element -> . term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     (               shift and go to state 37
     INTNUM          shift and go to state 45
@@ -2798,15 +2814,15 @@ state 114
     ID              shift and go to state 61
     [               shift and go to state 48
 
-    vector_element                 shift and go to state 122
+    vector_element                 shift and go to state 124
     term                           shift and go to state 86
     vector                         shift and go to state 60
 
-state 115
+state 116
 
-    (60) if -> IF condition nested ELSE . nested
-    (62) nested -> . { statements }
-    (63) nested -> . statement
+    (62) if -> IF condition nested ELSE . nested
+    (64) nested -> . { statements }
+    (65) nested -> . statement
     (4) statement -> . assignment ;
     (5) statement -> . print ;
     (6) statement -> . continue ;
@@ -2821,8 +2837,8 @@ state 115
     (16) continue -> . CONTINUE
     (14) break -> . BREAK
     (15) return -> . RETURN expression
-    (59) if -> . IF condition nested
-    (60) if -> . IF condition nested ELSE nested
+    (61) if -> . IF condition nested
+    (62) if -> . IF condition nested ELSE nested
     (12) for -> . FOR ID ASSIGN expression : expression nested
     (13) while -> . WHILE condition nested
 
@@ -2836,7 +2852,7 @@ state 115
     FOR             shift and go to state 18
     WHILE           shift and go to state 19
 
-    nested                         shift and go to state 123
+    nested                         shift and go to state 125
     statement                      shift and go to state 89
     assignment                     shift and go to state 4
     print                          shift and go to state 5
@@ -2847,9 +2863,9 @@ state 115
     for                            shift and go to state 10
     while                          shift and go to state 11
 
-state 116
+state 117
 
-    (62) nested -> { statements . }
+    (64) nested -> { statements . }
     (3) statements -> statements . statement
     (4) statement -> . assignment ;
     (5) statement -> . print ;
@@ -2865,12 +2881,12 @@ state 116
     (16) continue -> . CONTINUE
     (14) break -> . BREAK
     (15) return -> . RETURN expression
-    (59) if -> . IF condition nested
-    (60) if -> . IF condition nested ELSE nested
+    (61) if -> . IF condition nested
+    (62) if -> . IF condition nested ELSE nested
     (12) for -> . FOR ID ASSIGN expression : expression nested
     (13) while -> . WHILE condition nested
 
-    }               shift and go to state 124
+    }               shift and go to state 126
     ID              shift and go to state 12
     PRINT           shift and go to state 13
     CONTINUE        shift and go to state 14
@@ -2890,36 +2906,36 @@ state 116
     for                            shift and go to state 10
     while                          shift and go to state 11
 
-state 117
-
-    (61) condition -> ( expression ) .
-
-    {               reduce using rule 61 (condition -> ( expression ) .)
-    ID              reduce using rule 61 (condition -> ( expression ) .)
-    PRINT           reduce using rule 61 (condition -> ( expression ) .)
-    CONTINUE        reduce using rule 61 (condition -> ( expression ) .)
-    BREAK           reduce using rule 61 (condition -> ( expression ) .)
-    RETURN          reduce using rule 61 (condition -> ( expression ) .)
-    IF              reduce using rule 61 (condition -> ( expression ) .)
-    FOR             reduce using rule 61 (condition -> ( expression ) .)
-    WHILE           reduce using rule 61 (condition -> ( expression ) .)
-
-
 state 118
 
-    (12) for -> FOR ID ASSIGN expression . : expression nested
-    (29) expression -> expression . + term
-    (30) expression -> expression . - term
-    (31) expression -> expression . / term
-    (32) expression -> expression . * term
-    (33) expression -> expression . EQL term
-    (34) expression -> expression . NEQ term
-    (35) expression -> expression . GT term
-    (36) expression -> expression . GTE term
-    (37) expression -> expression . LT term
-    (38) expression -> expression . LTE term
+    (63) condition -> ( expression ) .
 
-    :               shift and go to state 125
+    {               reduce using rule 63 (condition -> ( expression ) .)
+    ID              reduce using rule 63 (condition -> ( expression ) .)
+    PRINT           reduce using rule 63 (condition -> ( expression ) .)
+    CONTINUE        reduce using rule 63 (condition -> ( expression ) .)
+    BREAK           reduce using rule 63 (condition -> ( expression ) .)
+    RETURN          reduce using rule 63 (condition -> ( expression ) .)
+    IF              reduce using rule 63 (condition -> ( expression ) .)
+    FOR             reduce using rule 63 (condition -> ( expression ) .)
+    WHILE           reduce using rule 63 (condition -> ( expression ) .)
+
+
+state 119
+
+    (12) for -> FOR ID ASSIGN expression . : expression nested
+    (31) expression -> expression . + term
+    (32) expression -> expression . - term
+    (33) expression -> expression . / term
+    (34) expression -> expression . * term
+    (35) expression -> expression . EQL term
+    (36) expression -> expression . NEQ term
+    (37) expression -> expression . GT term
+    (38) expression -> expression . GTE term
+    (39) expression -> expression . LT term
+    (40) expression -> expression . LTE term
+
+    :               shift and go to state 127
     +               shift and go to state 63
     -               shift and go to state 64
     /               shift and go to state 65
@@ -2932,123 +2948,146 @@ state 118
     LTE             shift and go to state 72
 
 
-state 119
-
-    (54) slice_contents -> slice_contents , range .
-
-    ]               reduce using rule 54 (slice_contents -> slice_contents , range .)
-    ,               reduce using rule 54 (slice_contents -> slice_contents , range .)
-
-
 state 120
 
-    (55) range -> term : term .
+    (56) slice_contents -> slice_contents , range .
 
-    ]               reduce using rule 55 (range -> term : term .)
-    ,               reduce using rule 55 (range -> term : term .)
+    ]               reduce using rule 56 (slice_contents -> slice_contents , range .)
+    ,               reduce using rule 56 (slice_contents -> slice_contents , range .)
 
 
 state 121
 
-    (27) expression -> built_in_function ( term ) .
+    (57) range -> term : term .
 
-    +               reduce using rule 27 (expression -> built_in_function ( term ) .)
-    -               reduce using rule 27 (expression -> built_in_function ( term ) .)
-    /               reduce using rule 27 (expression -> built_in_function ( term ) .)
-    *               reduce using rule 27 (expression -> built_in_function ( term ) .)
-    EQL             reduce using rule 27 (expression -> built_in_function ( term ) .)
-    NEQ             reduce using rule 27 (expression -> built_in_function ( term ) .)
-    GT              reduce using rule 27 (expression -> built_in_function ( term ) .)
-    GTE             reduce using rule 27 (expression -> built_in_function ( term ) .)
-    LT              reduce using rule 27 (expression -> built_in_function ( term ) .)
-    LTE             reduce using rule 27 (expression -> built_in_function ( term ) .)
-    ,               reduce using rule 27 (expression -> built_in_function ( term ) .)
-    ;               reduce using rule 27 (expression -> built_in_function ( term ) .)
-    )               reduce using rule 27 (expression -> built_in_function ( term ) .)
-    :               reduce using rule 27 (expression -> built_in_function ( term ) .)
-    {               reduce using rule 27 (expression -> built_in_function ( term ) .)
-    ID              reduce using rule 27 (expression -> built_in_function ( term ) .)
-    PRINT           reduce using rule 27 (expression -> built_in_function ( term ) .)
-    CONTINUE        reduce using rule 27 (expression -> built_in_function ( term ) .)
-    BREAK           reduce using rule 27 (expression -> built_in_function ( term ) .)
-    RETURN          reduce using rule 27 (expression -> built_in_function ( term ) .)
-    IF              reduce using rule 27 (expression -> built_in_function ( term ) .)
-    FOR             reduce using rule 27 (expression -> built_in_function ( term ) .)
-    WHILE           reduce using rule 27 (expression -> built_in_function ( term ) .)
+    ]               reduce using rule 57 (range -> term : term .)
+    ,               reduce using rule 57 (range -> term : term .)
 
 
 state 122
 
-    (50) vector_contents -> vector_contents , vector_element .
+    (27) expression -> built_in_function ( term_list ) .
 
-    ]               reduce using rule 50 (vector_contents -> vector_contents , vector_element .)
-    ,               reduce using rule 50 (vector_contents -> vector_contents , vector_element .)
+    +               reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    -               reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    /               reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    *               reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    EQL             reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    NEQ             reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    GT              reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    GTE             reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    LT              reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    LTE             reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    ,               reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    ;               reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    )               reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    :               reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    {               reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    ID              reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    PRINT           reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    CONTINUE        reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    BREAK           reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    RETURN          reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    IF              reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    FOR             reduce using rule 27 (expression -> built_in_function ( term_list ) .)
+    WHILE           reduce using rule 27 (expression -> built_in_function ( term_list ) .)
 
 
 state 123
 
-    (60) if -> IF condition nested ELSE nested .
+    (29) term_list -> term_list , . term
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
-    ID              reduce using rule 60 (if -> IF condition nested ELSE nested .)
-    PRINT           reduce using rule 60 (if -> IF condition nested ELSE nested .)
-    CONTINUE        reduce using rule 60 (if -> IF condition nested ELSE nested .)
-    BREAK           reduce using rule 60 (if -> IF condition nested ELSE nested .)
-    RETURN          reduce using rule 60 (if -> IF condition nested ELSE nested .)
-    IF              reduce using rule 60 (if -> IF condition nested ELSE nested .)
-    FOR             reduce using rule 60 (if -> IF condition nested ELSE nested .)
-    WHILE           reduce using rule 60 (if -> IF condition nested ELSE nested .)
-    $end            reduce using rule 60 (if -> IF condition nested ELSE nested .)
-    ELSE            reduce using rule 60 (if -> IF condition nested ELSE nested .)
-    }               reduce using rule 60 (if -> IF condition nested ELSE nested .)
+    (               shift and go to state 37
+    INTNUM          shift and go to state 45
+    STR             shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    ID              shift and go to state 61
+    [               shift and go to state 48
 
+    term                           shift and go to state 128
+    vector                         shift and go to state 60
 
 state 124
 
-    (62) nested -> { statements } .
+    (52) vector_contents -> vector_contents , vector_element .
 
-    ELSE            reduce using rule 62 (nested -> { statements } .)
-    ID              reduce using rule 62 (nested -> { statements } .)
-    PRINT           reduce using rule 62 (nested -> { statements } .)
-    CONTINUE        reduce using rule 62 (nested -> { statements } .)
-    BREAK           reduce using rule 62 (nested -> { statements } .)
-    RETURN          reduce using rule 62 (nested -> { statements } .)
-    IF              reduce using rule 62 (nested -> { statements } .)
-    FOR             reduce using rule 62 (nested -> { statements } .)
-    WHILE           reduce using rule 62 (nested -> { statements } .)
-    $end            reduce using rule 62 (nested -> { statements } .)
-    }               reduce using rule 62 (nested -> { statements } .)
+    ]               reduce using rule 52 (vector_contents -> vector_contents , vector_element .)
+    ,               reduce using rule 52 (vector_contents -> vector_contents , vector_element .)
 
 
 state 125
 
+    (62) if -> IF condition nested ELSE nested .
+
+    ID              reduce using rule 62 (if -> IF condition nested ELSE nested .)
+    PRINT           reduce using rule 62 (if -> IF condition nested ELSE nested .)
+    CONTINUE        reduce using rule 62 (if -> IF condition nested ELSE nested .)
+    BREAK           reduce using rule 62 (if -> IF condition nested ELSE nested .)
+    RETURN          reduce using rule 62 (if -> IF condition nested ELSE nested .)
+    IF              reduce using rule 62 (if -> IF condition nested ELSE nested .)
+    FOR             reduce using rule 62 (if -> IF condition nested ELSE nested .)
+    WHILE           reduce using rule 62 (if -> IF condition nested ELSE nested .)
+    $end            reduce using rule 62 (if -> IF condition nested ELSE nested .)
+    ELSE            reduce using rule 62 (if -> IF condition nested ELSE nested .)
+    }               reduce using rule 62 (if -> IF condition nested ELSE nested .)
+
+
+state 126
+
+    (64) nested -> { statements } .
+
+    ELSE            reduce using rule 64 (nested -> { statements } .)
+    ID              reduce using rule 64 (nested -> { statements } .)
+    PRINT           reduce using rule 64 (nested -> { statements } .)
+    CONTINUE        reduce using rule 64 (nested -> { statements } .)
+    BREAK           reduce using rule 64 (nested -> { statements } .)
+    RETURN          reduce using rule 64 (nested -> { statements } .)
+    IF              reduce using rule 64 (nested -> { statements } .)
+    FOR             reduce using rule 64 (nested -> { statements } .)
+    WHILE           reduce using rule 64 (nested -> { statements } .)
+    $end            reduce using rule 64 (nested -> { statements } .)
+    }               reduce using rule 64 (nested -> { statements } .)
+
+
+state 127
+
     (12) for -> FOR ID ASSIGN expression : . expression nested
-    (27) expression -> . built_in_function ( term )
-    (28) expression -> . term
-    (29) expression -> . expression + term
-    (30) expression -> . expression - term
-    (31) expression -> . expression / term
-    (32) expression -> . expression * term
-    (33) expression -> . expression EQL term
-    (34) expression -> . expression NEQ term
-    (35) expression -> . expression GT term
-    (36) expression -> . expression GTE term
-    (37) expression -> . expression LT term
-    (38) expression -> . expression LTE term
-    (39) expression -> . - term
-    (42) expression -> . ID dot_operation term
-    (43) expression -> . vector dot_operation term
-    (70) built_in_function -> . EYE
-    (71) built_in_function -> . ONES
-    (72) built_in_function -> . ZEROS
-    (64) term -> . ( expression )
-    (65) term -> . vector
-    (66) term -> . INTNUM
-    (67) term -> . STR
-    (68) term -> . FLOATNUM
-    (69) term -> . ID
-    (40) vector -> . ID TRANSPOSE
-    (41) vector -> . vector TRANSPOSE
-    (48) vector -> . [ vector_contents ]
+    (27) expression -> . built_in_function ( term_list )
+    (30) expression -> . term
+    (31) expression -> . expression + term
+    (32) expression -> . expression - term
+    (33) expression -> . expression / term
+    (34) expression -> . expression * term
+    (35) expression -> . expression EQL term
+    (36) expression -> . expression NEQ term
+    (37) expression -> . expression GT term
+    (38) expression -> . expression GTE term
+    (39) expression -> . expression LT term
+    (40) expression -> . expression LTE term
+    (41) expression -> . - term
+    (44) expression -> . ID dot_operation term
+    (45) expression -> . vector dot_operation term
+    (72) built_in_function -> . EYE
+    (73) built_in_function -> . ONES
+    (74) built_in_function -> . ZEROS
+    (66) term -> . ( expression )
+    (67) term -> . vector
+    (68) term -> . INTNUM
+    (69) term -> . STR
+    (70) term -> . FLOATNUM
+    (71) term -> . ID
+    (42) vector -> . ID TRANSPOSE
+    (43) vector -> . vector TRANSPOSE
+    (50) vector -> . [ vector_contents ]
 
     -               shift and go to state 39
     ID              shift and go to state 40
@@ -3061,26 +3100,34 @@ state 125
     FLOATNUM        shift and go to state 47
     [               shift and go to state 48
 
-    expression                     shift and go to state 126
+    expression                     shift and go to state 129
     built_in_function              shift and go to state 36
     term                           shift and go to state 38
     vector                         shift and go to state 41
 
-state 126
+state 128
+
+    (29) term_list -> term_list , term .
+
+    )               reduce using rule 29 (term_list -> term_list , term .)
+    ,               reduce using rule 29 (term_list -> term_list , term .)
+
+
+state 129
 
     (12) for -> FOR ID ASSIGN expression : expression . nested
-    (29) expression -> expression . + term
-    (30) expression -> expression . - term
-    (31) expression -> expression . / term
-    (32) expression -> expression . * term
-    (33) expression -> expression . EQL term
-    (34) expression -> expression . NEQ term
-    (35) expression -> expression . GT term
-    (36) expression -> expression . GTE term
-    (37) expression -> expression . LT term
-    (38) expression -> expression . LTE term
-    (62) nested -> . { statements }
-    (63) nested -> . statement
+    (31) expression -> expression . + term
+    (32) expression -> expression . - term
+    (33) expression -> expression . / term
+    (34) expression -> expression . * term
+    (35) expression -> expression . EQL term
+    (36) expression -> expression . NEQ term
+    (37) expression -> expression . GT term
+    (38) expression -> expression . GTE term
+    (39) expression -> expression . LT term
+    (40) expression -> expression . LTE term
+    (64) nested -> . { statements }
+    (65) nested -> . statement
     (4) statement -> . assignment ;
     (5) statement -> . print ;
     (6) statement -> . continue ;
@@ -3095,8 +3142,8 @@ state 126
     (16) continue -> . CONTINUE
     (14) break -> . BREAK
     (15) return -> . RETURN expression
-    (59) if -> . IF condition nested
-    (60) if -> . IF condition nested ELSE nested
+    (61) if -> . IF condition nested
+    (62) if -> . IF condition nested ELSE nested
     (12) for -> . FOR ID ASSIGN expression : expression nested
     (13) while -> . WHILE condition nested
 
@@ -3120,7 +3167,7 @@ state 126
     FOR             shift and go to state 18
     WHILE           shift and go to state 19
 
-    nested                         shift and go to state 127
+    nested                         shift and go to state 130
     statement                      shift and go to state 89
     assignment                     shift and go to state 4
     print                          shift and go to state 5
@@ -3131,7 +3178,7 @@ state 126
     for                            shift and go to state 10
     while                          shift and go to state 11
 
-state 127
+state 130
 
     (12) for -> FOR ID ASSIGN expression : expression nested .
 

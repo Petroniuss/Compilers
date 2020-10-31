@@ -46,7 +46,7 @@ for i = 1:N
     print i, j;
  
 
-for i = -1:N {
+for i = -1:2 - N {
     if(i<=N/16)
         print i;
     else if(i<=N/8)
