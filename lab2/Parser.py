@@ -4,6 +4,8 @@ from ply.yacc import yaccdebug
 from Lexer import tokens
 from Lexer import literals
 
+from Ast import *
+
 yaccdebug = True
 
 
@@ -60,7 +62,6 @@ def p_for(p):
     """
         for : FOR ID ASSIGN expression ':' expression nested
     """
-    debug(p[1])
     pass
 
 
@@ -68,7 +69,6 @@ def p_while(p):
     """
         while : WHILE condition nested
     """
-    debug(p[1])
     pass
 
 
@@ -76,7 +76,6 @@ def p_break(p):
     """
         break : BREAK
     """
-    debug(p[1])
     pass
 
 
@@ -84,7 +83,6 @@ def p_return(p):
     """
         return : RETURN expression
     """
-    debug(p[1])
     pass
 
 
@@ -92,7 +90,6 @@ def p_continue(p):
     """
         continue : CONTINUE
     """
-    debug(p[1])
     pass
 
 
@@ -100,7 +97,6 @@ def p_print(p):
     """
         print : PRINT coma_separated
     """
-    debug(p[1])
     pass
 
 
@@ -210,15 +206,27 @@ def p_dot_operation(p):
 def p_vector(p):
     """
         vector : '[' vector_contents ']'
+               |  '[' ']'
     """
-    pass
+    if len(p) == 4:
+        p[0] = Vector(p[2])
+    else:
+        p[0] = emptyVector()
 
 
-def p_vector_contents(p):
+def p_vector_contents_list(p):
+    """
+        vector_contents : vector_contents ',' vector_element
+    """
+    p[1].append(p[3])
+    p[0] = p[1]
+
+
+def p_vector_contents_single(p):
     """
         vector_contents : vector_element
-                        | vector_contents ',' vector_element
     """
+    p[0] = [p[1]]
     pass
 
 
@@ -226,6 +234,7 @@ def p_vector_element(p):
     """
         vector_element : term
     """
+    p[0] = p[1]
     pass
 
 
@@ -254,8 +263,8 @@ def p_range(p):
     pass
 
 
-def debug(o):
-    print('DEBUG: ' + o.rjust(36))
+def debug(header, info):
+    print(header.ljust(36) + str(info))
 
 
 def p_if(p):
@@ -263,7 +272,6 @@ def p_if(p):
         if : IF condition nested %prec IFx
            | IF condition nested ELSE nested
     """
-    debug('IF!')
     pass
 
 
@@ -284,13 +292,43 @@ def p_nested(p):
 def p_term(p):
     """
         term : '(' expression ')'
-             | vector
-             | INTNUM
-             | STR
-             | FLOATNUM
-             | ID
     """
-    pass
+    p[0] = p[2]
+
+
+def p_term_vector(p):
+    """
+        term : vector
+    """
+    p[0] = p[1]
+
+
+def p_term_primitive_int(p):
+    """
+        term : INTNUM
+    """
+    p[0] = Int(p[1])
+
+
+def p_term_primitive_float(p):
+    """
+        term : FLOATNUM
+    """
+    p[0] = Float(p[1])
+
+
+def p_term_primitive_str(p):
+    """
+        term : STR
+    """
+    p[0] = String(p[1])
+
+
+def p_term_id(p):
+    """
+        term : ID
+    """
+    p[0] = Identifier(p[1])
 
 
 def p_built_in_function(p):
@@ -299,6 +337,7 @@ def p_built_in_function(p):
                           | ONES
                           | ZEROS
     """
+    p[0] = p[1]
     pass
 
 
