@@ -4,7 +4,7 @@ I = eye(10);   # create 10x10 matrix filled with ones on diagonal and zeros else
 D1 = A.+B' ; # add element-wise A with transpose of B
 D2 -= A.-B' ; # substract element-wise A with transpose of B
 D3 *= A.*B' ; # multiply element-wise A with transpose of B
-D4 /= A./B' ; # divide element-wise A with transpose of B
+D4 /= A./(B)' ; # divide element-wise A with transpose of B
 
 E1 = [ [ 1, 2, 3],
        [ 4, 5, 6],
@@ -12,6 +12,7 @@ E1 = [ [ 1, 2, 3],
 
 __x = "s";
 _1_ = "s";
+
 
 # ___ = 12;  # This is invalid
 # 12_ = "x"; # also invalid

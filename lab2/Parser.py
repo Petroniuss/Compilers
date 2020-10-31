@@ -33,15 +33,29 @@ def p_start(p):
     """
         start : statements
     """
-    pass
+    p[0] = Ast(p[1])
 
 
 def p_statements(p):
     """
-        statements : statement
-                   | statements statement
+        statements : statements_list 
     """
-    pass
+    p[0] = CodeBlock(p[1])
+
+
+def p_statements_list(p):
+    """
+        statements_list : statements_list statement
+    """
+    p[1].append(p[2])
+    p[0] = p[1]
+
+
+def p_statements_list_single(p):
+    """
+        statements_list : statement
+    """
+    p[0] = [p[1]]
 
 
 def p_statement(p):
@@ -55,71 +69,78 @@ def p_statement(p):
                   | for
                   | while
     """
-    pass
+    p[0] = p[1]
 
 
 def p_for(p):
     """
         for : FOR ID ASSIGN expression ':' expression nested
     """
-    pass
+    p[0] = For(p[2], p[4], p[6])
 
 
 def p_while(p):
     """
         while : WHILE condition nested
     """
-    pass
+    p[0] = While(p[2], p[3])
 
 
 def p_break(p):
     """
         break : BREAK
     """
-    pass
+    p[0] = Break()
 
 
 def p_return(p):
     """
         return : RETURN expression
     """
-    pass
+    p[0] = Return(p[2])
 
 
 def p_continue(p):
     """
         continue : CONTINUE
     """
-    pass
+    p[0] = Continue()
 
 
 def p_print(p):
     """
         print : PRINT coma_separated
     """
-    pass
+    p[0] = FunctionCall(p[1], p[2])
 
 
 def p_coma_separated(p):
     """
-        coma_separated : expression
-                       | coma_separated ',' expression
+        coma_separated : coma_separated ',' expression
     """
-    pass
+    p[1].append(p[3])
+    p[0] = p[1]
+
+
+def p_coma_separated_single(p):
+    """
+        coma_separated : expression
+    """
+    p[0] = [p[1]]
 
 
 def p_assignment(p):
     """
         assignment : ID assign_symbol expression
     """
-    pass
+    p[0] = Bind(p[1], p[2], p[3])
 
 
 def p_slice_assignment(p):
     """
         assignment : ID slice assign_symbol expression
     """
-    pass
+    p[0] = BindWithSlice(p[1], p[2], p[3], p[4])
 
 
 def p_assign(p):
@@ -130,28 +151,35 @@ def p_assign(p):
                       | DIVASSIGN
                       | MULTASSIGN
     """
-    pass
+    p[0] = p[1]
 
 
-def p_expression_built_in_function(p):
+def p_expression_function_call(p):
     """
-        expression : built_in_function '(' term_list ')'
+        expression : built_in_function '(' expression_list ')'
     """
-    pass
+    p[0] = FunctionCall(p[1], p[3])
 
 
-def p_term_list(p):
+def p_expression_list(p):
     """
-        term_list : term
-                  | term_list ',' term
+        expression_list : expression_list ',' expression
     """
+    p[0] = p[1].append(p[3])
+
+
+def p_expression_list_single(p):
+    """
+        expression_list : expression
+    """
+    p[0] = [p[1]]
 
 
 def p_expression_term(p):
     """
         expression : term
     """
-    pass
+    p[0] = p[1]
 
 
 def p_expression_binary_ops(p):
@@ -160,29 +188,34 @@ def p_expression_binary_ops(p):
                    | expression '-' term
                    | expression '/' term
                    | expression '*' term
-                   | expression EQL term
+    """
+    p[0] = BinaryOp(p[2], p[1], p[3])
+
+
+def p_expression_relational_ops(p):
+    """
+        expression : expression EQL term
                    | expression NEQ term
                    | expression GT term
                    | expression GTE term
                    | expression LT term
                    | expression LTE term
     """
-    pass
+    p[0] = RelationalExp(p[2], p[1], p[3])
 
 
 def p_expression_unary(p):
     """
         expression : '-' term %prec UMINUS
     """
-    pass
+    p[0] = FunctionCall('negative', p[2])
 
 
 def p_vector_transpose(p):
     """
-        vector : ID TRANSPOSE
-               | vector TRANSPOSE
+        expression : expression TRANSPOSE
     """
-    pass
+    p[0] = FunctionCall('transpose', [p[1]])
 
 
 def p_expression_suffix_binary_ops(p):
@@ -190,7 +223,7 @@ def p_expression_suffix_binary_ops(p):
         expression : ID dot_operation term
                    | vector dot_operation term
     """
-    pass
+    p[0] = ObjectFunctionCall(p[1], p[2], [p[3]])
 
 
 def p_dot_operation(p):
@@ -200,18 +233,21 @@ def p_dot_operation(p):
                        | DOTMUL
                        | DOTDIV
     """
-    pass
+    p[0] = p[1]
 
 
 def p_vector(p):
     """
         vector : '[' vector_contents ']'
-               |  '[' ']'
     """
-    if len(p) == 4:
-        p[0] = Vector(p[2])
-    else:
-        p[0] = emptyVector()
+    p[0] = Vector(p[2])
+
+
+def p_vector_empty(p):
+    """
+        vector : '[' ']'
+    """
+    p[0] = emptyVector()
 
 
 def p_vector_contents_list(p):
@@ -227,7 +263,6 @@ def p_vector_contents_single(p):
         vector_contents : vector_element
     """
     p[0] = [p[1]]
-    pass
 
 
 def p_vector_element(p):
@@ -235,50 +270,59 @@ def p_vector_element(p):
         vector_element : term
     """
     p[0] = p[1]
-    pass
 
 
 def p_slice(p):
     """
         slice : '[' slice_contents ']'
     """
-    pass
+    p[0] = Slice(p[2])
 
 
 def p_slice_contents(p):
     """
-        slice_contents : range
-                       | slice_contents ',' range
+        slice_contents : slice_contents ',' range
     """
-    pass
+    p[1].append(p[3])
+    p[0] = p[1]
+
+
+def p_slice_contents_single(p):
+    """
+        slice_contents : range
+    """
+    p[0] = p[1]
 
 
 def p_range(p):
     """
-        range : term ':' term
-              | term ':'
-              | ':' term
-              | term
+        range : expression ':' expression
+              | expression ':'
+              | ':' expression
+              | expression
     """
     pass
-
-
-def debug(header, info):
-    print(header.ljust(36) + str(info))
 
 
 def p_if(p):
     """
         if : IF condition nested %prec IFx
-           | IF condition nested ELSE nested
     """
-    pass
+    p[0] = If(p[2], [3])
+
+
+def p_if_else(p):
+    """
+        if : IF condition nested ELSE nested
+    """
+    p[0] = IfElse(p[2], p[3], p[5])
 
 
 def p_condition(p):
     """
         condition : '(' expression ')'
     """
+    p[0] = Condition(p[2])
 
 
 def p_nested(p):
@@ -286,7 +330,13 @@ def p_nested(p):
         nested : '{' statements '}'
                | statement
     """
-    pass
+    xs = []
+    if len(p) == 2:
+        xs = [p[1]]
+    else:
+        xs = p[2]
+
+    p[0] = CodeBlock(xs)
 
 
 def p_term(p):
