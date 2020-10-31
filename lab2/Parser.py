@@ -4,16 +4,11 @@ from ply.yacc import yaccdebug
 from Lexer import tokens
 from Lexer import literals
 
-parser = None
 yaccdebug = True
 
 
 def LRParser():
-    global parser
-    if parser is None:
-        parser = yacc.yacc(debug=yaccdebug, start='start', outputdir='./out')
-
-    return parser
+    return yacc.yacc(debug=yaccdebug, start='start', outputdir='./out')
 
 
 # -------------------------------------------------------------------
@@ -43,7 +38,7 @@ def p_statement(p):
                   | continue ';'
                   | break ';'
                   | return ';'
-                  | if_statement
+                  | if
                   | for
                   | while
     """
@@ -76,7 +71,7 @@ def p_break(p):
 
 def p_return(p):
     """
-        return : RETURN expression 
+        return : RETURN expression
     """
     debug(p[1])
     pass
@@ -100,7 +95,7 @@ def p_print(p):
 
 def p_coma_separated(p):
     """
-        coma_separated : expression 
+        coma_separated : expression
                        | coma_separated ',' expression
     """
     pass
@@ -186,8 +181,8 @@ def p_expression_suffix_binary_ops(p):
 
 def p_dot_operation(p):
     """
-         dot_operation : DOTADD       
-                       | DOTSUB       
+         dot_operation : DOTADD
+                       | DOTSUB
                        | DOTMUL
                        | DOTDIV
     """
@@ -204,7 +199,7 @@ def p_vector(p):
 def p_vector_contents(p):
     """
         vector_contents : vector_element
-                        | vector_contents ',' vector_element 
+                        | vector_contents ',' vector_element
     """
     pass
 
@@ -244,82 +239,25 @@ def p_range(p):
 def debug(o):
     print('DEBUG: ' + o.rjust(36))
 
-# This generates 2 reduce/shift conflicts but they're resoved by default in favour of shift
-# So that way we avoid dangling else problem.
-
 
 precedence = (
     ('nonassoc', 'EQL', 'NEQ', 'GT', 'GTE',
-        'LT', 'LTE'),  # Nonassociative operators
+        'LT', 'LTE'),
     ('left', '+', '-'),
     ('left', '/', '*'),
     ('left', 'TRANSPOSE'),
-    ('right', 'UMINUS'),            # Unary minus operator
-    # # this order is incorrect but for some reason it does parse input..
+    ('right', 'UMINUS'),
     ("nonassoc", 'IFx'),
-    ("nonassoc", '1'),
-    ("nonassoc", '3'),
-    ("nonassoc", 'ELSE', 'IF'),
+    ("nonassoc", 'ELSE')
 )
-
-
-def p_if_statement(p):
-    """
-        if_statement : if optional_else_ifs optional_else
-    """
-    debug('if_statement')
-    pass
 
 
 def p_if(p):
     """
         if : IF condition nested %prec IFx
+           | IF condition nested ELSE nested
     """
     debug('IF!')
-    pass
-
-
-def p_optional_else_ifs(p):
-    """
-        optional_else_ifs : else_ifs 
-                          | %prec 3
-    """
-    if len(p) < 2:
-        debug('empty optional else ifs!')
-    pass
-
-
-def p_else_ifs(p):
-    """
-        else_ifs : else_if 
-                 | else_ifs else_if
-    """
-    pass
-
-
-def p_else_if(p):
-    """
-        else_if : ELSE IF condition nested 
-    """
-    debug('Else IF!')
-    pass
-
-
-def p_optional_else(p):
-    """
-        optional_else : else %prec 3
-                      | %prec 1
-    """
-    if len(p) < 2:
-        debug('empty optional else!')
-    pass
-
-
-def p_else(p):
-    """
-        else : ELSE nested 
-    """
-    debug('ELSE ')
     pass
 
 
@@ -340,7 +278,7 @@ def p_nested(p):
 def p_term(p):
     """
         term : '(' expression ')'
-             | vector 
+             | vector
              | INTNUM
              | STR
              | FLOATNUM
@@ -351,7 +289,7 @@ def p_term(p):
 
 def p_built_in_function(p):
     """
-        built_in_function : EYE 
+        built_in_function : EYE
                           | ONES
                           | ZEROS
     """
