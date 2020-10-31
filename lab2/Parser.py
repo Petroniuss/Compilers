@@ -19,17 +19,6 @@ def LRParser():
 # -------------------------------------------------------------------
 # Parser
 # -------------------------------------------------------------------
-precedence = (
-    # ('nonassoc', 'LESSTHAN', 'GREATERTHAN'),  # Nonassociative operators
-    ('left', '+', '-'),
-    ('left', '/', '*'),
-    ('left', 'TRANSPOSE'),
-    ('right', 'UMINUS'),            # Unary minus operator
-    # this order is incorrect but for some reason it does parse input..
-    ("nonassoc", 'IFx'),
-    ("nonassoc", 'EIFx'),
-    ("nonassoc", 'ELSE'),
-)
 
 
 def p_start(p):
@@ -57,13 +46,6 @@ def p_statement(p):
                   | if_statement
                   | for
                   | while
-    """
-    pass
-
-
-def p_block(p):
-    """
-        block : nested
     """
     pass
 
@@ -253,12 +235,33 @@ def p_range(p):
     pass
 
 
+def debug(o):
+    print('DEBUG: ' + o.rjust(36))
+
 # This generates 2 reduce/shift conflicts but they're resoved by default in favour of shift
 # So that way we avoid dangling else problem.
+
+
+precedence = (
+    # ('nonassoc', 'LESSTHAN', 'GREATERTHAN'),  # Nonassociative operators
+    ('left', '+', '-'),
+    ('left', '/', '*'),
+    ('left', 'TRANSPOSE'),
+    ('right', 'UMINUS'),            # Unary minus operator
+    # # this order is incorrect but for some reason it does parse input..
+    ("nonassoc", 'IFx'),
+    ("nonassoc", '1'),
+    # ("nonassoc", '2'),
+    ("nonassoc", 'ELSE'),
+    ("nonassoc", '3'),
+)
+
+
 def p_if_statement(p):
     """
-        if_statement : if optional_else_ifs optional_else 
+        if_statement : if optional_else_ifs optional_else
     """
+    debug('if_statement')
     pass
 
 
@@ -266,15 +269,17 @@ def p_if(p):
     """
         if : IF condition nested %prec IFx
     """
-    print('IF!')
+    debug('IF!')
     pass
 
 
 def p_optional_else_ifs(p):
     """
-        optional_else_ifs : else_ifs %prec EIFx
-                          | 
+        optional_else_ifs : else_ifs %prec 3
+                          | %prec 1
     """
+    if len(p) < 2:
+        debug('empty optional else ifs!')
     pass
 
 
@@ -290,15 +295,17 @@ def p_else_if(p):
     """
         else_if : ELSE IF condition nested 
     """
-    print('Else IF!')
+    debug('Else IF!')
     pass
 
 
 def p_optional_else(p):
     """
-        optional_else : else
-                      |
+        optional_else : else 
+                      | %prec 1
     """
+    if len(p) < 2:
+        debug('empty optional else!')
     pass
 
 
@@ -306,7 +313,7 @@ def p_else(p):
     """
         else : ELSE nested 
     """
-    print('ELSE ')
+    debug('ELSE ')
     pass
 
 
