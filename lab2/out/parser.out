@@ -67,7 +67,7 @@ Rule 61    range -> expression
 Rule 62    if -> IF condition nested
 Rule 63    if -> IF condition nested ELSE nested
 Rule 64    condition -> ( expression )
-Rule 65    nested -> { statements }
+Rule 65    nested -> { statements_list }
 Rule 66    nested -> statement
 Rule 67    term -> ( expression )
 Rule 68    term -> vector
@@ -149,8 +149,8 @@ slice                : 22
 slice_contents       : 55 56
 start                : 0
 statement            : 3 4 66
-statements           : 1 65
-statements_list      : 2 3
+statements           : 1
+statements_list      : 2 3 65
 term                 : 31 32 33 34 35 36 37 38 39 40 41 42 44 45 54
 vector               : 45 68
 vector_contents      : 50 52
@@ -244,7 +244,6 @@ state 3
     (14) while -> . WHILE condition nested
 
     $end            reduce using rule 2 (statements -> statements_list .)
-    }               reduce using rule 2 (statements -> statements_list .)
     ID              shift and go to state 13
     PRINT           shift and go to state 14
     CONTINUE        shift and go to state 15
@@ -328,8 +327,8 @@ state 10
     FOR             reduce using rule 10 (statement -> if .)
     WHILE           reduce using rule 10 (statement -> if .)
     $end            reduce using rule 10 (statement -> if .)
-    }               reduce using rule 10 (statement -> if .)
     ELSE            reduce using rule 10 (statement -> if .)
+    }               reduce using rule 10 (statement -> if .)
 
 
 state 11
@@ -345,8 +344,8 @@ state 11
     FOR             reduce using rule 11 (statement -> for .)
     WHILE           reduce using rule 11 (statement -> for .)
     $end            reduce using rule 11 (statement -> for .)
-    }               reduce using rule 11 (statement -> for .)
     ELSE            reduce using rule 11 (statement -> for .)
+    }               reduce using rule 11 (statement -> for .)
 
 
 state 12
@@ -362,8 +361,8 @@ state 12
     FOR             reduce using rule 12 (statement -> while .)
     WHILE           reduce using rule 12 (statement -> while .)
     $end            reduce using rule 12 (statement -> while .)
-    }               reduce using rule 12 (statement -> while .)
     ELSE            reduce using rule 12 (statement -> while .)
+    }               reduce using rule 12 (statement -> while .)
 
 
 state 13
@@ -553,8 +552,8 @@ state 22
     FOR             reduce using rule 5 (statement -> assignment ; .)
     WHILE           reduce using rule 5 (statement -> assignment ; .)
     $end            reduce using rule 5 (statement -> assignment ; .)
-    }               reduce using rule 5 (statement -> assignment ; .)
     ELSE            reduce using rule 5 (statement -> assignment ; .)
+    }               reduce using rule 5 (statement -> assignment ; .)
 
 
 state 23
@@ -570,8 +569,8 @@ state 23
     FOR             reduce using rule 6 (statement -> print ; .)
     WHILE           reduce using rule 6 (statement -> print ; .)
     $end            reduce using rule 6 (statement -> print ; .)
-    }               reduce using rule 6 (statement -> print ; .)
     ELSE            reduce using rule 6 (statement -> print ; .)
+    }               reduce using rule 6 (statement -> print ; .)
 
 
 state 24
@@ -587,8 +586,8 @@ state 24
     FOR             reduce using rule 7 (statement -> continue ; .)
     WHILE           reduce using rule 7 (statement -> continue ; .)
     $end            reduce using rule 7 (statement -> continue ; .)
-    }               reduce using rule 7 (statement -> continue ; .)
     ELSE            reduce using rule 7 (statement -> continue ; .)
+    }               reduce using rule 7 (statement -> continue ; .)
 
 
 state 25
@@ -604,8 +603,8 @@ state 25
     FOR             reduce using rule 8 (statement -> break ; .)
     WHILE           reduce using rule 8 (statement -> break ; .)
     $end            reduce using rule 8 (statement -> break ; .)
-    }               reduce using rule 8 (statement -> break ; .)
     ELSE            reduce using rule 8 (statement -> break ; .)
+    }               reduce using rule 8 (statement -> break ; .)
 
 
 state 26
@@ -621,8 +620,8 @@ state 26
     FOR             reduce using rule 9 (statement -> return ; .)
     WHILE           reduce using rule 9 (statement -> return ; .)
     $end            reduce using rule 9 (statement -> return ; .)
-    }               reduce using rule 9 (statement -> return ; .)
     ELSE            reduce using rule 9 (statement -> return ; .)
+    }               reduce using rule 9 (statement -> return ; .)
 
 
 state 27
@@ -1229,7 +1228,7 @@ state 51
 
     (62) if -> IF condition . nested
     (63) if -> IF condition . nested ELSE nested
-    (65) nested -> . { statements }
+    (65) nested -> . { statements_list }
     (66) nested -> . statement
     (5) statement -> . assignment ;
     (6) statement -> . print ;
@@ -1328,7 +1327,7 @@ state 53
 state 54
 
     (14) while -> WHILE condition . nested
-    (65) nested -> . { statements }
+    (65) nested -> . { statements_list }
     (66) nested -> . statement
     (5) statement -> . assignment ;
     (6) statement -> . print ;
@@ -2187,8 +2186,7 @@ state 88
 
 state 89
 
-    (65) nested -> { . statements }
-    (2) statements -> . statements_list
+    (65) nested -> { . statements_list }
     (3) statements_list -> . statements_list statement
     (4) statements_list -> . statement
     (5) statement -> . assignment ;
@@ -2219,8 +2217,7 @@ state 89
     FOR             shift and go to state 19
     WHILE           shift and go to state 20
 
-    statements                     shift and go to state 118
-    statements_list                shift and go to state 3
+    statements_list                shift and go to state 118
     statement                      shift and go to state 4
     assignment                     shift and go to state 5
     print                          shift and go to state 6
@@ -2337,8 +2334,8 @@ state 93
     FOR             reduce using rule 14 (while -> WHILE condition nested .)
     WHILE           reduce using rule 14 (while -> WHILE condition nested .)
     $end            reduce using rule 14 (while -> WHILE condition nested .)
-    }               reduce using rule 14 (while -> WHILE condition nested .)
     ELSE            reduce using rule 14 (while -> WHILE condition nested .)
+    }               reduce using rule 14 (while -> WHILE condition nested .)
 
 
 state 94
@@ -3048,7 +3045,7 @@ state 116
 state 117
 
     (63) if -> IF condition nested ELSE . nested
-    (65) nested -> . { statements }
+    (65) nested -> . { statements_list }
     (66) nested -> . statement
     (5) statement -> . assignment ;
     (6) statement -> . print ;
@@ -3092,10 +3089,46 @@ state 117
 
 state 118
 
-    (65) nested -> { statements . }
+    (65) nested -> { statements_list . }
+    (3) statements_list -> statements_list . statement
+    (5) statement -> . assignment ;
+    (6) statement -> . print ;
+    (7) statement -> . continue ;
+    (8) statement -> . break ;
+    (9) statement -> . return ;
+    (10) statement -> . if
+    (11) statement -> . for
+    (12) statement -> . while
+    (21) assignment -> . ID assign_symbol expression
+    (22) assignment -> . ID slice assign_symbol expression
+    (18) print -> . PRINT coma_separated
+    (17) continue -> . CONTINUE
+    (15) break -> . BREAK
+    (16) return -> . RETURN expression
+    (62) if -> . IF condition nested
+    (63) if -> . IF condition nested ELSE nested
+    (13) for -> . FOR ID ASSIGN expression : expression nested
+    (14) while -> . WHILE condition nested
 
     }               shift and go to state 127
+    ID              shift and go to state 13
+    PRINT           shift and go to state 14
+    CONTINUE        shift and go to state 15
+    BREAK           shift and go to state 16
+    RETURN          shift and go to state 17
+    IF              shift and go to state 18
+    FOR             shift and go to state 19
+    WHILE           shift and go to state 20
 
+    statement                      shift and go to state 21
+    assignment                     shift and go to state 5
+    print                          shift and go to state 6
+    continue                       shift and go to state 7
+    break                          shift and go to state 8
+    return                         shift and go to state 9
+    if                             shift and go to state 10
+    for                            shift and go to state 11
+    while                          shift and go to state 12
 
 state 119
 
@@ -3278,25 +3311,25 @@ state 126
     FOR             reduce using rule 63 (if -> IF condition nested ELSE nested .)
     WHILE           reduce using rule 63 (if -> IF condition nested ELSE nested .)
     $end            reduce using rule 63 (if -> IF condition nested ELSE nested .)
-    }               reduce using rule 63 (if -> IF condition nested ELSE nested .)
     ELSE            reduce using rule 63 (if -> IF condition nested ELSE nested .)
+    }               reduce using rule 63 (if -> IF condition nested ELSE nested .)
 
 
 state 127
 
-    (65) nested -> { statements } .
+    (65) nested -> { statements_list } .
 
-    ELSE            reduce using rule 65 (nested -> { statements } .)
-    ID              reduce using rule 65 (nested -> { statements } .)
-    PRINT           reduce using rule 65 (nested -> { statements } .)
-    CONTINUE        reduce using rule 65 (nested -> { statements } .)
-    BREAK           reduce using rule 65 (nested -> { statements } .)
-    RETURN          reduce using rule 65 (nested -> { statements } .)
-    IF              reduce using rule 65 (nested -> { statements } .)
-    FOR             reduce using rule 65 (nested -> { statements } .)
-    WHILE           reduce using rule 65 (nested -> { statements } .)
-    $end            reduce using rule 65 (nested -> { statements } .)
-    }               reduce using rule 65 (nested -> { statements } .)
+    ELSE            reduce using rule 65 (nested -> { statements_list } .)
+    ID              reduce using rule 65 (nested -> { statements_list } .)
+    PRINT           reduce using rule 65 (nested -> { statements_list } .)
+    CONTINUE        reduce using rule 65 (nested -> { statements_list } .)
+    BREAK           reduce using rule 65 (nested -> { statements_list } .)
+    RETURN          reduce using rule 65 (nested -> { statements_list } .)
+    IF              reduce using rule 65 (nested -> { statements_list } .)
+    FOR             reduce using rule 65 (nested -> { statements_list } .)
+    WHILE           reduce using rule 65 (nested -> { statements_list } .)
+    $end            reduce using rule 65 (nested -> { statements_list } .)
+    }               reduce using rule 65 (nested -> { statements_list } .)
 
 
 state 128
@@ -3390,7 +3423,7 @@ state 130
     (40) expression -> expression . LT term
     (41) expression -> expression . LTE term
     (43) expression -> expression . TRANSPOSE
-    (65) nested -> . { statements }
+    (65) nested -> . { statements_list }
     (66) nested -> . statement
     (5) statement -> . assignment ;
     (6) statement -> . print ;
@@ -3456,6 +3489,6 @@ state 131
     FOR             reduce using rule 13 (for -> FOR ID ASSIGN expression : expression nested .)
     WHILE           reduce using rule 13 (for -> FOR ID ASSIGN expression : expression nested .)
     $end            reduce using rule 13 (for -> FOR ID ASSIGN expression : expression nested .)
-    }               reduce using rule 13 (for -> FOR ID ASSIGN expression : expression nested .)
     ELSE            reduce using rule 13 (for -> FOR ID ASSIGN expression : expression nested .)
+    }               reduce using rule 13 (for -> FOR ID ASSIGN expression : expression nested .)
 

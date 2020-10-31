@@ -22,10 +22,10 @@ precedence = (
         'LT', 'LTE'),
     ('left', '+', '-'),
     ('left', '/', '*'),
-    ('left', 'TRANSPOSE'),
     ('right', 'UMINUS'),
     ("nonassoc", 'IFx'),
-    ("nonassoc", 'ELSE')
+    ("nonassoc", 'ELSE'),
+    ('left', 'TRANSPOSE'),
 )
 
 
@@ -33,7 +33,7 @@ def p_start(p):
     """
         start : statements
     """
-    p[0] = Ast(p[1])
+    p[0] = Ast('Root', [p[1]])
 
 
 def p_statements(p):
@@ -76,7 +76,7 @@ def p_for(p):
     """
         for : FOR ID ASSIGN expression ':' expression nested
     """
-    p[0] = For(p[2], p[4], p[6])
+    p[0] = For(Identifier(p[2]), p[4], p[6])
 
 
 def p_while(p):
@@ -133,14 +133,14 @@ def p_assignment(p):
     """
         assignment : ID assign_symbol expression
     """
-    p[0] = Bind(p[1], p[2], p[3])
+    p[0] = Bind(Identifier(p[1]), p[2], p[3])
 
 
 def p_slice_assignment(p):
     """
         assignment : ID slice assign_symbol expression
     """
-    p[0] = BindWithSlice(p[1], p[2], p[3], p[4])
+    p[0] = BindWithSlice(Identifier(p[1]), p[2], p[3], p[4])
 
 
 def p_assign(p):
@@ -218,10 +218,17 @@ def p_vector_transpose(p):
     p[0] = FunctionCall('transpose', [p[1]])
 
 
-def p_expression_suffix_binary_ops(p):
+def p_expression_id_func_call(p):
     """
         expression : ID dot_operation term
-                   | vector dot_operation term
+    """
+    id = Identifier(p[1])
+    p[0] = ObjectFunctionCall(id, p[2], [p[3]])
+
+
+def p_expression_vector_func_call(p):
+    """
+        expression : vector dot_operation term
     """
     p[0] = ObjectFunctionCall(p[1], p[2], [p[3]])
 
@@ -297,18 +304,36 @@ def p_slice_contents_single(p):
 def p_range(p):
     """
         range : expression ':' expression
-              | expression ':'
-              | ':' expression
-              | expression
     """
-    pass
+    p[0] = Range(p[1], p[3])
+
+
+def p_range_startless(p):
+    """
+        range : expression ':'
+    """
+    p[0] = EndlessRange(p[2])
+
+
+def p_range_endless(p):
+    """
+        range : ':' expression
+    """
+    p[0] = StartlessRange(p[2])
+
+
+def p_range_simple(p):
+    """
+        range : expression
+    """
+    p[0] = SimpleRange(p[1])
 
 
 def p_if(p):
     """
         if : IF condition nested %prec IFx
     """
-    p[0] = If(p[2], [3])
+    p[0] = If(p[2], p[3])
 
 
 def p_if_else(p):
@@ -327,7 +352,7 @@ def p_condition(p):
 
 def p_nested(p):
     """
-        nested : '{' statements '}'
+        nested : '{' statements_list '}'
                | statement
     """
     xs = []

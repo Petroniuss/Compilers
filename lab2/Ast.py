@@ -1,4 +1,4 @@
-from operator import itemgetter
+from treelib import Node, Tree
 
 # We're going to employ visitor pattern to visit nodes
 
@@ -13,6 +13,23 @@ class Ast:
 
     def __str__(self):
         return str(self.type)
+
+    def show(self):
+        tree = Tree()
+        tree.create_node(tag=str(self), identifier=1)
+        parents = [(1, self.children)]
+        nextParents = []
+
+        for i in range(2):
+            for (id, children) in parents:
+                for child in children:
+                    node = tree.create_node(tag=str(child), parent=id)
+                    if len(child.children) > 0:
+                        nextParents.append((node.identifier, child.children))
+
+            parents = nextParents
+
+        tree.show(line_type="ascii-ex", reverse=False)
 
 
 class BinaryExpression(Ast):
@@ -77,15 +94,15 @@ class FunctionCall(Ast):
             - ones
     """
 
-    def __init__(self, functionname, arglist):
-        super().__init__('FunctionCall', children=arglist)
-        self.functionname = functionname
+    def __init__(self, functionName, arglist):
+        super().__init__('FunctionCall', children=[
+            Leaf(functionName)] + arglist)
 
 
 class ObjectFunctionCall(Ast):
     def __init__(self, objOrId, functionName, argList):
-        super().__init__('ObjectFunctionCall', children=[objOrId] + argList)
-        self.functionName = functionName
+        super().__init__('ObjectFunctionCall', children=[
+            Leaf(functionName), objOrId] + argList)
 
     def objectOrId(self):
         return self.children[0]
@@ -97,9 +114,6 @@ class ObjectFunctionCall(Ast):
 class Vector(Ast):
     def __init__(self, elements):
         super().__init__('Vector', children=elements)
-
-    def __str__(self):
-        return str(self.children)
 
 
 class Slice(Ast):
@@ -154,6 +168,41 @@ class BindWithSlice(Ast):
         return self.children[2]
 
 
+class Range(Ast):
+    def __init__(self, begin, end):
+        super().__init__('Range', children=[begin, end])
+
+    def begin(self):
+        return self.children[0]
+
+    def end(self):
+        return self.children[0]
+
+
+class StartlessRange(Ast):
+    def __init__(self, end):
+        super().__init__('StartlessRange', children=[end])
+
+    def end(self):
+        return self.children[0]
+
+
+class EndlessRange(Ast):
+    def __init__(self, begin):
+        super().__init__('EndlessRange', children=[begin])
+
+    def begin(self):
+        return self.children[0]
+
+
+class SimpleRange(Ast):
+    def __init__(self, idx):
+        super().__init__('SimpleRange', children=[idx])
+
+    def idx(self):
+        return self.children[0]
+
+
 class BinaryOp(Ast):
     def __init__(self, operator, left, right):
         super().__init__(operator, children=[left, right])
@@ -195,13 +244,10 @@ class IfElse(Ast):
 
 class Identifier(Ast):
     def __init__(self, id):
-        super().__init__('ID', children=[id])
+        super().__init__('ID', children=[Leaf(id)])
 
     def id(self):
-        return self.children[0]
-
-    def __str__(self):
-        return f'{self.type} : {self.id}'
+        return self.children[0].value
 
 
 class Primitive(Ast):
@@ -210,21 +256,24 @@ class Primitive(Ast):
     """
 
     def __init__(self, type, value):
-        super().__init__(type)
-        self.value = value
+        super().__init__(type, children=[Leaf(value)])
 
-    def __str__(self):
-        return f'{self.type} : {self.value}'
+    def value(self):
+        return self.children[0].value
 
-    def __repr__(self):
-        return self.__str__()
+
+class Leaf(Ast):
+    def __init__(self, value):
+        super().__init__(value, children=[])
+
+    def value(self):
+        return self.type
 
 
 class CodeBlock(Ast):
     def __init__(self, statements):
-        super().__init__('CodeBlock')
-
-        self.statements = statements
+        print('CodeBlock\' children', statements)
+        super().__init__('CodeBlock', children=statements)
 
 
 def String(value):
