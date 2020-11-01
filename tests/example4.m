@@ -1,6 +1,3 @@
-
-
-foo = [[1], [2], [3]];
 if (foo == "str") 
     foo = 12;
 else if (foo == 12) {
