@@ -266,7 +266,5 @@ def t_eof(t):
     return None
 
 
-lex.lex()
-
 # A string containing ignored characters (spaces and tabs)
 t_ignore = ' \t'

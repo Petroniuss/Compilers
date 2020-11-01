@@ -17,5 +17,5 @@ if __name__ == '__main__':
     parser = LRParser()
 
     text = file.read()
-    ast = parser.parse(text)
+    ast = parser.parse(text, lexer=lexer.lex())
     ast.show()
