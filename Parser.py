@@ -68,6 +68,7 @@ def p_statement(p):
                   | if
                   | for
                   | while
+                  | nested_statements
     """
     p[0] = p[1]
 
@@ -352,15 +353,24 @@ def p_condition(p):
 
 def p_nested(p):
     """
-        nested : '{' statements_list '}'
-               | statement
+        nested : nested_single
     """
-    xs = []
-    if len(p) == 2:
-        xs = [p[1]]
-    else:
-        xs = p[2]
+    p[0] = p[1]
 
+
+def p_nested_single(p):
+    """
+        nested_single : statement
+    """
+    xs = [p[1]]
+    p[0] = CodeBlock(xs)
+
+
+def p_nested_statements(p):
+    """
+        nested_statements : '{' statements_list '}'
+    """
+    xs = p[2]
     p[0] = CodeBlock(xs)
 
 
