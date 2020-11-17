@@ -46,17 +46,20 @@ class BinaryExpression(Ast):
 
 
 class For(Ast):
-    def __init__(self, id, beginExpr, endExpr):
-        super().__init__('For', children=[id, beginExpr, endExpr])
+    def __init__(self, id, initExpr, endExpr, body):
+        super().__init__('For', children=[id, initExpr, endExpr, body])
 
     def id(self):
         return self.children[0]
 
-    def beginExpr(self):
+    def initExpr(self):
         return self.children[1]
 
     def endExpr(self):
         return self.children[2]
+
+    def body(self):
+        return self.children[3]
 
 
 class While(Ast):
@@ -272,6 +275,12 @@ class Leaf(Ast):
 
 class CodeBlock(Ast):
     def __init__(self, statements):
+        """
+            Constructor avoids nesting code blocks 
+        """
+        if len(statements) == 1 and type(statements[0]) is CodeBlock:
+            nestedCodeBlock = statements[0]
+            statements = nestedCodeBlock.children
         super().__init__('CodeBlock', children=statements)
 
 

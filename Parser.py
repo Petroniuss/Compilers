@@ -18,14 +18,14 @@ def LRParser():
 # -------------------------------------------------------------------
 
 precedence = (
-    ('nonassoc', 'EQL', 'NEQ', 'GT', 'GTE',
-        'LT', 'LTE'),
     ('left', '+', '-'),
     ('left', '/', '*'),
     ('right', 'UMINUS'),
     ("nonassoc", 'IFx'),
     ("nonassoc", 'ELSE'),
     ('left', 'TRANSPOSE'),
+    ('nonassoc', 'EQL', 'NEQ', 'GT', 'GTE',
+        'LT', 'LTE'),
 )
 
 
@@ -38,7 +38,7 @@ def p_start(p):
 
 def p_statements(p):
     """
-        statements : statements_list 
+        statements : statements_list
     """
     p[0] = CodeBlock(p[1])
 
@@ -77,7 +77,7 @@ def p_for(p):
     """
         for : FOR ID ASSIGN expression ':' expression nested
     """
-    p[0] = For(Identifier(p[2]), p[4], p[6])
+    p[0] = For(Identifier(p[2]), p[4], p[6], p[7])
 
 
 def p_while(p):
@@ -200,7 +200,7 @@ def p_expression_relational_ops(p):
                    | expression GT term
                    | expression GTE term
                    | expression LT term
-                   | expression LTE term
+                   | expression LTE term 
     """
     p[0] = RelationalExp(p[2], p[1], p[3])
 
@@ -353,14 +353,7 @@ def p_condition(p):
 
 def p_nested(p):
     """
-        nested : nested_single
-    """
-    p[0] = p[1]
-
-
-def p_nested_single(p):
-    """
-        nested_single : statement
+        nested : statement
     """
     xs = [p[1]]
     p[0] = CodeBlock(xs)
@@ -368,10 +361,24 @@ def p_nested_single(p):
 
 def p_nested_statements(p):
     """
-        nested_statements : '{' statements_list '}'
+        nested_statements : nested_empty
+                          | nested_statements_list
     """
-    xs = p[2]
-    p[0] = CodeBlock(xs)
+    p[0] = CodeBlock(p[1])
+
+
+def p_nested_statements_list(p):
+    """
+        nested_statements_list : '{' statements_list '}'
+    """
+    p[0] = p[2]
+
+
+def p_nested_statements_empty(p):
+    """
+        nested_empty : '{' '}'
+    """
+    p[0] = []
 
 
 def p_term(p):
