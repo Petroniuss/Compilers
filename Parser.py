@@ -18,14 +18,14 @@ def LRParser():
 # -------------------------------------------------------------------
 
 precedence = (
+    ("nonassoc", 'IFx'),
+    ("nonassoc", 'ELSE'),
+    ('nonassoc', 'EQL', 'NEQ', 'GT', 'GTE',
+        'LT', 'LTE'),
     ('left', '+', '-'),
     ('left', '/', '*'),
     ('right', 'UMINUS'),
-    ("nonassoc", 'IFx'),
-    ("nonassoc", 'ELSE'),
     ('left', 'TRANSPOSE'),
-    ('nonassoc', 'EQL', 'NEQ', 'GT', 'GTE',
-        'LT', 'LTE'),
 )
 
 

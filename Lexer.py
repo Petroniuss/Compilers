@@ -226,20 +226,20 @@ def t_STR(t):
     # We allow for escaping (") within a string using (\")
     # Multiline strings are disallowed.
     r'"((\\")|[^"\n])*"'
-    t.value = str(t.value[1: len(t.value) - 1]) \
+    t.value = str(t.value[1:-1]) \
         .replace(r'\"', "\"")
     return t
 
 
 def t_FLOATNUM(t):
     # It also allows for leading zeros and for scientific notation.
-    r'[+-]?(\d+(\.\d*)|\.\d+)([eE][+-]?\d+)?'
+    r'(\d+(\.\d*)|\.\d+)([eE][+-]?\d+)?'
     t.value = float(t.value)
     return t
 
 
 def t_INTNUM(t):
-    r'[-+]?(\d+)'  # It allows for leading zeros.
+    r'(\d+)'  # It allows for leading zeros.
     t.value = int(t.value)
     return t
 
