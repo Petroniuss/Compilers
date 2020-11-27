@@ -33,19 +33,12 @@ def p_start(p):
     """
         start : statements
     """
-    p[0] = Ast('Root', [p[1]])
+    p[0] = Ast('Root', [CodeBlock(p[1])])
 
 
 def p_statements(p):
     """
-        statements : statements_list
-    """
-    p[0] = CodeBlock(p[1])
-
-
-def p_statements_list(p):
-    """
-        statements_list : statements_list statement
+        statements : statements statement
     """
     p[1].append(p[2])
     p[0] = p[1]
@@ -53,7 +46,7 @@ def p_statements_list(p):
 
 def p_statements_list_single(p):
     """
-        statements_list : statement
+        statements : statement
     """
     p[0] = [p[1]]
 
@@ -369,9 +362,13 @@ def p_nested_statements(p):
 
 def p_nested_statements_list(p):
     """
-        nested_statements_list : '{' statements_list '}'
+        nested_statements_list : '{' statements '}'
     """
     p[0] = p[2]
+
+# ----------------------
+# ----- Primitives -----
+# ---------------- -----
 
 
 def p_nested_statements_empty(p):
