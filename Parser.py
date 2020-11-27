@@ -68,7 +68,7 @@ def p_statement(p):
 
 def p_for(p):
     """
-        for : FOR ID ASSIGN range statement
+        for : FOR ID ASSIGN range_closed statement
     """
     p[0] = For(Identifier(p[2]), p[4], CodeBlock([p[5]]))
 
@@ -105,7 +105,6 @@ def p_print(p):
     """
         print : PRINT expression_list
     """
-    print(p[2])
     p[0] = FunctionCall(p[1], p[2])
 
 
@@ -284,7 +283,14 @@ def p_slice_contents_single(p):
 
 def p_range(p):
     """
-        range : expression ':' expression
+        range : range_closed
+    """
+    p[0] = p[1]
+
+
+def p_range_closed(p):
+    """
+        range_closed : expression ':' expression
     """
     p[0] = Range(p[1], p[3])
 
