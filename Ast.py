@@ -46,20 +46,17 @@ class BinaryExpression(Ast):
 
 
 class For(Ast):
-    def __init__(self, id, initExpr, endExpr, body):
-        super().__init__('For', children=[id, initExpr, endExpr, body])
+    def __init__(self, id, range, body):
+        super().__init__('For', children=[id, range, body])
 
     def id(self):
         return self.children[0]
 
-    def initExpr(self):
+    def range(self):
         return self.children[1]
 
-    def endExpr(self):
-        return self.children[2]
-
     def body(self):
-        return self.children[3]
+        return self.children[2]
 
 
 class While(Ast):
@@ -182,7 +179,7 @@ class Range(Ast):
         return self.children[0]
 
 
-class StartlessRange(Ast):
+class FromStartRange(Ast):
     def __init__(self, end):
         super().__init__('StartlessRange', children=[end])
 

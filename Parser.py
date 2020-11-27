@@ -17,8 +17,6 @@ def LRParser():
 # Parser
 # -------------------------------------------------------------------
 
-# todo remove nested_statements
-
 precedence = (
     ("nonassoc", 'IFx'),
     ("nonassoc", 'ELSE'),
@@ -70,9 +68,9 @@ def p_statement(p):
 
 def p_for(p):
     """
-        for : FOR ID ASSIGN expression ':' expression statement
+        for : FOR ID ASSIGN range statement
     """
-    p[0] = For(Identifier(p[2]), p[4], p[6], CodeBlock([p[7]]))
+    p[0] = For(Identifier(p[2]), p[4], CodeBlock([p[5]]))
 
 
 def p_while(p):
@@ -302,7 +300,7 @@ def p_range_endless(p):
     """
         range : ':' expression
     """
-    p[0] = StartlessRange(p[2])
+    p[0] = FromStartRange(p[2])
 
 
 def p_range_simple(p):
@@ -333,14 +331,6 @@ def p_condition(p):
     p[0] = Condition(p[2])
 
 
-# def p_nested(p):
-#     """
-#         nested_statement : statement
-#     """
-#     xs = [p[1]]
-#     p[0] = CodeBlock(xs)
-
-
 def p_nested_statements(p):
     """
         nested_statements : nested_empty
@@ -355,9 +345,9 @@ def p_nested_statements_list(p):
     """
     p[0] = p[2]
 
-# ----------------------
-# ----- Primitives -----
-# ---------------- -----
+# -------------------------------------
+#      ----- Primitives -----
+# -------------------------------------
 
 
 def p_nested_statements_empty(p):
