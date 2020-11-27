@@ -17,6 +17,8 @@ def LRParser():
 # Parser
 # -------------------------------------------------------------------
 
+# todo remove nested_statements
+
 precedence = (
     ("nonassoc", 'IFx'),
     ("nonassoc", 'ELSE'),
@@ -68,14 +70,14 @@ def p_statement(p):
 
 def p_for(p):
     """
-        for : FOR ID ASSIGN expression ':' expression nested
+        for : FOR ID ASSIGN expression ':' expression nested_statement
     """
     p[0] = For(Identifier(p[2]), p[4], p[6], p[7])
 
 
 def p_while(p):
     """
-        while : WHILE condition nested
+        while : WHILE condition nested_statement
     """
     p[0] = While(p[2], p[3])
 
@@ -103,24 +105,25 @@ def p_continue(p):
 
 def p_print(p):
     """
-        print : PRINT coma_separated
+        print : PRINT expression_list
     """
+    print(p[2])
     p[0] = FunctionCall(p[1], p[2])
 
 
-def p_coma_separated(p):
-    """
-        coma_separated : coma_separated ',' expression
-    """
-    p[1].append(p[3])
-    p[0] = p[1]
+# def p_coma_separated_expressions_expressions(p):
+#     """
+#         coma_separated_expressions : coma_separated_expressions ',' expression
+#     """
+#     p[1].append(p[3])
+#     p[0] = p[1]
 
 
-def p_coma_separated_single(p):
-    """
-        coma_separated : expression
-    """
-    p[0] = [p[1]]
+# def p_coma_separated_expressions_single(p):
+#     """
+#         coma_separated_expressions : expression
+#     """
+#     p[0] = [p[1]]
 
 
 def p_assignment(p):
@@ -159,7 +162,8 @@ def p_expression_list(p):
     """
         expression_list : expression_list ',' expression
     """
-    p[0] = p[1].append(p[3])
+    p[1].append(p[3])
+    p[0] = p[1]
 
 
 def p_expression_list_single(p):
@@ -202,7 +206,7 @@ def p_expression_unary(p):
     """
         expression : '-' term %prec UMINUS
     """
-    p[0] = FunctionCall('negative', p[2])
+    p[0] = FunctionCall('negative', [p[2]])
 
 
 def p_vector_transpose(p):
@@ -325,14 +329,14 @@ def p_range_simple(p):
 
 def p_if(p):
     """
-        if : IF condition nested %prec IFx
+        if : IF condition nested_statement %prec IFx
     """
     p[0] = If(p[2], p[3])
 
 
 def p_if_else(p):
     """
-        if : IF condition nested ELSE nested
+        if : IF condition nested_statement ELSE nested_statement
     """
     p[0] = IfElse(p[2], p[3], p[5])
 
@@ -346,7 +350,7 @@ def p_condition(p):
 
 def p_nested(p):
     """
-        nested : statement
+        nested_statement : statement
     """
     xs = [p[1]]
     p[0] = CodeBlock(xs)
