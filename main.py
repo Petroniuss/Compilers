@@ -3,6 +3,7 @@ import ply.lex as lex
 
 from Lexer import Lexer
 from Parser import LRParser
+from TreePrinter import TreePrinter
 
 
 if __name__ == '__main__':
@@ -18,4 +19,6 @@ if __name__ == '__main__':
 
     text = file.read()
     ast = parser.parse(text, lexer=lexer.lex())
-    ast.show()
+    printer = TreePrinter()
+    # ast.show()
+    ast.printTree(0)

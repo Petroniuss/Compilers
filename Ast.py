@@ -1,8 +1,3 @@
-from treelib import Node, Tree
-
-# We're going to employ visitor pattern to visit nodes
-
-
 class Ast:
     def __init__(self, type, children=None):
         self.type = type
@@ -13,23 +8,6 @@ class Ast:
 
     def __str__(self):
         return str(self.type)
-
-    def show(self):
-        tree = Tree()
-        tree.create_node(tag=str(self), identifier=1)
-        parents = [(1, self.children)]
-        nextParents = []
-
-        for i in range(2):
-            for (id, children) in parents:
-                for child in children:
-                    node = tree.create_node(tag=str(child), parent=id)
-                    if len(child.children) > 0:
-                        nextParents.append((node.identifier, child.children))
-
-            parents = nextParents
-
-        tree.show(line_type="ascii-ex", reverse=False)
 
 
 class BinaryExpression(Ast):
@@ -104,11 +82,14 @@ class ObjectFunctionCall(Ast):
         super().__init__('ObjectFunctionCall', children=[
             Leaf(functionName), objOrId] + argList)
 
+    def functionName(self):
+        return self.children[0].value()
+
     def objectOrId(self):
-        return self.children[0]
+        return self.children[1]
 
     def args(self):
-        return self.children[1:]
+        return self.children[2:]
 
 
 class Vector(Ast):
