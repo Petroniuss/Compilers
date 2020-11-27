@@ -111,21 +111,6 @@ def p_print(p):
     p[0] = FunctionCall(p[1], p[2])
 
 
-# def p_coma_separated_expressions_expressions(p):
-#     """
-#         coma_separated_expressions : coma_separated_expressions ',' expression
-#     """
-#     p[1].append(p[3])
-#     p[0] = p[1]
-
-
-# def p_coma_separated_expressions_single(p):
-#     """
-#         coma_separated_expressions : expression
-#     """
-#     p[0] = [p[1]]
-
-
 def p_assignment(p):
     """
         assignment : ID assign_symbol expression
@@ -296,7 +281,7 @@ def p_slice_contents_single(p):
     """
         slice_contents : range
     """
-    p[0] = p[1]
+    p[0] = [p[1]]
 
 
 def p_range(p):
