@@ -70,16 +70,16 @@ def p_statement(p):
 
 def p_for(p):
     """
-        for : FOR ID ASSIGN expression ':' expression nested_statement
+        for : FOR ID ASSIGN expression ':' expression statement
     """
-    p[0] = For(Identifier(p[2]), p[4], p[6], p[7])
+    p[0] = For(Identifier(p[2]), p[4], p[6], CodeBlock([p[7]]))
 
 
 def p_while(p):
     """
-        while : WHILE condition nested_statement
+        while : WHILE condition statement
     """
-    p[0] = While(p[2], p[3])
+    p[0] = While(p[2], CodeBlock([p[3]]))
 
 
 def p_break(p):
@@ -151,13 +151,6 @@ def p_assign(p):
     p[0] = p[1]
 
 
-def p_expression_function_call(p):
-    """
-        expression : built_in_function '(' expression_list ')'
-    """
-    p[0] = FunctionCall(p[1], p[3])
-
-
 def p_expression_list(p):
     """
         expression_list : expression_list ',' expression
@@ -178,6 +171,13 @@ def p_expression_term(p):
         expression : term
     """
     p[0] = p[1]
+
+
+def p_expression_function_call(p):
+    """
+        expression : built_in_function '(' expression_list ')'
+    """
+    p[0] = FunctionCall(p[1], p[3])
 
 
 def p_expression_binary_ops(p):
@@ -329,16 +329,16 @@ def p_range_simple(p):
 
 def p_if(p):
     """
-        if : IF condition nested_statement %prec IFx
+        if : IF condition statement %prec IFx
     """
-    p[0] = If(p[2], p[3])
+    p[0] = If(p[2], CodeBlock([p[3]]))
 
 
 def p_if_else(p):
     """
-        if : IF condition nested_statement ELSE nested_statement
+        if : IF condition statement ELSE statement
     """
-    p[0] = IfElse(p[2], p[3], p[5])
+    p[0] = IfElse(p[2], CodeBlock([p[3]]), CodeBlock([p[5]]))
 
 
 def p_condition(p):
@@ -348,12 +348,12 @@ def p_condition(p):
     p[0] = Condition(p[2])
 
 
-def p_nested(p):
-    """
-        nested_statement : statement
-    """
-    xs = [p[1]]
-    p[0] = CodeBlock(xs)
+# def p_nested(p):
+#     """
+#         nested_statement : statement
+#     """
+#     xs = [p[1]]
+#     p[0] = CodeBlock(xs)
 
 
 def p_nested_statements(p):

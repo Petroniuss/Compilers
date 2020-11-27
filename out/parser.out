@@ -15,8 +15,8 @@ Rule 9     statement -> if
 Rule 10    statement -> for
 Rule 11    statement -> while
 Rule 12    statement -> nested_statements
-Rule 13    for -> FOR ID ASSIGN expression : expression nested_statement
-Rule 14    while -> WHILE condition nested_statement
+Rule 13    for -> FOR ID ASSIGN expression : expression statement
+Rule 14    while -> WHILE condition statement
 Rule 15    break -> BREAK
 Rule 16    return -> RETURN expression
 Rule 17    continue -> CONTINUE
@@ -28,10 +28,10 @@ Rule 22    assign_symbol -> SUBASSIGN
 Rule 23    assign_symbol -> ADDASSIGN
 Rule 24    assign_symbol -> DIVASSIGN
 Rule 25    assign_symbol -> MULTASSIGN
-Rule 26    expression -> built_in_function ( expression_list )
-Rule 27    expression_list -> expression_list , expression
-Rule 28    expression_list -> expression
-Rule 29    expression -> term
+Rule 26    expression_list -> expression_list , expression
+Rule 27    expression_list -> expression
+Rule 28    expression -> term
+Rule 29    expression -> built_in_function ( expression_list )
 Rule 30    expression -> expression + term
 Rule 31    expression -> expression - term
 Rule 32    expression -> expression / term
@@ -62,31 +62,30 @@ Rule 56    range -> expression : expression
 Rule 57    range -> expression :
 Rule 58    range -> : expression
 Rule 59    range -> expression
-Rule 60    if -> IF condition nested_statement
-Rule 61    if -> IF condition nested_statement ELSE nested_statement
+Rule 60    if -> IF condition statement
+Rule 61    if -> IF condition statement ELSE statement
 Rule 62    condition -> ( expression )
-Rule 63    nested_statement -> statement
-Rule 64    nested_statements -> nested_empty
-Rule 65    nested_statements -> nested_statements_list
-Rule 66    nested_statements_list -> { statements }
-Rule 67    nested_empty -> { }
-Rule 68    term -> ( expression )
-Rule 69    term -> vector
-Rule 70    term -> INTNUM
-Rule 71    term -> FLOATNUM
-Rule 72    term -> STR
-Rule 73    term -> ID
-Rule 74    built_in_function -> EYE
-Rule 75    built_in_function -> ONES
-Rule 76    built_in_function -> ZEROS
+Rule 63    nested_statements -> nested_empty
+Rule 64    nested_statements -> nested_statements_list
+Rule 65    nested_statements_list -> { statements }
+Rule 66    nested_empty -> { }
+Rule 67    term -> ( expression )
+Rule 68    term -> vector
+Rule 69    term -> INTNUM
+Rule 70    term -> FLOATNUM
+Rule 71    term -> STR
+Rule 72    term -> ID
+Rule 73    built_in_function -> EYE
+Rule 74    built_in_function -> ONES
+Rule 75    built_in_function -> ZEROS
 
 Terminals, with rules where they appear
 
-(                    : 26 62 68
-)                    : 26 62 68
+(                    : 29 62 67
+)                    : 29 62 67
 *                    : 33
 +                    : 30
-,                    : 27 50 54
+,                    : 26 50 54
 -                    : 31 40
 /                    : 32
 :                    : 13 56 57 58
@@ -102,59 +101,58 @@ DOTMUL               : 46
 DOTSUB               : 45
 ELSE                 : 61
 EQL                  : 34
-EYE                  : 74
-FLOATNUM             : 71
+EYE                  : 73
+FLOATNUM             : 70
 FOR                  : 13
 GT                   : 36
 GTE                  : 37
-ID                   : 13 19 20 42 73
+ID                   : 13 19 20 42 72
 IF                   : 60 61
-INTNUM               : 70
+INTNUM               : 69
 LT                   : 38
 LTE                  : 39
 MULTASSIGN           : 25
 NEQ                  : 35
-ONES                 : 75
+ONES                 : 74
 PRINT                : 18
 RETURN               : 16
-STR                  : 72
+STR                  : 71
 SUBASSIGN            : 22
 TRANSPOSE            : 41
 WHILE                : 14
-ZEROS                : 76
+ZEROS                : 75
 [                    : 48 49 53
 ]                    : 48 49 53
 error                : 
-{                    : 66 67
-}                    : 66 67
+{                    : 65 66
+}                    : 65 66
 
 Nonterminals, with rules where they appear
 
 assign_symbol        : 19 20
 assignment           : 4
 break                : 7
-built_in_function    : 26
+built_in_function    : 29
 condition            : 14 60 61
 continue             : 6
 dot_operation        : 42 43
-expression           : 13 13 16 19 20 27 28 30 31 32 33 34 35 36 37 38 39 41 56 56 57 58 59 62 68
-expression_list      : 18 26 27
+expression           : 13 13 16 19 20 26 27 30 31 32 33 34 35 36 37 38 39 41 56 56 57 58 59 62 67
+expression_list      : 18 26 29
 for                  : 10
 if                   : 9
-nested_empty         : 64
-nested_statement     : 13 14 60 61 61
+nested_empty         : 63
 nested_statements    : 12
-nested_statements_list : 65
+nested_statements_list : 64
 print                : 5
 range                : 54 55
 return               : 8
 slice                : 20
 slice_contents       : 53 54
 start                : 0
-statement            : 2 3 63
-statements           : 1 2 66
-term                 : 29 30 31 32 33 34 35 36 37 38 39 40 42 43 52
-vector               : 43 69
+statement            : 2 3 13 14 60 61 61
+statements           : 1 2 65
+term                 : 28 30 31 32 33 34 35 36 37 38 39 40 42 43 52
+vector               : 43 68
 vector_contents      : 48 50
 vector_element       : 50 51
 while                : 11
@@ -182,14 +180,14 @@ state 0
     (17) continue -> . CONTINUE
     (15) break -> . BREAK
     (16) return -> . RETURN expression
-    (60) if -> . IF condition nested_statement
-    (61) if -> . IF condition nested_statement ELSE nested_statement
-    (13) for -> . FOR ID ASSIGN expression : expression nested_statement
-    (14) while -> . WHILE condition nested_statement
-    (64) nested_statements -> . nested_empty
-    (65) nested_statements -> . nested_statements_list
-    (67) nested_empty -> . { }
-    (66) nested_statements_list -> . { statements }
+    (60) if -> . IF condition statement
+    (61) if -> . IF condition statement ELSE statement
+    (13) for -> . FOR ID ASSIGN expression : expression statement
+    (14) while -> . WHILE condition statement
+    (63) nested_statements -> . nested_empty
+    (64) nested_statements -> . nested_statements_list
+    (66) nested_empty -> . { }
+    (65) nested_statements_list -> . { statements }
 
     ID              shift and go to state 13
     PRINT           shift and go to state 14
@@ -241,14 +239,14 @@ state 2
     (17) continue -> . CONTINUE
     (15) break -> . BREAK
     (16) return -> . RETURN expression
-    (60) if -> . IF condition nested_statement
-    (61) if -> . IF condition nested_statement ELSE nested_statement
-    (13) for -> . FOR ID ASSIGN expression : expression nested_statement
-    (14) while -> . WHILE condition nested_statement
-    (64) nested_statements -> . nested_empty
-    (65) nested_statements -> . nested_statements_list
-    (67) nested_empty -> . { }
-    (66) nested_statements_list -> . { statements }
+    (60) if -> . IF condition statement
+    (61) if -> . IF condition statement ELSE statement
+    (13) for -> . FOR ID ASSIGN expression : expression statement
+    (14) while -> . WHILE condition statement
+    (63) nested_statements -> . nested_empty
+    (64) nested_statements -> . nested_statements_list
+    (66) nested_empty -> . { }
+    (65) nested_statements_list -> . { statements }
 
     $end            reduce using rule 1 (start -> statements .)
     ID              shift and go to state 13
@@ -422,10 +420,10 @@ state 13
 state 14
 
     (18) print -> PRINT . expression_list
-    (27) expression_list -> . expression_list , expression
-    (28) expression_list -> . expression
-    (26) expression -> . built_in_function ( expression_list )
-    (29) expression -> . term
+    (26) expression_list -> . expression_list , expression
+    (27) expression_list -> . expression
+    (28) expression -> . term
+    (29) expression -> . built_in_function ( expression_list )
     (30) expression -> . expression + term
     (31) expression -> . expression - term
     (32) expression -> . expression / term
@@ -440,33 +438,33 @@ state 14
     (41) expression -> . expression TRANSPOSE
     (42) expression -> . ID dot_operation term
     (43) expression -> . vector dot_operation term
-    (74) built_in_function -> . EYE
-    (75) built_in_function -> . ONES
-    (76) built_in_function -> . ZEROS
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
+    (73) built_in_function -> . EYE
+    (74) built_in_function -> . ONES
+    (75) built_in_function -> . ZEROS
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
     -               shift and go to state 43
     ID              shift and go to state 44
-    EYE             shift and go to state 46
-    ONES            shift and go to state 47
-    ZEROS           shift and go to state 48
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
+    EYE             shift and go to state 49
+    ONES            shift and go to state 50
+    ZEROS           shift and go to state 51
     [               shift and go to state 52
 
     expression_list                shift and go to state 38
     expression                     shift and go to state 39
-    built_in_function              shift and go to state 40
-    term                           shift and go to state 42
+    term                           shift and go to state 40
+    built_in_function              shift and go to state 41
     vector                         shift and go to state 45
 
 state 15
@@ -486,8 +484,8 @@ state 16
 state 17
 
     (16) return -> RETURN . expression
-    (26) expression -> . built_in_function ( expression_list )
-    (29) expression -> . term
+    (28) expression -> . term
+    (29) expression -> . built_in_function ( expression_list )
     (30) expression -> . expression + term
     (31) expression -> . expression - term
     (32) expression -> . expression / term
@@ -502,38 +500,38 @@ state 17
     (41) expression -> . expression TRANSPOSE
     (42) expression -> . ID dot_operation term
     (43) expression -> . vector dot_operation term
-    (74) built_in_function -> . EYE
-    (75) built_in_function -> . ONES
-    (76) built_in_function -> . ZEROS
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
+    (73) built_in_function -> . EYE
+    (74) built_in_function -> . ONES
+    (75) built_in_function -> . ZEROS
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
     -               shift and go to state 43
     ID              shift and go to state 44
-    EYE             shift and go to state 46
-    ONES            shift and go to state 47
-    ZEROS           shift and go to state 48
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
+    EYE             shift and go to state 49
+    ONES            shift and go to state 50
+    ZEROS           shift and go to state 51
     [               shift and go to state 52
 
     expression                     shift and go to state 53
-    built_in_function              shift and go to state 40
-    term                           shift and go to state 42
+    term                           shift and go to state 40
+    built_in_function              shift and go to state 41
     vector                         shift and go to state 45
 
 state 18
 
-    (60) if -> IF . condition nested_statement
-    (61) if -> IF . condition nested_statement ELSE nested_statement
+    (60) if -> IF . condition statement
+    (61) if -> IF . condition statement ELSE statement
     (62) condition -> . ( expression )
 
     (               shift and go to state 55
@@ -542,14 +540,14 @@ state 18
 
 state 19
 
-    (13) for -> FOR . ID ASSIGN expression : expression nested_statement
+    (13) for -> FOR . ID ASSIGN expression : expression statement
 
     ID              shift and go to state 56
 
 
 state 20
 
-    (14) while -> WHILE . condition nested_statement
+    (14) while -> WHILE . condition statement
     (62) condition -> . ( expression )
 
     (               shift and go to state 55
@@ -558,44 +556,44 @@ state 20
 
 state 21
 
-    (64) nested_statements -> nested_empty .
+    (63) nested_statements -> nested_empty .
 
-    ID              reduce using rule 64 (nested_statements -> nested_empty .)
-    PRINT           reduce using rule 64 (nested_statements -> nested_empty .)
-    CONTINUE        reduce using rule 64 (nested_statements -> nested_empty .)
-    BREAK           reduce using rule 64 (nested_statements -> nested_empty .)
-    RETURN          reduce using rule 64 (nested_statements -> nested_empty .)
-    IF              reduce using rule 64 (nested_statements -> nested_empty .)
-    FOR             reduce using rule 64 (nested_statements -> nested_empty .)
-    WHILE           reduce using rule 64 (nested_statements -> nested_empty .)
-    {               reduce using rule 64 (nested_statements -> nested_empty .)
-    $end            reduce using rule 64 (nested_statements -> nested_empty .)
-    }               reduce using rule 64 (nested_statements -> nested_empty .)
-    ELSE            reduce using rule 64 (nested_statements -> nested_empty .)
+    ID              reduce using rule 63 (nested_statements -> nested_empty .)
+    PRINT           reduce using rule 63 (nested_statements -> nested_empty .)
+    CONTINUE        reduce using rule 63 (nested_statements -> nested_empty .)
+    BREAK           reduce using rule 63 (nested_statements -> nested_empty .)
+    RETURN          reduce using rule 63 (nested_statements -> nested_empty .)
+    IF              reduce using rule 63 (nested_statements -> nested_empty .)
+    FOR             reduce using rule 63 (nested_statements -> nested_empty .)
+    WHILE           reduce using rule 63 (nested_statements -> nested_empty .)
+    {               reduce using rule 63 (nested_statements -> nested_empty .)
+    $end            reduce using rule 63 (nested_statements -> nested_empty .)
+    }               reduce using rule 63 (nested_statements -> nested_empty .)
+    ELSE            reduce using rule 63 (nested_statements -> nested_empty .)
 
 
 state 22
 
-    (65) nested_statements -> nested_statements_list .
+    (64) nested_statements -> nested_statements_list .
 
-    ID              reduce using rule 65 (nested_statements -> nested_statements_list .)
-    PRINT           reduce using rule 65 (nested_statements -> nested_statements_list .)
-    CONTINUE        reduce using rule 65 (nested_statements -> nested_statements_list .)
-    BREAK           reduce using rule 65 (nested_statements -> nested_statements_list .)
-    RETURN          reduce using rule 65 (nested_statements -> nested_statements_list .)
-    IF              reduce using rule 65 (nested_statements -> nested_statements_list .)
-    FOR             reduce using rule 65 (nested_statements -> nested_statements_list .)
-    WHILE           reduce using rule 65 (nested_statements -> nested_statements_list .)
-    {               reduce using rule 65 (nested_statements -> nested_statements_list .)
-    $end            reduce using rule 65 (nested_statements -> nested_statements_list .)
-    }               reduce using rule 65 (nested_statements -> nested_statements_list .)
-    ELSE            reduce using rule 65 (nested_statements -> nested_statements_list .)
+    ID              reduce using rule 64 (nested_statements -> nested_statements_list .)
+    PRINT           reduce using rule 64 (nested_statements -> nested_statements_list .)
+    CONTINUE        reduce using rule 64 (nested_statements -> nested_statements_list .)
+    BREAK           reduce using rule 64 (nested_statements -> nested_statements_list .)
+    RETURN          reduce using rule 64 (nested_statements -> nested_statements_list .)
+    IF              reduce using rule 64 (nested_statements -> nested_statements_list .)
+    FOR             reduce using rule 64 (nested_statements -> nested_statements_list .)
+    WHILE           reduce using rule 64 (nested_statements -> nested_statements_list .)
+    {               reduce using rule 64 (nested_statements -> nested_statements_list .)
+    $end            reduce using rule 64 (nested_statements -> nested_statements_list .)
+    }               reduce using rule 64 (nested_statements -> nested_statements_list .)
+    ELSE            reduce using rule 64 (nested_statements -> nested_statements_list .)
 
 
 state 23
 
-    (67) nested_empty -> { . }
-    (66) nested_statements_list -> { . statements }
+    (66) nested_empty -> { . }
+    (65) nested_statements_list -> { . statements }
     (2) statements -> . statements statement
     (3) statements -> . statement
     (4) statement -> . assignment ;
@@ -613,14 +611,14 @@ state 23
     (17) continue -> . CONTINUE
     (15) break -> . BREAK
     (16) return -> . RETURN expression
-    (60) if -> . IF condition nested_statement
-    (61) if -> . IF condition nested_statement ELSE nested_statement
-    (13) for -> . FOR ID ASSIGN expression : expression nested_statement
-    (14) while -> . WHILE condition nested_statement
-    (64) nested_statements -> . nested_empty
-    (65) nested_statements -> . nested_statements_list
-    (67) nested_empty -> . { }
-    (66) nested_statements_list -> . { statements }
+    (60) if -> . IF condition statement
+    (61) if -> . IF condition statement ELSE statement
+    (13) for -> . FOR ID ASSIGN expression : expression statement
+    (14) while -> . WHILE condition statement
+    (63) nested_statements -> . nested_empty
+    (64) nested_statements -> . nested_statements_list
+    (66) nested_empty -> . { }
+    (65) nested_statements_list -> . { statements }
 
     }               shift and go to state 58
     ID              shift and go to state 13
@@ -757,8 +755,8 @@ state 29
 state 30
 
     (19) assignment -> ID assign_symbol . expression
-    (26) expression -> . built_in_function ( expression_list )
-    (29) expression -> . term
+    (28) expression -> . term
+    (29) expression -> . built_in_function ( expression_list )
     (30) expression -> . expression + term
     (31) expression -> . expression - term
     (32) expression -> . expression / term
@@ -773,32 +771,32 @@ state 30
     (41) expression -> . expression TRANSPOSE
     (42) expression -> . ID dot_operation term
     (43) expression -> . vector dot_operation term
-    (74) built_in_function -> . EYE
-    (75) built_in_function -> . ONES
-    (76) built_in_function -> . ZEROS
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
+    (73) built_in_function -> . EYE
+    (74) built_in_function -> . ONES
+    (75) built_in_function -> . ZEROS
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
     -               shift and go to state 43
     ID              shift and go to state 44
-    EYE             shift and go to state 46
-    ONES            shift and go to state 47
-    ZEROS           shift and go to state 48
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
+    EYE             shift and go to state 49
+    ONES            shift and go to state 50
+    ZEROS           shift and go to state 51
     [               shift and go to state 52
 
     expression                     shift and go to state 60
-    built_in_function              shift and go to state 40
-    term                           shift and go to state 42
+    term                           shift and go to state 40
+    built_in_function              shift and go to state 41
     vector                         shift and go to state 45
 
 state 31
@@ -824,13 +822,13 @@ state 32
 
     -               reduce using rule 21 (assign_symbol -> ASSIGN .)
     ID              reduce using rule 21 (assign_symbol -> ASSIGN .)
-    EYE             reduce using rule 21 (assign_symbol -> ASSIGN .)
-    ONES            reduce using rule 21 (assign_symbol -> ASSIGN .)
-    ZEROS           reduce using rule 21 (assign_symbol -> ASSIGN .)
     (               reduce using rule 21 (assign_symbol -> ASSIGN .)
     INTNUM          reduce using rule 21 (assign_symbol -> ASSIGN .)
     FLOATNUM        reduce using rule 21 (assign_symbol -> ASSIGN .)
     STR             reduce using rule 21 (assign_symbol -> ASSIGN .)
+    EYE             reduce using rule 21 (assign_symbol -> ASSIGN .)
+    ONES            reduce using rule 21 (assign_symbol -> ASSIGN .)
+    ZEROS           reduce using rule 21 (assign_symbol -> ASSIGN .)
     [               reduce using rule 21 (assign_symbol -> ASSIGN .)
 
 
@@ -840,13 +838,13 @@ state 33
 
     -               reduce using rule 22 (assign_symbol -> SUBASSIGN .)
     ID              reduce using rule 22 (assign_symbol -> SUBASSIGN .)
-    EYE             reduce using rule 22 (assign_symbol -> SUBASSIGN .)
-    ONES            reduce using rule 22 (assign_symbol -> SUBASSIGN .)
-    ZEROS           reduce using rule 22 (assign_symbol -> SUBASSIGN .)
     (               reduce using rule 22 (assign_symbol -> SUBASSIGN .)
     INTNUM          reduce using rule 22 (assign_symbol -> SUBASSIGN .)
     FLOATNUM        reduce using rule 22 (assign_symbol -> SUBASSIGN .)
     STR             reduce using rule 22 (assign_symbol -> SUBASSIGN .)
+    EYE             reduce using rule 22 (assign_symbol -> SUBASSIGN .)
+    ONES            reduce using rule 22 (assign_symbol -> SUBASSIGN .)
+    ZEROS           reduce using rule 22 (assign_symbol -> SUBASSIGN .)
     [               reduce using rule 22 (assign_symbol -> SUBASSIGN .)
 
 
@@ -856,13 +854,13 @@ state 34
 
     -               reduce using rule 23 (assign_symbol -> ADDASSIGN .)
     ID              reduce using rule 23 (assign_symbol -> ADDASSIGN .)
-    EYE             reduce using rule 23 (assign_symbol -> ADDASSIGN .)
-    ONES            reduce using rule 23 (assign_symbol -> ADDASSIGN .)
-    ZEROS           reduce using rule 23 (assign_symbol -> ADDASSIGN .)
     (               reduce using rule 23 (assign_symbol -> ADDASSIGN .)
     INTNUM          reduce using rule 23 (assign_symbol -> ADDASSIGN .)
     FLOATNUM        reduce using rule 23 (assign_symbol -> ADDASSIGN .)
     STR             reduce using rule 23 (assign_symbol -> ADDASSIGN .)
+    EYE             reduce using rule 23 (assign_symbol -> ADDASSIGN .)
+    ONES            reduce using rule 23 (assign_symbol -> ADDASSIGN .)
+    ZEROS           reduce using rule 23 (assign_symbol -> ADDASSIGN .)
     [               reduce using rule 23 (assign_symbol -> ADDASSIGN .)
 
 
@@ -872,13 +870,13 @@ state 35
 
     -               reduce using rule 24 (assign_symbol -> DIVASSIGN .)
     ID              reduce using rule 24 (assign_symbol -> DIVASSIGN .)
-    EYE             reduce using rule 24 (assign_symbol -> DIVASSIGN .)
-    ONES            reduce using rule 24 (assign_symbol -> DIVASSIGN .)
-    ZEROS           reduce using rule 24 (assign_symbol -> DIVASSIGN .)
     (               reduce using rule 24 (assign_symbol -> DIVASSIGN .)
     INTNUM          reduce using rule 24 (assign_symbol -> DIVASSIGN .)
     FLOATNUM        reduce using rule 24 (assign_symbol -> DIVASSIGN .)
     STR             reduce using rule 24 (assign_symbol -> DIVASSIGN .)
+    EYE             reduce using rule 24 (assign_symbol -> DIVASSIGN .)
+    ONES            reduce using rule 24 (assign_symbol -> DIVASSIGN .)
+    ZEROS           reduce using rule 24 (assign_symbol -> DIVASSIGN .)
     [               reduce using rule 24 (assign_symbol -> DIVASSIGN .)
 
 
@@ -888,13 +886,13 @@ state 36
 
     -               reduce using rule 25 (assign_symbol -> MULTASSIGN .)
     ID              reduce using rule 25 (assign_symbol -> MULTASSIGN .)
-    EYE             reduce using rule 25 (assign_symbol -> MULTASSIGN .)
-    ONES            reduce using rule 25 (assign_symbol -> MULTASSIGN .)
-    ZEROS           reduce using rule 25 (assign_symbol -> MULTASSIGN .)
     (               reduce using rule 25 (assign_symbol -> MULTASSIGN .)
     INTNUM          reduce using rule 25 (assign_symbol -> MULTASSIGN .)
     FLOATNUM        reduce using rule 25 (assign_symbol -> MULTASSIGN .)
     STR             reduce using rule 25 (assign_symbol -> MULTASSIGN .)
+    EYE             reduce using rule 25 (assign_symbol -> MULTASSIGN .)
+    ONES            reduce using rule 25 (assign_symbol -> MULTASSIGN .)
+    ZEROS           reduce using rule 25 (assign_symbol -> MULTASSIGN .)
     [               reduce using rule 25 (assign_symbol -> MULTASSIGN .)
 
 
@@ -907,8 +905,8 @@ state 37
     (57) range -> . expression :
     (58) range -> . : expression
     (59) range -> . expression
-    (26) expression -> . built_in_function ( expression_list )
-    (29) expression -> . term
+    (28) expression -> . term
+    (29) expression -> . built_in_function ( expression_list )
     (30) expression -> . expression + term
     (31) expression -> . expression - term
     (32) expression -> . expression / term
@@ -923,41 +921,41 @@ state 37
     (41) expression -> . expression TRANSPOSE
     (42) expression -> . ID dot_operation term
     (43) expression -> . vector dot_operation term
-    (74) built_in_function -> . EYE
-    (75) built_in_function -> . ONES
-    (76) built_in_function -> . ZEROS
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
+    (73) built_in_function -> . EYE
+    (74) built_in_function -> . ONES
+    (75) built_in_function -> . ZEROS
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
     :               shift and go to state 65
     -               shift and go to state 43
     ID              shift and go to state 44
-    EYE             shift and go to state 46
-    ONES            shift and go to state 47
-    ZEROS           shift and go to state 48
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
+    EYE             shift and go to state 49
+    ONES            shift and go to state 50
+    ZEROS           shift and go to state 51
     [               shift and go to state 52
 
     slice_contents                 shift and go to state 62
     range                          shift and go to state 63
     expression                     shift and go to state 64
-    built_in_function              shift and go to state 40
-    term                           shift and go to state 42
+    term                           shift and go to state 40
+    built_in_function              shift and go to state 41
     vector                         shift and go to state 45
 
 state 38
 
     (18) print -> PRINT expression_list .
-    (27) expression_list -> expression_list . , expression
+    (26) expression_list -> expression_list . , expression
 
     ;               reduce using rule 18 (print -> PRINT expression_list .)
     ,               shift and go to state 66
@@ -965,7 +963,7 @@ state 38
 
 state 39
 
-    (28) expression_list -> expression .
+    (27) expression_list -> expression .
     (30) expression -> expression . + term
     (31) expression -> expression . - term
     (32) expression -> expression . / term
@@ -978,9 +976,9 @@ state 39
     (39) expression -> expression . LTE term
     (41) expression -> expression . TRANSPOSE
 
-    ,               reduce using rule 28 (expression_list -> expression .)
-    ;               reduce using rule 28 (expression_list -> expression .)
-    )               reduce using rule 28 (expression_list -> expression .)
+    ,               reduce using rule 27 (expression_list -> expression .)
+    ;               reduce using rule 27 (expression_list -> expression .)
+    )               reduce using rule 27 (expression_list -> expression .)
     +               shift and go to state 67
     -               shift and go to state 68
     /               shift and go to state 69
@@ -996,16 +994,47 @@ state 39
 
 state 40
 
-    (26) expression -> built_in_function . ( expression_list )
+    (28) expression -> term .
 
-    (               shift and go to state 78
+    +               reduce using rule 28 (expression -> term .)
+    -               reduce using rule 28 (expression -> term .)
+    /               reduce using rule 28 (expression -> term .)
+    *               reduce using rule 28 (expression -> term .)
+    EQL             reduce using rule 28 (expression -> term .)
+    NEQ             reduce using rule 28 (expression -> term .)
+    GT              reduce using rule 28 (expression -> term .)
+    GTE             reduce using rule 28 (expression -> term .)
+    LT              reduce using rule 28 (expression -> term .)
+    LTE             reduce using rule 28 (expression -> term .)
+    TRANSPOSE       reduce using rule 28 (expression -> term .)
+    ,               reduce using rule 28 (expression -> term .)
+    ;               reduce using rule 28 (expression -> term .)
+    :               reduce using rule 28 (expression -> term .)
+    ]               reduce using rule 28 (expression -> term .)
+    )               reduce using rule 28 (expression -> term .)
+    ID              reduce using rule 28 (expression -> term .)
+    PRINT           reduce using rule 28 (expression -> term .)
+    CONTINUE        reduce using rule 28 (expression -> term .)
+    BREAK           reduce using rule 28 (expression -> term .)
+    RETURN          reduce using rule 28 (expression -> term .)
+    IF              reduce using rule 28 (expression -> term .)
+    FOR             reduce using rule 28 (expression -> term .)
+    WHILE           reduce using rule 28 (expression -> term .)
+    {               reduce using rule 28 (expression -> term .)
 
 
 state 41
 
-    (68) term -> ( . expression )
-    (26) expression -> . built_in_function ( expression_list )
-    (29) expression -> . term
+    (29) expression -> built_in_function . ( expression_list )
+
+    (               shift and go to state 78
+
+
+state 42
+
+    (67) term -> ( . expression )
+    (28) expression -> . term
+    (29) expression -> . built_in_function ( expression_list )
     (30) expression -> . expression + term
     (31) expression -> . expression - term
     (32) expression -> . expression / term
@@ -1020,81 +1049,50 @@ state 41
     (41) expression -> . expression TRANSPOSE
     (42) expression -> . ID dot_operation term
     (43) expression -> . vector dot_operation term
-    (74) built_in_function -> . EYE
-    (75) built_in_function -> . ONES
-    (76) built_in_function -> . ZEROS
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
+    (73) built_in_function -> . EYE
+    (74) built_in_function -> . ONES
+    (75) built_in_function -> . ZEROS
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
     -               shift and go to state 43
     ID              shift and go to state 44
-    EYE             shift and go to state 46
-    ONES            shift and go to state 47
-    ZEROS           shift and go to state 48
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
+    EYE             shift and go to state 49
+    ONES            shift and go to state 50
+    ZEROS           shift and go to state 51
     [               shift and go to state 52
 
     expression                     shift and go to state 79
-    built_in_function              shift and go to state 40
-    term                           shift and go to state 42
+    term                           shift and go to state 40
+    built_in_function              shift and go to state 41
     vector                         shift and go to state 45
-
-state 42
-
-    (29) expression -> term .
-
-    +               reduce using rule 29 (expression -> term .)
-    -               reduce using rule 29 (expression -> term .)
-    /               reduce using rule 29 (expression -> term .)
-    *               reduce using rule 29 (expression -> term .)
-    EQL             reduce using rule 29 (expression -> term .)
-    NEQ             reduce using rule 29 (expression -> term .)
-    GT              reduce using rule 29 (expression -> term .)
-    GTE             reduce using rule 29 (expression -> term .)
-    LT              reduce using rule 29 (expression -> term .)
-    LTE             reduce using rule 29 (expression -> term .)
-    TRANSPOSE       reduce using rule 29 (expression -> term .)
-    ,               reduce using rule 29 (expression -> term .)
-    ;               reduce using rule 29 (expression -> term .)
-    :               reduce using rule 29 (expression -> term .)
-    ]               reduce using rule 29 (expression -> term .)
-    )               reduce using rule 29 (expression -> term .)
-    ID              reduce using rule 29 (expression -> term .)
-    PRINT           reduce using rule 29 (expression -> term .)
-    CONTINUE        reduce using rule 29 (expression -> term .)
-    BREAK           reduce using rule 29 (expression -> term .)
-    RETURN          reduce using rule 29 (expression -> term .)
-    IF              reduce using rule 29 (expression -> term .)
-    FOR             reduce using rule 29 (expression -> term .)
-    WHILE           reduce using rule 29 (expression -> term .)
-    {               reduce using rule 29 (expression -> term .)
-
 
 state 43
 
     (40) expression -> - . term
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
     ID              shift and go to state 82
     [               shift and go to state 52
 
@@ -1104,37 +1102,37 @@ state 43
 state 44
 
     (42) expression -> ID . dot_operation term
-    (73) term -> ID .
+    (72) term -> ID .
     (44) dot_operation -> . DOTADD
     (45) dot_operation -> . DOTSUB
     (46) dot_operation -> . DOTMUL
     (47) dot_operation -> . DOTDIV
 
-    +               reduce using rule 73 (term -> ID .)
-    -               reduce using rule 73 (term -> ID .)
-    /               reduce using rule 73 (term -> ID .)
-    *               reduce using rule 73 (term -> ID .)
-    EQL             reduce using rule 73 (term -> ID .)
-    NEQ             reduce using rule 73 (term -> ID .)
-    GT              reduce using rule 73 (term -> ID .)
-    GTE             reduce using rule 73 (term -> ID .)
-    LT              reduce using rule 73 (term -> ID .)
-    LTE             reduce using rule 73 (term -> ID .)
-    TRANSPOSE       reduce using rule 73 (term -> ID .)
-    ,               reduce using rule 73 (term -> ID .)
-    ;               reduce using rule 73 (term -> ID .)
-    :               reduce using rule 73 (term -> ID .)
-    ]               reduce using rule 73 (term -> ID .)
-    )               reduce using rule 73 (term -> ID .)
-    ID              reduce using rule 73 (term -> ID .)
-    PRINT           reduce using rule 73 (term -> ID .)
-    CONTINUE        reduce using rule 73 (term -> ID .)
-    BREAK           reduce using rule 73 (term -> ID .)
-    RETURN          reduce using rule 73 (term -> ID .)
-    IF              reduce using rule 73 (term -> ID .)
-    FOR             reduce using rule 73 (term -> ID .)
-    WHILE           reduce using rule 73 (term -> ID .)
-    {               reduce using rule 73 (term -> ID .)
+    +               reduce using rule 72 (term -> ID .)
+    -               reduce using rule 72 (term -> ID .)
+    /               reduce using rule 72 (term -> ID .)
+    *               reduce using rule 72 (term -> ID .)
+    EQL             reduce using rule 72 (term -> ID .)
+    NEQ             reduce using rule 72 (term -> ID .)
+    GT              reduce using rule 72 (term -> ID .)
+    GTE             reduce using rule 72 (term -> ID .)
+    LT              reduce using rule 72 (term -> ID .)
+    LTE             reduce using rule 72 (term -> ID .)
+    TRANSPOSE       reduce using rule 72 (term -> ID .)
+    ,               reduce using rule 72 (term -> ID .)
+    ;               reduce using rule 72 (term -> ID .)
+    :               reduce using rule 72 (term -> ID .)
+    ]               reduce using rule 72 (term -> ID .)
+    )               reduce using rule 72 (term -> ID .)
+    ID              reduce using rule 72 (term -> ID .)
+    PRINT           reduce using rule 72 (term -> ID .)
+    CONTINUE        reduce using rule 72 (term -> ID .)
+    BREAK           reduce using rule 72 (term -> ID .)
+    RETURN          reduce using rule 72 (term -> ID .)
+    IF              reduce using rule 72 (term -> ID .)
+    FOR             reduce using rule 72 (term -> ID .)
+    WHILE           reduce using rule 72 (term -> ID .)
+    {               reduce using rule 72 (term -> ID .)
     DOTADD          shift and go to state 84
     DOTSUB          shift and go to state 85
     DOTMUL          shift and go to state 86
@@ -1145,37 +1143,37 @@ state 44
 state 45
 
     (43) expression -> vector . dot_operation term
-    (69) term -> vector .
+    (68) term -> vector .
     (44) dot_operation -> . DOTADD
     (45) dot_operation -> . DOTSUB
     (46) dot_operation -> . DOTMUL
     (47) dot_operation -> . DOTDIV
 
-    +               reduce using rule 69 (term -> vector .)
-    -               reduce using rule 69 (term -> vector .)
-    /               reduce using rule 69 (term -> vector .)
-    *               reduce using rule 69 (term -> vector .)
-    EQL             reduce using rule 69 (term -> vector .)
-    NEQ             reduce using rule 69 (term -> vector .)
-    GT              reduce using rule 69 (term -> vector .)
-    GTE             reduce using rule 69 (term -> vector .)
-    LT              reduce using rule 69 (term -> vector .)
-    LTE             reduce using rule 69 (term -> vector .)
-    TRANSPOSE       reduce using rule 69 (term -> vector .)
-    ,               reduce using rule 69 (term -> vector .)
-    ;               reduce using rule 69 (term -> vector .)
-    :               reduce using rule 69 (term -> vector .)
-    ]               reduce using rule 69 (term -> vector .)
-    )               reduce using rule 69 (term -> vector .)
-    ID              reduce using rule 69 (term -> vector .)
-    PRINT           reduce using rule 69 (term -> vector .)
-    CONTINUE        reduce using rule 69 (term -> vector .)
-    BREAK           reduce using rule 69 (term -> vector .)
-    RETURN          reduce using rule 69 (term -> vector .)
-    IF              reduce using rule 69 (term -> vector .)
-    FOR             reduce using rule 69 (term -> vector .)
-    WHILE           reduce using rule 69 (term -> vector .)
-    {               reduce using rule 69 (term -> vector .)
+    +               reduce using rule 68 (term -> vector .)
+    -               reduce using rule 68 (term -> vector .)
+    /               reduce using rule 68 (term -> vector .)
+    *               reduce using rule 68 (term -> vector .)
+    EQL             reduce using rule 68 (term -> vector .)
+    NEQ             reduce using rule 68 (term -> vector .)
+    GT              reduce using rule 68 (term -> vector .)
+    GTE             reduce using rule 68 (term -> vector .)
+    LT              reduce using rule 68 (term -> vector .)
+    LTE             reduce using rule 68 (term -> vector .)
+    TRANSPOSE       reduce using rule 68 (term -> vector .)
+    ,               reduce using rule 68 (term -> vector .)
+    ;               reduce using rule 68 (term -> vector .)
+    :               reduce using rule 68 (term -> vector .)
+    ]               reduce using rule 68 (term -> vector .)
+    )               reduce using rule 68 (term -> vector .)
+    ID              reduce using rule 68 (term -> vector .)
+    PRINT           reduce using rule 68 (term -> vector .)
+    CONTINUE        reduce using rule 68 (term -> vector .)
+    BREAK           reduce using rule 68 (term -> vector .)
+    RETURN          reduce using rule 68 (term -> vector .)
+    IF              reduce using rule 68 (term -> vector .)
+    FOR             reduce using rule 68 (term -> vector .)
+    WHILE           reduce using rule 68 (term -> vector .)
+    {               reduce using rule 68 (term -> vector .)
     DOTADD          shift and go to state 84
     DOTSUB          shift and go to state 85
     DOTMUL          shift and go to state 86
@@ -1185,116 +1183,116 @@ state 45
 
 state 46
 
-    (74) built_in_function -> EYE .
+    (69) term -> INTNUM .
 
-    (               reduce using rule 74 (built_in_function -> EYE .)
+    +               reduce using rule 69 (term -> INTNUM .)
+    -               reduce using rule 69 (term -> INTNUM .)
+    /               reduce using rule 69 (term -> INTNUM .)
+    *               reduce using rule 69 (term -> INTNUM .)
+    EQL             reduce using rule 69 (term -> INTNUM .)
+    NEQ             reduce using rule 69 (term -> INTNUM .)
+    GT              reduce using rule 69 (term -> INTNUM .)
+    GTE             reduce using rule 69 (term -> INTNUM .)
+    LT              reduce using rule 69 (term -> INTNUM .)
+    LTE             reduce using rule 69 (term -> INTNUM .)
+    TRANSPOSE       reduce using rule 69 (term -> INTNUM .)
+    ,               reduce using rule 69 (term -> INTNUM .)
+    ;               reduce using rule 69 (term -> INTNUM .)
+    :               reduce using rule 69 (term -> INTNUM .)
+    ]               reduce using rule 69 (term -> INTNUM .)
+    )               reduce using rule 69 (term -> INTNUM .)
+    ID              reduce using rule 69 (term -> INTNUM .)
+    PRINT           reduce using rule 69 (term -> INTNUM .)
+    CONTINUE        reduce using rule 69 (term -> INTNUM .)
+    BREAK           reduce using rule 69 (term -> INTNUM .)
+    RETURN          reduce using rule 69 (term -> INTNUM .)
+    IF              reduce using rule 69 (term -> INTNUM .)
+    FOR             reduce using rule 69 (term -> INTNUM .)
+    WHILE           reduce using rule 69 (term -> INTNUM .)
+    {               reduce using rule 69 (term -> INTNUM .)
 
 
 state 47
 
-    (75) built_in_function -> ONES .
+    (70) term -> FLOATNUM .
 
-    (               reduce using rule 75 (built_in_function -> ONES .)
+    +               reduce using rule 70 (term -> FLOATNUM .)
+    -               reduce using rule 70 (term -> FLOATNUM .)
+    /               reduce using rule 70 (term -> FLOATNUM .)
+    *               reduce using rule 70 (term -> FLOATNUM .)
+    EQL             reduce using rule 70 (term -> FLOATNUM .)
+    NEQ             reduce using rule 70 (term -> FLOATNUM .)
+    GT              reduce using rule 70 (term -> FLOATNUM .)
+    GTE             reduce using rule 70 (term -> FLOATNUM .)
+    LT              reduce using rule 70 (term -> FLOATNUM .)
+    LTE             reduce using rule 70 (term -> FLOATNUM .)
+    TRANSPOSE       reduce using rule 70 (term -> FLOATNUM .)
+    ,               reduce using rule 70 (term -> FLOATNUM .)
+    ;               reduce using rule 70 (term -> FLOATNUM .)
+    :               reduce using rule 70 (term -> FLOATNUM .)
+    ]               reduce using rule 70 (term -> FLOATNUM .)
+    )               reduce using rule 70 (term -> FLOATNUM .)
+    ID              reduce using rule 70 (term -> FLOATNUM .)
+    PRINT           reduce using rule 70 (term -> FLOATNUM .)
+    CONTINUE        reduce using rule 70 (term -> FLOATNUM .)
+    BREAK           reduce using rule 70 (term -> FLOATNUM .)
+    RETURN          reduce using rule 70 (term -> FLOATNUM .)
+    IF              reduce using rule 70 (term -> FLOATNUM .)
+    FOR             reduce using rule 70 (term -> FLOATNUM .)
+    WHILE           reduce using rule 70 (term -> FLOATNUM .)
+    {               reduce using rule 70 (term -> FLOATNUM .)
 
 
 state 48
 
-    (76) built_in_function -> ZEROS .
+    (71) term -> STR .
 
-    (               reduce using rule 76 (built_in_function -> ZEROS .)
+    +               reduce using rule 71 (term -> STR .)
+    -               reduce using rule 71 (term -> STR .)
+    /               reduce using rule 71 (term -> STR .)
+    *               reduce using rule 71 (term -> STR .)
+    EQL             reduce using rule 71 (term -> STR .)
+    NEQ             reduce using rule 71 (term -> STR .)
+    GT              reduce using rule 71 (term -> STR .)
+    GTE             reduce using rule 71 (term -> STR .)
+    LT              reduce using rule 71 (term -> STR .)
+    LTE             reduce using rule 71 (term -> STR .)
+    TRANSPOSE       reduce using rule 71 (term -> STR .)
+    ,               reduce using rule 71 (term -> STR .)
+    ;               reduce using rule 71 (term -> STR .)
+    :               reduce using rule 71 (term -> STR .)
+    ]               reduce using rule 71 (term -> STR .)
+    )               reduce using rule 71 (term -> STR .)
+    ID              reduce using rule 71 (term -> STR .)
+    PRINT           reduce using rule 71 (term -> STR .)
+    CONTINUE        reduce using rule 71 (term -> STR .)
+    BREAK           reduce using rule 71 (term -> STR .)
+    RETURN          reduce using rule 71 (term -> STR .)
+    IF              reduce using rule 71 (term -> STR .)
+    FOR             reduce using rule 71 (term -> STR .)
+    WHILE           reduce using rule 71 (term -> STR .)
+    {               reduce using rule 71 (term -> STR .)
 
 
 state 49
 
-    (70) term -> INTNUM .
+    (73) built_in_function -> EYE .
 
-    +               reduce using rule 70 (term -> INTNUM .)
-    -               reduce using rule 70 (term -> INTNUM .)
-    /               reduce using rule 70 (term -> INTNUM .)
-    *               reduce using rule 70 (term -> INTNUM .)
-    EQL             reduce using rule 70 (term -> INTNUM .)
-    NEQ             reduce using rule 70 (term -> INTNUM .)
-    GT              reduce using rule 70 (term -> INTNUM .)
-    GTE             reduce using rule 70 (term -> INTNUM .)
-    LT              reduce using rule 70 (term -> INTNUM .)
-    LTE             reduce using rule 70 (term -> INTNUM .)
-    TRANSPOSE       reduce using rule 70 (term -> INTNUM .)
-    ,               reduce using rule 70 (term -> INTNUM .)
-    ;               reduce using rule 70 (term -> INTNUM .)
-    :               reduce using rule 70 (term -> INTNUM .)
-    ]               reduce using rule 70 (term -> INTNUM .)
-    )               reduce using rule 70 (term -> INTNUM .)
-    ID              reduce using rule 70 (term -> INTNUM .)
-    PRINT           reduce using rule 70 (term -> INTNUM .)
-    CONTINUE        reduce using rule 70 (term -> INTNUM .)
-    BREAK           reduce using rule 70 (term -> INTNUM .)
-    RETURN          reduce using rule 70 (term -> INTNUM .)
-    IF              reduce using rule 70 (term -> INTNUM .)
-    FOR             reduce using rule 70 (term -> INTNUM .)
-    WHILE           reduce using rule 70 (term -> INTNUM .)
-    {               reduce using rule 70 (term -> INTNUM .)
+    (               reduce using rule 73 (built_in_function -> EYE .)
 
 
 state 50
 
-    (71) term -> FLOATNUM .
+    (74) built_in_function -> ONES .
 
-    +               reduce using rule 71 (term -> FLOATNUM .)
-    -               reduce using rule 71 (term -> FLOATNUM .)
-    /               reduce using rule 71 (term -> FLOATNUM .)
-    *               reduce using rule 71 (term -> FLOATNUM .)
-    EQL             reduce using rule 71 (term -> FLOATNUM .)
-    NEQ             reduce using rule 71 (term -> FLOATNUM .)
-    GT              reduce using rule 71 (term -> FLOATNUM .)
-    GTE             reduce using rule 71 (term -> FLOATNUM .)
-    LT              reduce using rule 71 (term -> FLOATNUM .)
-    LTE             reduce using rule 71 (term -> FLOATNUM .)
-    TRANSPOSE       reduce using rule 71 (term -> FLOATNUM .)
-    ,               reduce using rule 71 (term -> FLOATNUM .)
-    ;               reduce using rule 71 (term -> FLOATNUM .)
-    :               reduce using rule 71 (term -> FLOATNUM .)
-    ]               reduce using rule 71 (term -> FLOATNUM .)
-    )               reduce using rule 71 (term -> FLOATNUM .)
-    ID              reduce using rule 71 (term -> FLOATNUM .)
-    PRINT           reduce using rule 71 (term -> FLOATNUM .)
-    CONTINUE        reduce using rule 71 (term -> FLOATNUM .)
-    BREAK           reduce using rule 71 (term -> FLOATNUM .)
-    RETURN          reduce using rule 71 (term -> FLOATNUM .)
-    IF              reduce using rule 71 (term -> FLOATNUM .)
-    FOR             reduce using rule 71 (term -> FLOATNUM .)
-    WHILE           reduce using rule 71 (term -> FLOATNUM .)
-    {               reduce using rule 71 (term -> FLOATNUM .)
+    (               reduce using rule 74 (built_in_function -> ONES .)
 
 
 state 51
 
-    (72) term -> STR .
+    (75) built_in_function -> ZEROS .
 
-    +               reduce using rule 72 (term -> STR .)
-    -               reduce using rule 72 (term -> STR .)
-    /               reduce using rule 72 (term -> STR .)
-    *               reduce using rule 72 (term -> STR .)
-    EQL             reduce using rule 72 (term -> STR .)
-    NEQ             reduce using rule 72 (term -> STR .)
-    GT              reduce using rule 72 (term -> STR .)
-    GTE             reduce using rule 72 (term -> STR .)
-    LT              reduce using rule 72 (term -> STR .)
-    LTE             reduce using rule 72 (term -> STR .)
-    TRANSPOSE       reduce using rule 72 (term -> STR .)
-    ,               reduce using rule 72 (term -> STR .)
-    ;               reduce using rule 72 (term -> STR .)
-    :               reduce using rule 72 (term -> STR .)
-    ]               reduce using rule 72 (term -> STR .)
-    )               reduce using rule 72 (term -> STR .)
-    ID              reduce using rule 72 (term -> STR .)
-    PRINT           reduce using rule 72 (term -> STR .)
-    CONTINUE        reduce using rule 72 (term -> STR .)
-    BREAK           reduce using rule 72 (term -> STR .)
-    RETURN          reduce using rule 72 (term -> STR .)
-    IF              reduce using rule 72 (term -> STR .)
-    FOR             reduce using rule 72 (term -> STR .)
-    WHILE           reduce using rule 72 (term -> STR .)
-    {               reduce using rule 72 (term -> STR .)
+    (               reduce using rule 75 (built_in_function -> ZEROS .)
 
 
 state 52
@@ -1304,20 +1302,20 @@ state 52
     (50) vector_contents -> . vector_contents , vector_element
     (51) vector_contents -> . vector_element
     (52) vector_element -> . term
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
     ]               shift and go to state 90
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
     ID              shift and go to state 82
     [               shift and go to state 52
 
@@ -1357,9 +1355,8 @@ state 53
 
 state 54
 
-    (60) if -> IF condition . nested_statement
-    (61) if -> IF condition . nested_statement ELSE nested_statement
-    (63) nested_statement -> . statement
+    (60) if -> IF condition . statement
+    (61) if -> IF condition . statement ELSE statement
     (4) statement -> . assignment ;
     (5) statement -> . print ;
     (6) statement -> . continue ;
@@ -1375,14 +1372,14 @@ state 54
     (17) continue -> . CONTINUE
     (15) break -> . BREAK
     (16) return -> . RETURN expression
-    (60) if -> . IF condition nested_statement
-    (61) if -> . IF condition nested_statement ELSE nested_statement
-    (13) for -> . FOR ID ASSIGN expression : expression nested_statement
-    (14) while -> . WHILE condition nested_statement
-    (64) nested_statements -> . nested_empty
-    (65) nested_statements -> . nested_statements_list
-    (67) nested_empty -> . { }
-    (66) nested_statements_list -> . { statements }
+    (60) if -> . IF condition statement
+    (61) if -> . IF condition statement ELSE statement
+    (13) for -> . FOR ID ASSIGN expression : expression statement
+    (14) while -> . WHILE condition statement
+    (63) nested_statements -> . nested_empty
+    (64) nested_statements -> . nested_statements_list
+    (66) nested_empty -> . { }
+    (65) nested_statements_list -> . { statements }
 
     ID              shift and go to state 13
     PRINT           shift and go to state 14
@@ -1394,8 +1391,7 @@ state 54
     WHILE           shift and go to state 20
     {               shift and go to state 23
 
-    nested_statement               shift and go to state 93
-    statement                      shift and go to state 94
+    statement                      shift and go to state 93
     assignment                     shift and go to state 4
     print                          shift and go to state 5
     continue                       shift and go to state 6
@@ -1411,8 +1407,8 @@ state 54
 state 55
 
     (62) condition -> ( . expression )
-    (26) expression -> . built_in_function ( expression_list )
-    (29) expression -> . term
+    (28) expression -> . term
+    (29) expression -> . built_in_function ( expression_list )
     (30) expression -> . expression + term
     (31) expression -> . expression - term
     (32) expression -> . expression / term
@@ -1427,45 +1423,44 @@ state 55
     (41) expression -> . expression TRANSPOSE
     (42) expression -> . ID dot_operation term
     (43) expression -> . vector dot_operation term
-    (74) built_in_function -> . EYE
-    (75) built_in_function -> . ONES
-    (76) built_in_function -> . ZEROS
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
+    (73) built_in_function -> . EYE
+    (74) built_in_function -> . ONES
+    (75) built_in_function -> . ZEROS
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
     -               shift and go to state 43
     ID              shift and go to state 44
-    EYE             shift and go to state 46
-    ONES            shift and go to state 47
-    ZEROS           shift and go to state 48
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
+    EYE             shift and go to state 49
+    ONES            shift and go to state 50
+    ZEROS           shift and go to state 51
     [               shift and go to state 52
 
-    expression                     shift and go to state 95
-    built_in_function              shift and go to state 40
-    term                           shift and go to state 42
+    expression                     shift and go to state 94
+    term                           shift and go to state 40
+    built_in_function              shift and go to state 41
     vector                         shift and go to state 45
 
 state 56
 
-    (13) for -> FOR ID . ASSIGN expression : expression nested_statement
+    (13) for -> FOR ID . ASSIGN expression : expression statement
 
-    ASSIGN          shift and go to state 96
+    ASSIGN          shift and go to state 95
 
 
 state 57
 
-    (14) while -> WHILE condition . nested_statement
-    (63) nested_statement -> . statement
+    (14) while -> WHILE condition . statement
     (4) statement -> . assignment ;
     (5) statement -> . print ;
     (6) statement -> . continue ;
@@ -1481,14 +1476,14 @@ state 57
     (17) continue -> . CONTINUE
     (15) break -> . BREAK
     (16) return -> . RETURN expression
-    (60) if -> . IF condition nested_statement
-    (61) if -> . IF condition nested_statement ELSE nested_statement
-    (13) for -> . FOR ID ASSIGN expression : expression nested_statement
-    (14) while -> . WHILE condition nested_statement
-    (64) nested_statements -> . nested_empty
-    (65) nested_statements -> . nested_statements_list
-    (67) nested_empty -> . { }
-    (66) nested_statements_list -> . { statements }
+    (60) if -> . IF condition statement
+    (61) if -> . IF condition statement ELSE statement
+    (13) for -> . FOR ID ASSIGN expression : expression statement
+    (14) while -> . WHILE condition statement
+    (63) nested_statements -> . nested_empty
+    (64) nested_statements -> . nested_statements_list
+    (66) nested_empty -> . { }
+    (65) nested_statements_list -> . { statements }
 
     ID              shift and go to state 13
     PRINT           shift and go to state 14
@@ -1500,8 +1495,7 @@ state 57
     WHILE           shift and go to state 20
     {               shift and go to state 23
 
-    nested_statement               shift and go to state 97
-    statement                      shift and go to state 94
+    statement                      shift and go to state 96
     assignment                     shift and go to state 4
     print                          shift and go to state 5
     continue                       shift and go to state 6
@@ -1516,25 +1510,25 @@ state 57
 
 state 58
 
-    (67) nested_empty -> { } .
+    (66) nested_empty -> { } .
 
-    ID              reduce using rule 67 (nested_empty -> { } .)
-    PRINT           reduce using rule 67 (nested_empty -> { } .)
-    CONTINUE        reduce using rule 67 (nested_empty -> { } .)
-    BREAK           reduce using rule 67 (nested_empty -> { } .)
-    RETURN          reduce using rule 67 (nested_empty -> { } .)
-    IF              reduce using rule 67 (nested_empty -> { } .)
-    FOR             reduce using rule 67 (nested_empty -> { } .)
-    WHILE           reduce using rule 67 (nested_empty -> { } .)
-    {               reduce using rule 67 (nested_empty -> { } .)
-    $end            reduce using rule 67 (nested_empty -> { } .)
-    }               reduce using rule 67 (nested_empty -> { } .)
-    ELSE            reduce using rule 67 (nested_empty -> { } .)
+    ID              reduce using rule 66 (nested_empty -> { } .)
+    PRINT           reduce using rule 66 (nested_empty -> { } .)
+    CONTINUE        reduce using rule 66 (nested_empty -> { } .)
+    BREAK           reduce using rule 66 (nested_empty -> { } .)
+    RETURN          reduce using rule 66 (nested_empty -> { } .)
+    IF              reduce using rule 66 (nested_empty -> { } .)
+    FOR             reduce using rule 66 (nested_empty -> { } .)
+    WHILE           reduce using rule 66 (nested_empty -> { } .)
+    {               reduce using rule 66 (nested_empty -> { } .)
+    $end            reduce using rule 66 (nested_empty -> { } .)
+    }               reduce using rule 66 (nested_empty -> { } .)
+    ELSE            reduce using rule 66 (nested_empty -> { } .)
 
 
 state 59
 
-    (66) nested_statements_list -> { statements . }
+    (65) nested_statements_list -> { statements . }
     (2) statements -> statements . statement
     (4) statement -> . assignment ;
     (5) statement -> . print ;
@@ -1551,16 +1545,16 @@ state 59
     (17) continue -> . CONTINUE
     (15) break -> . BREAK
     (16) return -> . RETURN expression
-    (60) if -> . IF condition nested_statement
-    (61) if -> . IF condition nested_statement ELSE nested_statement
-    (13) for -> . FOR ID ASSIGN expression : expression nested_statement
-    (14) while -> . WHILE condition nested_statement
-    (64) nested_statements -> . nested_empty
-    (65) nested_statements -> . nested_statements_list
-    (67) nested_empty -> . { }
-    (66) nested_statements_list -> . { statements }
+    (60) if -> . IF condition statement
+    (61) if -> . IF condition statement ELSE statement
+    (13) for -> . FOR ID ASSIGN expression : expression statement
+    (14) while -> . WHILE condition statement
+    (63) nested_statements -> . nested_empty
+    (64) nested_statements -> . nested_statements_list
+    (66) nested_empty -> . { }
+    (65) nested_statements_list -> . { statements }
 
-    }               shift and go to state 98
+    }               shift and go to state 97
     ID              shift and go to state 13
     PRINT           shift and go to state 14
     CONTINUE        shift and go to state 15
@@ -1616,8 +1610,8 @@ state 60
 state 61
 
     (20) assignment -> ID slice assign_symbol . expression
-    (26) expression -> . built_in_function ( expression_list )
-    (29) expression -> . term
+    (28) expression -> . term
+    (29) expression -> . built_in_function ( expression_list )
     (30) expression -> . expression + term
     (31) expression -> . expression - term
     (32) expression -> . expression / term
@@ -1632,32 +1626,32 @@ state 61
     (41) expression -> . expression TRANSPOSE
     (42) expression -> . ID dot_operation term
     (43) expression -> . vector dot_operation term
-    (74) built_in_function -> . EYE
-    (75) built_in_function -> . ONES
-    (76) built_in_function -> . ZEROS
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
+    (73) built_in_function -> . EYE
+    (74) built_in_function -> . ONES
+    (75) built_in_function -> . ZEROS
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
     -               shift and go to state 43
     ID              shift and go to state 44
-    EYE             shift and go to state 46
-    ONES            shift and go to state 47
-    ZEROS           shift and go to state 48
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
+    EYE             shift and go to state 49
+    ONES            shift and go to state 50
+    ZEROS           shift and go to state 51
     [               shift and go to state 52
 
-    expression                     shift and go to state 99
-    built_in_function              shift and go to state 40
-    term                           shift and go to state 42
+    expression                     shift and go to state 98
+    term                           shift and go to state 40
+    built_in_function              shift and go to state 41
     vector                         shift and go to state 45
 
 state 62
@@ -1665,8 +1659,8 @@ state 62
     (53) slice -> [ slice_contents . ]
     (54) slice_contents -> slice_contents . , range
 
-    ]               shift and go to state 100
-    ,               shift and go to state 101
+    ]               shift and go to state 99
+    ,               shift and go to state 100
 
 
 state 63
@@ -1694,7 +1688,7 @@ state 64
     (39) expression -> expression . LTE term
     (41) expression -> expression . TRANSPOSE
 
-    :               shift and go to state 102
+    :               shift and go to state 101
     ]               reduce using rule 59 (range -> expression .)
     ,               reduce using rule 59 (range -> expression .)
     +               shift and go to state 67
@@ -1713,8 +1707,8 @@ state 64
 state 65
 
     (58) range -> : . expression
-    (26) expression -> . built_in_function ( expression_list )
-    (29) expression -> . term
+    (28) expression -> . term
+    (29) expression -> . built_in_function ( expression_list )
     (30) expression -> . expression + term
     (31) expression -> . expression - term
     (32) expression -> . expression / term
@@ -1729,39 +1723,39 @@ state 65
     (41) expression -> . expression TRANSPOSE
     (42) expression -> . ID dot_operation term
     (43) expression -> . vector dot_operation term
-    (74) built_in_function -> . EYE
-    (75) built_in_function -> . ONES
-    (76) built_in_function -> . ZEROS
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
+    (73) built_in_function -> . EYE
+    (74) built_in_function -> . ONES
+    (75) built_in_function -> . ZEROS
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
     -               shift and go to state 43
     ID              shift and go to state 44
-    EYE             shift and go to state 46
-    ONES            shift and go to state 47
-    ZEROS           shift and go to state 48
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
+    EYE             shift and go to state 49
+    ONES            shift and go to state 50
+    ZEROS           shift and go to state 51
     [               shift and go to state 52
 
-    expression                     shift and go to state 103
-    built_in_function              shift and go to state 40
-    term                           shift and go to state 42
+    expression                     shift and go to state 102
+    term                           shift and go to state 40
+    built_in_function              shift and go to state 41
     vector                         shift and go to state 45
 
 state 66
 
-    (27) expression_list -> expression_list , . expression
-    (26) expression -> . built_in_function ( expression_list )
-    (29) expression -> . term
+    (26) expression_list -> expression_list , . expression
+    (28) expression -> . term
+    (29) expression -> . built_in_function ( expression_list )
     (30) expression -> . expression + term
     (31) expression -> . expression - term
     (32) expression -> . expression / term
@@ -1776,252 +1770,252 @@ state 66
     (41) expression -> . expression TRANSPOSE
     (42) expression -> . ID dot_operation term
     (43) expression -> . vector dot_operation term
-    (74) built_in_function -> . EYE
-    (75) built_in_function -> . ONES
-    (76) built_in_function -> . ZEROS
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
+    (73) built_in_function -> . EYE
+    (74) built_in_function -> . ONES
+    (75) built_in_function -> . ZEROS
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
     -               shift and go to state 43
     ID              shift and go to state 44
-    EYE             shift and go to state 46
-    ONES            shift and go to state 47
-    ZEROS           shift and go to state 48
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
+    EYE             shift and go to state 49
+    ONES            shift and go to state 50
+    ZEROS           shift and go to state 51
     [               shift and go to state 52
 
-    expression                     shift and go to state 104
-    built_in_function              shift and go to state 40
-    term                           shift and go to state 42
+    expression                     shift and go to state 103
+    term                           shift and go to state 40
+    built_in_function              shift and go to state 41
     vector                         shift and go to state 45
 
 state 67
 
     (30) expression -> expression + . term
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
+    ID              shift and go to state 82
+    [               shift and go to state 52
+
+    term                           shift and go to state 104
+    vector                         shift and go to state 81
+
+state 68
+
+    (31) expression -> expression - . term
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
+    (48) vector -> . [ vector_contents ]
+    (49) vector -> . [ ]
+
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
     ID              shift and go to state 82
     [               shift and go to state 52
 
     term                           shift and go to state 105
     vector                         shift and go to state 81
 
-state 68
+state 69
 
-    (31) expression -> expression - . term
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (32) expression -> expression / . term
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
     ID              shift and go to state 82
     [               shift and go to state 52
 
     term                           shift and go to state 106
     vector                         shift and go to state 81
 
-state 69
+state 70
 
-    (32) expression -> expression / . term
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (33) expression -> expression * . term
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
     ID              shift and go to state 82
     [               shift and go to state 52
 
     term                           shift and go to state 107
     vector                         shift and go to state 81
 
-state 70
+state 71
 
-    (33) expression -> expression * . term
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (34) expression -> expression EQL . term
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
     ID              shift and go to state 82
     [               shift and go to state 52
 
     term                           shift and go to state 108
     vector                         shift and go to state 81
 
-state 71
+state 72
 
-    (34) expression -> expression EQL . term
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (35) expression -> expression NEQ . term
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
     ID              shift and go to state 82
     [               shift and go to state 52
 
     term                           shift and go to state 109
     vector                         shift and go to state 81
 
-state 72
+state 73
 
-    (35) expression -> expression NEQ . term
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (36) expression -> expression GT . term
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
     ID              shift and go to state 82
     [               shift and go to state 52
 
     term                           shift and go to state 110
     vector                         shift and go to state 81
 
-state 73
+state 74
 
-    (36) expression -> expression GT . term
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (37) expression -> expression GTE . term
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
     ID              shift and go to state 82
     [               shift and go to state 52
 
     term                           shift and go to state 111
     vector                         shift and go to state 81
 
-state 74
+state 75
 
-    (37) expression -> expression GTE . term
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (38) expression -> expression LT . term
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
     ID              shift and go to state 82
     [               shift and go to state 52
 
     term                           shift and go to state 112
     vector                         shift and go to state 81
 
-state 75
+state 76
 
-    (38) expression -> expression LT . term
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (39) expression -> expression LTE . term
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
     ID              shift and go to state 82
     [               shift and go to state 52
 
     term                           shift and go to state 113
-    vector                         shift and go to state 81
-
-state 76
-
-    (39) expression -> expression LTE . term
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
-    (48) vector -> . [ vector_contents ]
-    (49) vector -> . [ ]
-
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
-    ID              shift and go to state 82
-    [               shift and go to state 52
-
-    term                           shift and go to state 114
     vector                         shift and go to state 81
 
 state 77
@@ -2057,11 +2051,11 @@ state 77
 
 state 78
 
-    (26) expression -> built_in_function ( . expression_list )
-    (27) expression_list -> . expression_list , expression
-    (28) expression_list -> . expression
-    (26) expression -> . built_in_function ( expression_list )
-    (29) expression -> . term
+    (29) expression -> built_in_function ( . expression_list )
+    (26) expression_list -> . expression_list , expression
+    (27) expression_list -> . expression
+    (28) expression -> . term
+    (29) expression -> . built_in_function ( expression_list )
     (30) expression -> . expression + term
     (31) expression -> . expression - term
     (32) expression -> . expression / term
@@ -2076,38 +2070,38 @@ state 78
     (41) expression -> . expression TRANSPOSE
     (42) expression -> . ID dot_operation term
     (43) expression -> . vector dot_operation term
-    (74) built_in_function -> . EYE
-    (75) built_in_function -> . ONES
-    (76) built_in_function -> . ZEROS
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
+    (73) built_in_function -> . EYE
+    (74) built_in_function -> . ONES
+    (75) built_in_function -> . ZEROS
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
     -               shift and go to state 43
     ID              shift and go to state 44
-    EYE             shift and go to state 46
-    ONES            shift and go to state 47
-    ZEROS           shift and go to state 48
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
+    EYE             shift and go to state 49
+    ONES            shift and go to state 50
+    ZEROS           shift and go to state 51
     [               shift and go to state 52
 
-    built_in_function              shift and go to state 40
-    expression_list                shift and go to state 115
+    built_in_function              shift and go to state 41
+    expression_list                shift and go to state 114
     expression                     shift and go to state 39
-    term                           shift and go to state 42
+    term                           shift and go to state 40
     vector                         shift and go to state 45
 
 state 79
 
-    (68) term -> ( expression . )
+    (67) term -> ( expression . )
     (30) expression -> expression . + term
     (31) expression -> expression . - term
     (32) expression -> expression . / term
@@ -2120,7 +2114,7 @@ state 79
     (39) expression -> expression . LTE term
     (41) expression -> expression . TRANSPOSE
 
-    )               shift and go to state 116
+    )               shift and go to state 115
     +               shift and go to state 67
     -               shift and go to state 68
     /               shift and go to state 69
@@ -2167,86 +2161,86 @@ state 80
 
 state 81
 
-    (69) term -> vector .
+    (68) term -> vector .
 
-    +               reduce using rule 69 (term -> vector .)
-    -               reduce using rule 69 (term -> vector .)
-    /               reduce using rule 69 (term -> vector .)
-    *               reduce using rule 69 (term -> vector .)
-    EQL             reduce using rule 69 (term -> vector .)
-    NEQ             reduce using rule 69 (term -> vector .)
-    GT              reduce using rule 69 (term -> vector .)
-    GTE             reduce using rule 69 (term -> vector .)
-    LT              reduce using rule 69 (term -> vector .)
-    LTE             reduce using rule 69 (term -> vector .)
-    TRANSPOSE       reduce using rule 69 (term -> vector .)
-    ,               reduce using rule 69 (term -> vector .)
-    ;               reduce using rule 69 (term -> vector .)
-    :               reduce using rule 69 (term -> vector .)
-    ]               reduce using rule 69 (term -> vector .)
-    )               reduce using rule 69 (term -> vector .)
-    ID              reduce using rule 69 (term -> vector .)
-    PRINT           reduce using rule 69 (term -> vector .)
-    CONTINUE        reduce using rule 69 (term -> vector .)
-    BREAK           reduce using rule 69 (term -> vector .)
-    RETURN          reduce using rule 69 (term -> vector .)
-    IF              reduce using rule 69 (term -> vector .)
-    FOR             reduce using rule 69 (term -> vector .)
-    WHILE           reduce using rule 69 (term -> vector .)
-    {               reduce using rule 69 (term -> vector .)
+    +               reduce using rule 68 (term -> vector .)
+    -               reduce using rule 68 (term -> vector .)
+    /               reduce using rule 68 (term -> vector .)
+    *               reduce using rule 68 (term -> vector .)
+    EQL             reduce using rule 68 (term -> vector .)
+    NEQ             reduce using rule 68 (term -> vector .)
+    GT              reduce using rule 68 (term -> vector .)
+    GTE             reduce using rule 68 (term -> vector .)
+    LT              reduce using rule 68 (term -> vector .)
+    LTE             reduce using rule 68 (term -> vector .)
+    TRANSPOSE       reduce using rule 68 (term -> vector .)
+    ,               reduce using rule 68 (term -> vector .)
+    ;               reduce using rule 68 (term -> vector .)
+    :               reduce using rule 68 (term -> vector .)
+    ]               reduce using rule 68 (term -> vector .)
+    )               reduce using rule 68 (term -> vector .)
+    ID              reduce using rule 68 (term -> vector .)
+    PRINT           reduce using rule 68 (term -> vector .)
+    CONTINUE        reduce using rule 68 (term -> vector .)
+    BREAK           reduce using rule 68 (term -> vector .)
+    RETURN          reduce using rule 68 (term -> vector .)
+    IF              reduce using rule 68 (term -> vector .)
+    FOR             reduce using rule 68 (term -> vector .)
+    WHILE           reduce using rule 68 (term -> vector .)
+    {               reduce using rule 68 (term -> vector .)
 
 
 state 82
 
-    (73) term -> ID .
+    (72) term -> ID .
 
-    +               reduce using rule 73 (term -> ID .)
-    -               reduce using rule 73 (term -> ID .)
-    /               reduce using rule 73 (term -> ID .)
-    *               reduce using rule 73 (term -> ID .)
-    EQL             reduce using rule 73 (term -> ID .)
-    NEQ             reduce using rule 73 (term -> ID .)
-    GT              reduce using rule 73 (term -> ID .)
-    GTE             reduce using rule 73 (term -> ID .)
-    LT              reduce using rule 73 (term -> ID .)
-    LTE             reduce using rule 73 (term -> ID .)
-    TRANSPOSE       reduce using rule 73 (term -> ID .)
-    ,               reduce using rule 73 (term -> ID .)
-    ;               reduce using rule 73 (term -> ID .)
-    :               reduce using rule 73 (term -> ID .)
-    ]               reduce using rule 73 (term -> ID .)
-    )               reduce using rule 73 (term -> ID .)
-    ID              reduce using rule 73 (term -> ID .)
-    PRINT           reduce using rule 73 (term -> ID .)
-    CONTINUE        reduce using rule 73 (term -> ID .)
-    BREAK           reduce using rule 73 (term -> ID .)
-    RETURN          reduce using rule 73 (term -> ID .)
-    IF              reduce using rule 73 (term -> ID .)
-    FOR             reduce using rule 73 (term -> ID .)
-    WHILE           reduce using rule 73 (term -> ID .)
-    {               reduce using rule 73 (term -> ID .)
+    +               reduce using rule 72 (term -> ID .)
+    -               reduce using rule 72 (term -> ID .)
+    /               reduce using rule 72 (term -> ID .)
+    *               reduce using rule 72 (term -> ID .)
+    EQL             reduce using rule 72 (term -> ID .)
+    NEQ             reduce using rule 72 (term -> ID .)
+    GT              reduce using rule 72 (term -> ID .)
+    GTE             reduce using rule 72 (term -> ID .)
+    LT              reduce using rule 72 (term -> ID .)
+    LTE             reduce using rule 72 (term -> ID .)
+    TRANSPOSE       reduce using rule 72 (term -> ID .)
+    ,               reduce using rule 72 (term -> ID .)
+    ;               reduce using rule 72 (term -> ID .)
+    :               reduce using rule 72 (term -> ID .)
+    ]               reduce using rule 72 (term -> ID .)
+    )               reduce using rule 72 (term -> ID .)
+    ID              reduce using rule 72 (term -> ID .)
+    PRINT           reduce using rule 72 (term -> ID .)
+    CONTINUE        reduce using rule 72 (term -> ID .)
+    BREAK           reduce using rule 72 (term -> ID .)
+    RETURN          reduce using rule 72 (term -> ID .)
+    IF              reduce using rule 72 (term -> ID .)
+    FOR             reduce using rule 72 (term -> ID .)
+    WHILE           reduce using rule 72 (term -> ID .)
+    {               reduce using rule 72 (term -> ID .)
 
 
 state 83
 
     (42) expression -> ID dot_operation . term
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
     ID              shift and go to state 82
     [               shift and go to state 52
 
-    term                           shift and go to state 117
+    term                           shift and go to state 116
     vector                         shift and go to state 81
 
 state 84
@@ -2300,32 +2294,32 @@ state 87
 state 88
 
     (43) expression -> vector dot_operation . term
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
     ID              shift and go to state 82
     [               shift and go to state 52
 
     vector                         shift and go to state 81
-    term                           shift and go to state 118
+    term                           shift and go to state 117
 
 state 89
 
     (48) vector -> [ vector_contents . ]
     (50) vector_contents -> vector_contents . , vector_element
 
-    ]               shift and go to state 119
-    ,               shift and go to state 120
+    ]               shift and go to state 118
+    ,               shift and go to state 119
 
 
 state 90
@@ -2381,44 +2375,26 @@ state 92
 
 state 93
 
-    (60) if -> IF condition nested_statement .
-    (61) if -> IF condition nested_statement . ELSE nested_statement
+    (60) if -> IF condition statement .
+    (61) if -> IF condition statement . ELSE statement
 
-    ID              reduce using rule 60 (if -> IF condition nested_statement .)
-    PRINT           reduce using rule 60 (if -> IF condition nested_statement .)
-    CONTINUE        reduce using rule 60 (if -> IF condition nested_statement .)
-    BREAK           reduce using rule 60 (if -> IF condition nested_statement .)
-    RETURN          reduce using rule 60 (if -> IF condition nested_statement .)
-    IF              reduce using rule 60 (if -> IF condition nested_statement .)
-    FOR             reduce using rule 60 (if -> IF condition nested_statement .)
-    WHILE           reduce using rule 60 (if -> IF condition nested_statement .)
-    {               reduce using rule 60 (if -> IF condition nested_statement .)
-    $end            reduce using rule 60 (if -> IF condition nested_statement .)
-    }               reduce using rule 60 (if -> IF condition nested_statement .)
-    ELSE            shift and go to state 121
+    ID              reduce using rule 60 (if -> IF condition statement .)
+    PRINT           reduce using rule 60 (if -> IF condition statement .)
+    CONTINUE        reduce using rule 60 (if -> IF condition statement .)
+    BREAK           reduce using rule 60 (if -> IF condition statement .)
+    RETURN          reduce using rule 60 (if -> IF condition statement .)
+    IF              reduce using rule 60 (if -> IF condition statement .)
+    FOR             reduce using rule 60 (if -> IF condition statement .)
+    WHILE           reduce using rule 60 (if -> IF condition statement .)
+    {               reduce using rule 60 (if -> IF condition statement .)
+    $end            reduce using rule 60 (if -> IF condition statement .)
+    }               reduce using rule 60 (if -> IF condition statement .)
+    ELSE            shift and go to state 120
 
-  ! ELSE            [ reduce using rule 60 (if -> IF condition nested_statement .) ]
+  ! ELSE            [ reduce using rule 60 (if -> IF condition statement .) ]
 
 
 state 94
-
-    (63) nested_statement -> statement .
-
-    ELSE            reduce using rule 63 (nested_statement -> statement .)
-    ID              reduce using rule 63 (nested_statement -> statement .)
-    PRINT           reduce using rule 63 (nested_statement -> statement .)
-    CONTINUE        reduce using rule 63 (nested_statement -> statement .)
-    BREAK           reduce using rule 63 (nested_statement -> statement .)
-    RETURN          reduce using rule 63 (nested_statement -> statement .)
-    IF              reduce using rule 63 (nested_statement -> statement .)
-    FOR             reduce using rule 63 (nested_statement -> statement .)
-    WHILE           reduce using rule 63 (nested_statement -> statement .)
-    {               reduce using rule 63 (nested_statement -> statement .)
-    $end            reduce using rule 63 (nested_statement -> statement .)
-    }               reduce using rule 63 (nested_statement -> statement .)
-
-
-state 95
 
     (62) condition -> ( expression . )
     (30) expression -> expression . + term
@@ -2433,7 +2409,7 @@ state 95
     (39) expression -> expression . LTE term
     (41) expression -> expression . TRANSPOSE
 
-    )               shift and go to state 122
+    )               shift and go to state 121
     +               shift and go to state 67
     -               shift and go to state 68
     /               shift and go to state 69
@@ -2447,11 +2423,11 @@ state 95
     TRANSPOSE       shift and go to state 77
 
 
-state 96
+state 95
 
-    (13) for -> FOR ID ASSIGN . expression : expression nested_statement
-    (26) expression -> . built_in_function ( expression_list )
-    (29) expression -> . term
+    (13) for -> FOR ID ASSIGN . expression : expression statement
+    (28) expression -> . term
+    (29) expression -> . built_in_function ( expression_list )
     (30) expression -> . expression + term
     (31) expression -> . expression - term
     (32) expression -> . expression / term
@@ -2466,71 +2442,71 @@ state 96
     (41) expression -> . expression TRANSPOSE
     (42) expression -> . ID dot_operation term
     (43) expression -> . vector dot_operation term
-    (74) built_in_function -> . EYE
-    (75) built_in_function -> . ONES
-    (76) built_in_function -> . ZEROS
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
+    (73) built_in_function -> . EYE
+    (74) built_in_function -> . ONES
+    (75) built_in_function -> . ZEROS
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
     -               shift and go to state 43
     ID              shift and go to state 44
-    EYE             shift and go to state 46
-    ONES            shift and go to state 47
-    ZEROS           shift and go to state 48
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
+    EYE             shift and go to state 49
+    ONES            shift and go to state 50
+    ZEROS           shift and go to state 51
     [               shift and go to state 52
 
-    expression                     shift and go to state 123
-    built_in_function              shift and go to state 40
-    term                           shift and go to state 42
+    expression                     shift and go to state 122
+    term                           shift and go to state 40
+    built_in_function              shift and go to state 41
     vector                         shift and go to state 45
+
+state 96
+
+    (14) while -> WHILE condition statement .
+
+    ID              reduce using rule 14 (while -> WHILE condition statement .)
+    PRINT           reduce using rule 14 (while -> WHILE condition statement .)
+    CONTINUE        reduce using rule 14 (while -> WHILE condition statement .)
+    BREAK           reduce using rule 14 (while -> WHILE condition statement .)
+    RETURN          reduce using rule 14 (while -> WHILE condition statement .)
+    IF              reduce using rule 14 (while -> WHILE condition statement .)
+    FOR             reduce using rule 14 (while -> WHILE condition statement .)
+    WHILE           reduce using rule 14 (while -> WHILE condition statement .)
+    {               reduce using rule 14 (while -> WHILE condition statement .)
+    $end            reduce using rule 14 (while -> WHILE condition statement .)
+    }               reduce using rule 14 (while -> WHILE condition statement .)
+    ELSE            reduce using rule 14 (while -> WHILE condition statement .)
+
 
 state 97
 
-    (14) while -> WHILE condition nested_statement .
+    (65) nested_statements_list -> { statements } .
 
-    ID              reduce using rule 14 (while -> WHILE condition nested_statement .)
-    PRINT           reduce using rule 14 (while -> WHILE condition nested_statement .)
-    CONTINUE        reduce using rule 14 (while -> WHILE condition nested_statement .)
-    BREAK           reduce using rule 14 (while -> WHILE condition nested_statement .)
-    RETURN          reduce using rule 14 (while -> WHILE condition nested_statement .)
-    IF              reduce using rule 14 (while -> WHILE condition nested_statement .)
-    FOR             reduce using rule 14 (while -> WHILE condition nested_statement .)
-    WHILE           reduce using rule 14 (while -> WHILE condition nested_statement .)
-    {               reduce using rule 14 (while -> WHILE condition nested_statement .)
-    $end            reduce using rule 14 (while -> WHILE condition nested_statement .)
-    }               reduce using rule 14 (while -> WHILE condition nested_statement .)
-    ELSE            reduce using rule 14 (while -> WHILE condition nested_statement .)
+    ID              reduce using rule 65 (nested_statements_list -> { statements } .)
+    PRINT           reduce using rule 65 (nested_statements_list -> { statements } .)
+    CONTINUE        reduce using rule 65 (nested_statements_list -> { statements } .)
+    BREAK           reduce using rule 65 (nested_statements_list -> { statements } .)
+    RETURN          reduce using rule 65 (nested_statements_list -> { statements } .)
+    IF              reduce using rule 65 (nested_statements_list -> { statements } .)
+    FOR             reduce using rule 65 (nested_statements_list -> { statements } .)
+    WHILE           reduce using rule 65 (nested_statements_list -> { statements } .)
+    {               reduce using rule 65 (nested_statements_list -> { statements } .)
+    $end            reduce using rule 65 (nested_statements_list -> { statements } .)
+    }               reduce using rule 65 (nested_statements_list -> { statements } .)
+    ELSE            reduce using rule 65 (nested_statements_list -> { statements } .)
 
 
 state 98
-
-    (66) nested_statements_list -> { statements } .
-
-    ID              reduce using rule 66 (nested_statements_list -> { statements } .)
-    PRINT           reduce using rule 66 (nested_statements_list -> { statements } .)
-    CONTINUE        reduce using rule 66 (nested_statements_list -> { statements } .)
-    BREAK           reduce using rule 66 (nested_statements_list -> { statements } .)
-    RETURN          reduce using rule 66 (nested_statements_list -> { statements } .)
-    IF              reduce using rule 66 (nested_statements_list -> { statements } .)
-    FOR             reduce using rule 66 (nested_statements_list -> { statements } .)
-    WHILE           reduce using rule 66 (nested_statements_list -> { statements } .)
-    {               reduce using rule 66 (nested_statements_list -> { statements } .)
-    $end            reduce using rule 66 (nested_statements_list -> { statements } .)
-    }               reduce using rule 66 (nested_statements_list -> { statements } .)
-    ELSE            reduce using rule 66 (nested_statements_list -> { statements } .)
-
-
-state 99
 
     (20) assignment -> ID slice assign_symbol expression .
     (30) expression -> expression . + term
@@ -2559,7 +2535,7 @@ state 99
     TRANSPOSE       shift and go to state 77
 
 
-state 100
+state 99
 
     (53) slice -> [ slice_contents ] .
 
@@ -2570,15 +2546,15 @@ state 100
     MULTASSIGN      reduce using rule 53 (slice -> [ slice_contents ] .)
 
 
-state 101
+state 100
 
     (54) slice_contents -> slice_contents , . range
     (56) range -> . expression : expression
     (57) range -> . expression :
     (58) range -> . : expression
     (59) range -> . expression
-    (26) expression -> . built_in_function ( expression_list )
-    (29) expression -> . term
+    (28) expression -> . term
+    (29) expression -> . built_in_function ( expression_list )
     (30) expression -> . expression + term
     (31) expression -> . expression - term
     (32) expression -> . expression / term
@@ -2593,42 +2569,42 @@ state 101
     (41) expression -> . expression TRANSPOSE
     (42) expression -> . ID dot_operation term
     (43) expression -> . vector dot_operation term
-    (74) built_in_function -> . EYE
-    (75) built_in_function -> . ONES
-    (76) built_in_function -> . ZEROS
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
+    (73) built_in_function -> . EYE
+    (74) built_in_function -> . ONES
+    (75) built_in_function -> . ZEROS
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
     :               shift and go to state 65
     -               shift and go to state 43
     ID              shift and go to state 44
-    EYE             shift and go to state 46
-    ONES            shift and go to state 47
-    ZEROS           shift and go to state 48
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
+    EYE             shift and go to state 49
+    ONES            shift and go to state 50
+    ZEROS           shift and go to state 51
     [               shift and go to state 52
 
-    range                          shift and go to state 124
+    range                          shift and go to state 123
     expression                     shift and go to state 64
-    built_in_function              shift and go to state 40
-    term                           shift and go to state 42
+    term                           shift and go to state 40
+    built_in_function              shift and go to state 41
     vector                         shift and go to state 45
 
-state 102
+state 101
 
     (56) range -> expression : . expression
     (57) range -> expression : .
-    (26) expression -> . built_in_function ( expression_list )
-    (29) expression -> . term
+    (28) expression -> . term
+    (29) expression -> . built_in_function ( expression_list )
     (30) expression -> . expression + term
     (31) expression -> . expression - term
     (32) expression -> . expression / term
@@ -2643,15 +2619,15 @@ state 102
     (41) expression -> . expression TRANSPOSE
     (42) expression -> . ID dot_operation term
     (43) expression -> . vector dot_operation term
-    (74) built_in_function -> . EYE
-    (75) built_in_function -> . ONES
-    (76) built_in_function -> . ZEROS
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
+    (73) built_in_function -> . EYE
+    (74) built_in_function -> . ONES
+    (75) built_in_function -> . ZEROS
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
@@ -2659,21 +2635,21 @@ state 102
     ,               reduce using rule 57 (range -> expression : .)
     -               shift and go to state 43
     ID              shift and go to state 44
-    EYE             shift and go to state 46
-    ONES            shift and go to state 47
-    ZEROS           shift and go to state 48
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
+    EYE             shift and go to state 49
+    ONES            shift and go to state 50
+    ZEROS           shift and go to state 51
     [               shift and go to state 52
 
-    expression                     shift and go to state 125
-    built_in_function              shift and go to state 40
-    term                           shift and go to state 42
+    expression                     shift and go to state 124
+    term                           shift and go to state 40
+    built_in_function              shift and go to state 41
     vector                         shift and go to state 45
 
-state 103
+state 102
 
     (58) range -> : expression .
     (30) expression -> expression . + term
@@ -2703,9 +2679,9 @@ state 103
     TRANSPOSE       shift and go to state 77
 
 
-state 104
+state 103
 
-    (27) expression_list -> expression_list , expression .
+    (26) expression_list -> expression_list , expression .
     (30) expression -> expression . + term
     (31) expression -> expression . - term
     (32) expression -> expression . / term
@@ -2718,9 +2694,9 @@ state 104
     (39) expression -> expression . LTE term
     (41) expression -> expression . TRANSPOSE
 
-    ,               reduce using rule 27 (expression_list -> expression_list , expression .)
-    ;               reduce using rule 27 (expression_list -> expression_list , expression .)
-    )               reduce using rule 27 (expression_list -> expression_list , expression .)
+    ,               reduce using rule 26 (expression_list -> expression_list , expression .)
+    ;               reduce using rule 26 (expression_list -> expression_list , expression .)
+    )               reduce using rule 26 (expression_list -> expression_list , expression .)
     +               shift and go to state 67
     -               shift and go to state 68
     /               shift and go to state 69
@@ -2734,7 +2710,7 @@ state 104
     TRANSPOSE       shift and go to state 77
 
 
-state 105
+state 104
 
     (30) expression -> expression + term .
 
@@ -2765,7 +2741,7 @@ state 105
     {               reduce using rule 30 (expression -> expression + term .)
 
 
-state 106
+state 105
 
     (31) expression -> expression - term .
 
@@ -2796,7 +2772,7 @@ state 106
     {               reduce using rule 31 (expression -> expression - term .)
 
 
-state 107
+state 106
 
     (32) expression -> expression / term .
 
@@ -2827,7 +2803,7 @@ state 107
     {               reduce using rule 32 (expression -> expression / term .)
 
 
-state 108
+state 107
 
     (33) expression -> expression * term .
 
@@ -2858,7 +2834,7 @@ state 108
     {               reduce using rule 33 (expression -> expression * term .)
 
 
-state 109
+state 108
 
     (34) expression -> expression EQL term .
 
@@ -2889,7 +2865,7 @@ state 109
     {               reduce using rule 34 (expression -> expression EQL term .)
 
 
-state 110
+state 109
 
     (35) expression -> expression NEQ term .
 
@@ -2920,7 +2896,7 @@ state 110
     {               reduce using rule 35 (expression -> expression NEQ term .)
 
 
-state 111
+state 110
 
     (36) expression -> expression GT term .
 
@@ -2951,7 +2927,7 @@ state 111
     {               reduce using rule 36 (expression -> expression GT term .)
 
 
-state 112
+state 111
 
     (37) expression -> expression GTE term .
 
@@ -2982,7 +2958,7 @@ state 112
     {               reduce using rule 37 (expression -> expression GTE term .)
 
 
-state 113
+state 112
 
     (38) expression -> expression LT term .
 
@@ -3013,7 +2989,7 @@ state 113
     {               reduce using rule 38 (expression -> expression LT term .)
 
 
-state 114
+state 113
 
     (39) expression -> expression LTE term .
 
@@ -3044,47 +3020,47 @@ state 114
     {               reduce using rule 39 (expression -> expression LTE term .)
 
 
-state 115
+state 114
 
-    (26) expression -> built_in_function ( expression_list . )
-    (27) expression_list -> expression_list . , expression
+    (29) expression -> built_in_function ( expression_list . )
+    (26) expression_list -> expression_list . , expression
 
-    )               shift and go to state 126
+    )               shift and go to state 125
     ,               shift and go to state 66
 
 
+state 115
+
+    (67) term -> ( expression ) .
+
+    +               reduce using rule 67 (term -> ( expression ) .)
+    -               reduce using rule 67 (term -> ( expression ) .)
+    /               reduce using rule 67 (term -> ( expression ) .)
+    *               reduce using rule 67 (term -> ( expression ) .)
+    EQL             reduce using rule 67 (term -> ( expression ) .)
+    NEQ             reduce using rule 67 (term -> ( expression ) .)
+    GT              reduce using rule 67 (term -> ( expression ) .)
+    GTE             reduce using rule 67 (term -> ( expression ) .)
+    LT              reduce using rule 67 (term -> ( expression ) .)
+    LTE             reduce using rule 67 (term -> ( expression ) .)
+    TRANSPOSE       reduce using rule 67 (term -> ( expression ) .)
+    ,               reduce using rule 67 (term -> ( expression ) .)
+    ;               reduce using rule 67 (term -> ( expression ) .)
+    :               reduce using rule 67 (term -> ( expression ) .)
+    ]               reduce using rule 67 (term -> ( expression ) .)
+    )               reduce using rule 67 (term -> ( expression ) .)
+    ID              reduce using rule 67 (term -> ( expression ) .)
+    PRINT           reduce using rule 67 (term -> ( expression ) .)
+    CONTINUE        reduce using rule 67 (term -> ( expression ) .)
+    BREAK           reduce using rule 67 (term -> ( expression ) .)
+    RETURN          reduce using rule 67 (term -> ( expression ) .)
+    IF              reduce using rule 67 (term -> ( expression ) .)
+    FOR             reduce using rule 67 (term -> ( expression ) .)
+    WHILE           reduce using rule 67 (term -> ( expression ) .)
+    {               reduce using rule 67 (term -> ( expression ) .)
+
+
 state 116
-
-    (68) term -> ( expression ) .
-
-    +               reduce using rule 68 (term -> ( expression ) .)
-    -               reduce using rule 68 (term -> ( expression ) .)
-    /               reduce using rule 68 (term -> ( expression ) .)
-    *               reduce using rule 68 (term -> ( expression ) .)
-    EQL             reduce using rule 68 (term -> ( expression ) .)
-    NEQ             reduce using rule 68 (term -> ( expression ) .)
-    GT              reduce using rule 68 (term -> ( expression ) .)
-    GTE             reduce using rule 68 (term -> ( expression ) .)
-    LT              reduce using rule 68 (term -> ( expression ) .)
-    LTE             reduce using rule 68 (term -> ( expression ) .)
-    TRANSPOSE       reduce using rule 68 (term -> ( expression ) .)
-    ,               reduce using rule 68 (term -> ( expression ) .)
-    ;               reduce using rule 68 (term -> ( expression ) .)
-    :               reduce using rule 68 (term -> ( expression ) .)
-    ]               reduce using rule 68 (term -> ( expression ) .)
-    )               reduce using rule 68 (term -> ( expression ) .)
-    ID              reduce using rule 68 (term -> ( expression ) .)
-    PRINT           reduce using rule 68 (term -> ( expression ) .)
-    CONTINUE        reduce using rule 68 (term -> ( expression ) .)
-    BREAK           reduce using rule 68 (term -> ( expression ) .)
-    RETURN          reduce using rule 68 (term -> ( expression ) .)
-    IF              reduce using rule 68 (term -> ( expression ) .)
-    FOR             reduce using rule 68 (term -> ( expression ) .)
-    WHILE           reduce using rule 68 (term -> ( expression ) .)
-    {               reduce using rule 68 (term -> ( expression ) .)
-
-
-state 117
 
     (42) expression -> ID dot_operation term .
 
@@ -3115,7 +3091,7 @@ state 117
     {               reduce using rule 42 (expression -> ID dot_operation term .)
 
 
-state 118
+state 117
 
     (43) expression -> vector dot_operation term .
 
@@ -3146,7 +3122,7 @@ state 118
     {               reduce using rule 43 (expression -> vector dot_operation term .)
 
 
-state 119
+state 118
 
     (48) vector -> [ vector_contents ] .
 
@@ -3181,34 +3157,33 @@ state 119
     {               reduce using rule 48 (vector -> [ vector_contents ] .)
 
 
-state 120
+state 119
 
     (50) vector_contents -> vector_contents , . vector_element
     (52) vector_element -> . term
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
     ID              shift and go to state 82
     [               shift and go to state 52
 
-    vector_element                 shift and go to state 127
+    vector_element                 shift and go to state 126
     term                           shift and go to state 92
     vector                         shift and go to state 81
 
-state 121
+state 120
 
-    (61) if -> IF condition nested_statement ELSE . nested_statement
-    (63) nested_statement -> . statement
+    (61) if -> IF condition statement ELSE . statement
     (4) statement -> . assignment ;
     (5) statement -> . print ;
     (6) statement -> . continue ;
@@ -3224,14 +3199,14 @@ state 121
     (17) continue -> . CONTINUE
     (15) break -> . BREAK
     (16) return -> . RETURN expression
-    (60) if -> . IF condition nested_statement
-    (61) if -> . IF condition nested_statement ELSE nested_statement
-    (13) for -> . FOR ID ASSIGN expression : expression nested_statement
-    (14) while -> . WHILE condition nested_statement
-    (64) nested_statements -> . nested_empty
-    (65) nested_statements -> . nested_statements_list
-    (67) nested_empty -> . { }
-    (66) nested_statements_list -> . { statements }
+    (60) if -> . IF condition statement
+    (61) if -> . IF condition statement ELSE statement
+    (13) for -> . FOR ID ASSIGN expression : expression statement
+    (14) while -> . WHILE condition statement
+    (63) nested_statements -> . nested_empty
+    (64) nested_statements -> . nested_statements_list
+    (66) nested_empty -> . { }
+    (65) nested_statements_list -> . { statements }
 
     ID              shift and go to state 13
     PRINT           shift and go to state 14
@@ -3243,8 +3218,7 @@ state 121
     WHILE           shift and go to state 20
     {               shift and go to state 23
 
-    nested_statement               shift and go to state 128
-    statement                      shift and go to state 94
+    statement                      shift and go to state 127
     assignment                     shift and go to state 4
     print                          shift and go to state 5
     continue                       shift and go to state 6
@@ -3257,7 +3231,7 @@ state 121
     nested_empty                   shift and go to state 21
     nested_statements_list         shift and go to state 22
 
-state 122
+state 121
 
     (62) condition -> ( expression ) .
 
@@ -3272,9 +3246,9 @@ state 122
     {               reduce using rule 62 (condition -> ( expression ) .)
 
 
-state 123
+state 122
 
-    (13) for -> FOR ID ASSIGN expression . : expression nested_statement
+    (13) for -> FOR ID ASSIGN expression . : expression statement
     (30) expression -> expression . + term
     (31) expression -> expression . - term
     (32) expression -> expression . / term
@@ -3287,7 +3261,7 @@ state 123
     (39) expression -> expression . LTE term
     (41) expression -> expression . TRANSPOSE
 
-    :               shift and go to state 129
+    :               shift and go to state 128
     +               shift and go to state 67
     -               shift and go to state 68
     /               shift and go to state 69
@@ -3301,7 +3275,7 @@ state 123
     TRANSPOSE       shift and go to state 77
 
 
-state 124
+state 123
 
     (54) slice_contents -> slice_contents , range .
 
@@ -3309,7 +3283,7 @@ state 124
     ,               reduce using rule 54 (slice_contents -> slice_contents , range .)
 
 
-state 125
+state 124
 
     (56) range -> expression : expression .
     (30) expression -> expression . + term
@@ -3339,38 +3313,38 @@ state 125
     TRANSPOSE       shift and go to state 77
 
 
+state 125
+
+    (29) expression -> built_in_function ( expression_list ) .
+
+    +               reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    -               reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    /               reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    *               reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    EQL             reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    NEQ             reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    GT              reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    GTE             reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    LT              reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    LTE             reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    TRANSPOSE       reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    ,               reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    ;               reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    :               reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    ]               reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    )               reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    ID              reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    PRINT           reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    CONTINUE        reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    BREAK           reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    RETURN          reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    IF              reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    FOR             reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    WHILE           reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+    {               reduce using rule 29 (expression -> built_in_function ( expression_list ) .)
+
+
 state 126
-
-    (26) expression -> built_in_function ( expression_list ) .
-
-    +               reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    -               reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    /               reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    *               reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    EQL             reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    NEQ             reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    GT              reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    GTE             reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    LT              reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    LTE             reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    TRANSPOSE       reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    ,               reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    ;               reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    :               reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    ]               reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    )               reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    ID              reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    PRINT           reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    CONTINUE        reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    BREAK           reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    RETURN          reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    IF              reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    FOR             reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    WHILE           reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-    {               reduce using rule 26 (expression -> built_in_function ( expression_list ) .)
-
-
-state 127
 
     (50) vector_contents -> vector_contents , vector_element .
 
@@ -3378,29 +3352,29 @@ state 127
     ,               reduce using rule 50 (vector_contents -> vector_contents , vector_element .)
 
 
+state 127
+
+    (61) if -> IF condition statement ELSE statement .
+
+    ID              reduce using rule 61 (if -> IF condition statement ELSE statement .)
+    PRINT           reduce using rule 61 (if -> IF condition statement ELSE statement .)
+    CONTINUE        reduce using rule 61 (if -> IF condition statement ELSE statement .)
+    BREAK           reduce using rule 61 (if -> IF condition statement ELSE statement .)
+    RETURN          reduce using rule 61 (if -> IF condition statement ELSE statement .)
+    IF              reduce using rule 61 (if -> IF condition statement ELSE statement .)
+    FOR             reduce using rule 61 (if -> IF condition statement ELSE statement .)
+    WHILE           reduce using rule 61 (if -> IF condition statement ELSE statement .)
+    {               reduce using rule 61 (if -> IF condition statement ELSE statement .)
+    $end            reduce using rule 61 (if -> IF condition statement ELSE statement .)
+    }               reduce using rule 61 (if -> IF condition statement ELSE statement .)
+    ELSE            reduce using rule 61 (if -> IF condition statement ELSE statement .)
+
+
 state 128
 
-    (61) if -> IF condition nested_statement ELSE nested_statement .
-
-    ID              reduce using rule 61 (if -> IF condition nested_statement ELSE nested_statement .)
-    PRINT           reduce using rule 61 (if -> IF condition nested_statement ELSE nested_statement .)
-    CONTINUE        reduce using rule 61 (if -> IF condition nested_statement ELSE nested_statement .)
-    BREAK           reduce using rule 61 (if -> IF condition nested_statement ELSE nested_statement .)
-    RETURN          reduce using rule 61 (if -> IF condition nested_statement ELSE nested_statement .)
-    IF              reduce using rule 61 (if -> IF condition nested_statement ELSE nested_statement .)
-    FOR             reduce using rule 61 (if -> IF condition nested_statement ELSE nested_statement .)
-    WHILE           reduce using rule 61 (if -> IF condition nested_statement ELSE nested_statement .)
-    {               reduce using rule 61 (if -> IF condition nested_statement ELSE nested_statement .)
-    $end            reduce using rule 61 (if -> IF condition nested_statement ELSE nested_statement .)
-    }               reduce using rule 61 (if -> IF condition nested_statement ELSE nested_statement .)
-    ELSE            reduce using rule 61 (if -> IF condition nested_statement ELSE nested_statement .)
-
-
-state 129
-
-    (13) for -> FOR ID ASSIGN expression : . expression nested_statement
-    (26) expression -> . built_in_function ( expression_list )
-    (29) expression -> . term
+    (13) for -> FOR ID ASSIGN expression : . expression statement
+    (28) expression -> . term
+    (29) expression -> . built_in_function ( expression_list )
     (30) expression -> . expression + term
     (31) expression -> . expression - term
     (32) expression -> . expression / term
@@ -3415,37 +3389,37 @@ state 129
     (41) expression -> . expression TRANSPOSE
     (42) expression -> . ID dot_operation term
     (43) expression -> . vector dot_operation term
-    (74) built_in_function -> . EYE
-    (75) built_in_function -> . ONES
-    (76) built_in_function -> . ZEROS
-    (68) term -> . ( expression )
-    (69) term -> . vector
-    (70) term -> . INTNUM
-    (71) term -> . FLOATNUM
-    (72) term -> . STR
-    (73) term -> . ID
+    (67) term -> . ( expression )
+    (68) term -> . vector
+    (69) term -> . INTNUM
+    (70) term -> . FLOATNUM
+    (71) term -> . STR
+    (72) term -> . ID
+    (73) built_in_function -> . EYE
+    (74) built_in_function -> . ONES
+    (75) built_in_function -> . ZEROS
     (48) vector -> . [ vector_contents ]
     (49) vector -> . [ ]
 
     -               shift and go to state 43
     ID              shift and go to state 44
-    EYE             shift and go to state 46
-    ONES            shift and go to state 47
-    ZEROS           shift and go to state 48
-    (               shift and go to state 41
-    INTNUM          shift and go to state 49
-    FLOATNUM        shift and go to state 50
-    STR             shift and go to state 51
+    (               shift and go to state 42
+    INTNUM          shift and go to state 46
+    FLOATNUM        shift and go to state 47
+    STR             shift and go to state 48
+    EYE             shift and go to state 49
+    ONES            shift and go to state 50
+    ZEROS           shift and go to state 51
     [               shift and go to state 52
 
-    expression                     shift and go to state 130
-    built_in_function              shift and go to state 40
-    term                           shift and go to state 42
+    expression                     shift and go to state 129
+    term                           shift and go to state 40
+    built_in_function              shift and go to state 41
     vector                         shift and go to state 45
 
-state 130
+state 129
 
-    (13) for -> FOR ID ASSIGN expression : expression . nested_statement
+    (13) for -> FOR ID ASSIGN expression : expression . statement
     (30) expression -> expression . + term
     (31) expression -> expression . - term
     (32) expression -> expression . / term
@@ -3457,7 +3431,6 @@ state 130
     (38) expression -> expression . LT term
     (39) expression -> expression . LTE term
     (41) expression -> expression . TRANSPOSE
-    (63) nested_statement -> . statement
     (4) statement -> . assignment ;
     (5) statement -> . print ;
     (6) statement -> . continue ;
@@ -3473,14 +3446,14 @@ state 130
     (17) continue -> . CONTINUE
     (15) break -> . BREAK
     (16) return -> . RETURN expression
-    (60) if -> . IF condition nested_statement
-    (61) if -> . IF condition nested_statement ELSE nested_statement
-    (13) for -> . FOR ID ASSIGN expression : expression nested_statement
-    (14) while -> . WHILE condition nested_statement
-    (64) nested_statements -> . nested_empty
-    (65) nested_statements -> . nested_statements_list
-    (67) nested_empty -> . { }
-    (66) nested_statements_list -> . { statements }
+    (60) if -> . IF condition statement
+    (61) if -> . IF condition statement ELSE statement
+    (13) for -> . FOR ID ASSIGN expression : expression statement
+    (14) while -> . WHILE condition statement
+    (63) nested_statements -> . nested_empty
+    (64) nested_statements -> . nested_statements_list
+    (66) nested_empty -> . { }
+    (65) nested_statements_list -> . { statements }
 
     +               shift and go to state 67
     -               shift and go to state 68
@@ -3503,8 +3476,7 @@ state 130
     WHILE           shift and go to state 20
     {               shift and go to state 23
 
-    nested_statement               shift and go to state 131
-    statement                      shift and go to state 94
+    statement                      shift and go to state 130
     assignment                     shift and go to state 4
     print                          shift and go to state 5
     continue                       shift and go to state 6
@@ -3517,20 +3489,20 @@ state 130
     nested_empty                   shift and go to state 21
     nested_statements_list         shift and go to state 22
 
-state 131
+state 130
 
-    (13) for -> FOR ID ASSIGN expression : expression nested_statement .
+    (13) for -> FOR ID ASSIGN expression : expression statement .
 
-    ID              reduce using rule 13 (for -> FOR ID ASSIGN expression : expression nested_statement .)
-    PRINT           reduce using rule 13 (for -> FOR ID ASSIGN expression : expression nested_statement .)
-    CONTINUE        reduce using rule 13 (for -> FOR ID ASSIGN expression : expression nested_statement .)
-    BREAK           reduce using rule 13 (for -> FOR ID ASSIGN expression : expression nested_statement .)
-    RETURN          reduce using rule 13 (for -> FOR ID ASSIGN expression : expression nested_statement .)
-    IF              reduce using rule 13 (for -> FOR ID ASSIGN expression : expression nested_statement .)
-    FOR             reduce using rule 13 (for -> FOR ID ASSIGN expression : expression nested_statement .)
-    WHILE           reduce using rule 13 (for -> FOR ID ASSIGN expression : expression nested_statement .)
-    {               reduce using rule 13 (for -> FOR ID ASSIGN expression : expression nested_statement .)
-    $end            reduce using rule 13 (for -> FOR ID ASSIGN expression : expression nested_statement .)
-    }               reduce using rule 13 (for -> FOR ID ASSIGN expression : expression nested_statement .)
-    ELSE            reduce using rule 13 (for -> FOR ID ASSIGN expression : expression nested_statement .)
+    ID              reduce using rule 13 (for -> FOR ID ASSIGN expression : expression statement .)
+    PRINT           reduce using rule 13 (for -> FOR ID ASSIGN expression : expression statement .)
+    CONTINUE        reduce using rule 13 (for -> FOR ID ASSIGN expression : expression statement .)
+    BREAK           reduce using rule 13 (for -> FOR ID ASSIGN expression : expression statement .)
+    RETURN          reduce using rule 13 (for -> FOR ID ASSIGN expression : expression statement .)
+    IF              reduce using rule 13 (for -> FOR ID ASSIGN expression : expression statement .)
+    FOR             reduce using rule 13 (for -> FOR ID ASSIGN expression : expression statement .)
+    WHILE           reduce using rule 13 (for -> FOR ID ASSIGN expression : expression statement .)
+    {               reduce using rule 13 (for -> FOR ID ASSIGN expression : expression statement .)
+    $end            reduce using rule 13 (for -> FOR ID ASSIGN expression : expression statement .)
+    }               reduce using rule 13 (for -> FOR ID ASSIGN expression : expression statement .)
+    ELSE            reduce using rule 13 (for -> FOR ID ASSIGN expression : expression statement .)
 
