@@ -12,8 +12,8 @@ def addToClass(cls):
 class TreePrinter:
     separator = ' | '
 
-    @addToClass()
-    def printTree(self, indent):
+    @addToClass(Ast)
+    def printTree(self, indent=0):
         """
             Basic text tree representation.
         """

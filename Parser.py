@@ -8,6 +8,8 @@ from Ast import *
 
 yaccdebug = True
 
+parseError = False
+
 
 def LRParser():
     return yacc.yacc(debug=yaccdebug, start='start', outputdir='./out')
@@ -416,6 +418,7 @@ def p_built_in_function(p):
 
 
 def p_error(p):
-    print('Error!')
-    print(p.__dict__)
-    pass
+    global parseError
+    parseError = True
+
+    print('Error during parsing occured! ~> ' + str(p))

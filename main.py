@@ -5,6 +5,8 @@ from Lexer import Lexer
 from Parser import LRParser
 from TreePrinter import TreePrinter
 
+import Parser
+
 
 if __name__ == '__main__':
     try:
@@ -19,6 +21,9 @@ if __name__ == '__main__':
 
     text = file.read()
     ast = parser.parse(text, lexer=lexer.lex())
-    printer = TreePrinter()
-    # ast.show()
-    ast.printTree(0)
+    if Parser.parseError is True:
+        print('Error during creating ast..')
+    else:
+        # We can print tree in two formats
+        ast.printTree()
+        ast.printFancyTree()
