@@ -150,6 +150,11 @@ class BindWithSlice(Ast):
 
 
 class Range(Ast):
+    """
+        For example: 
+            '2:5' 
+    """
+
     def __init__(self, begin, end):
         super().__init__('Range', children=[begin, end])
 
@@ -161,6 +166,11 @@ class Range(Ast):
 
 
 class FromStartRange(Ast):
+    """
+        For example: 
+            '5: ' 
+    """
+
     def __init__(self, end):
         super().__init__('StartlessRange', children=[end])
 
@@ -169,6 +179,11 @@ class FromStartRange(Ast):
 
 
 class EndlessRange(Ast):
+    """
+        For example: 
+            ' :5' 
+    """
+
     def __init__(self, begin):
         super().__init__('EndlessRange', children=[begin])
 
@@ -177,6 +192,10 @@ class EndlessRange(Ast):
 
 
 class SimpleRange(Ast):
+    """
+        This is a single index.
+    """
+
     def __init__(self, idx):
         super().__init__('SimpleRange', children=[idx])
 
