@@ -20,7 +20,7 @@ if __name__ == '__main__':
     parser = LRParser()
 
     text = file.read()
-    ast = parser.parse(text, lexer=lexer.lex())
+    ast = parser.parse(text, lexer=lexer.lex(), tracking=True)
     if Parser.parseError is True:
         print('Error during creating ast..')
     else:

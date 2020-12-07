@@ -23,7 +23,7 @@ class BinaryExpression(Ast):
 
 class For(Ast):
     def __init__(self, id, range, body, lineno=0):
-        super().__init__('For', children=[id, range, body], lineon=lineno)
+        super().__init__('For', children=[id, range, body], lineno=lineno)
 
     def id(self):
         return self.children[0]
