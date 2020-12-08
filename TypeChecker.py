@@ -1,4 +1,6 @@
 from Ast import Ast
+from Type import Type
+from SymbolTable import SymbolTable
 
 
 def addToClass(cls):
@@ -9,13 +11,14 @@ def addToClass(cls):
 
 
 class TypeChecker:
-    separator = ' | '
 
     @addToClass(Ast)
-    def printTree(self, indent=0):
+    def typecheck(self, meta, symbolTable: SymbolTable):
         """
             Basic text tree representation.
         """
-        print(TypeChecker.separator * indent + str(self))
-        for child in self.children:
-            child.printTree(indent + 1)
+        pass
+
+    @addToClass(BinaryExpression)
+    def typecheck(self, meta, symbolTable: SymbolTable):
+        pass

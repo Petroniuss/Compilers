@@ -1,3 +1,6 @@
+from Type import intType, floatType, stringType
+
+
 class Ast:
     def __init__(self, type, children=None, lineno=0):
         self.type = type
@@ -292,18 +295,6 @@ def Int(value, lineno=0):
 
 def Float(value, lineno=0):
     return Primitive(floatType(), value, lineno=lineno)
-
-
-def intType():
-    return 'Int'
-
-
-def stringType():
-    return 'String'
-
-
-def floatType():
-    return 'Float'
 
 
 def emptyVector():
