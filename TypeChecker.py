@@ -24,7 +24,9 @@ class TypeChecker:
         self.ast = ast
 
     def typecheck(self):
-        return self.ast.typecheck(self.meta, self.symbolTable)
+        self.ast.typecheck(self.meta, self.symbolTable)
+
+        print(self.meta)
 
 
 def logErrors(meta: dict, lineno, msgs):
@@ -63,6 +65,7 @@ def typecheck(self: Bind, meta: dict, symbolTable: SymbolTable):
     expr = self.expression()
 
     exprType = expr.typecheck(meta, symbolTable)
+    print('Bind name ' + name)
 
     if symbolTable.contains(name):
         nameType = symbolTable.get(name)
@@ -79,3 +82,33 @@ def typecheck(self: Bind, meta: dict, symbolTable: SymbolTable):
             logErrors(meta, self.lineno, ["Bad assignment!"])
 
     return unitType
+
+
+@add_method(Identifier)
+def typecheck(self: Identifier, meta: dict, symbolTable: SymbolTable):
+    name = self.name()
+
+    if not symbolTable.contains(name):
+        logErrors(meta, self.lineno, [f'Identifier not defined: {name}!'])
+        return None
+
+    return symbolTable.get(name)
+
+
+@add_method(Primitive)
+def typecheck(self: Primitive, meta: dict, symbolTable: SymbolTable):
+    return self.type
+
+
+@add_method(BinaryOp)
+def typecheck(self: BinaryOp, meta: dict, symbolTable: SymbolTable):
+    leftType = self.left().typecheck(meta, symbolTable)
+    rightType = self.right().typecheck(meta, symbolTable)
+
+    op = self.operator()
+
+    errors, unified = leftType.unifyBinary(op, rightType)
+    print(errors, unified)
+    logErrors(meta, self.lineno, errors)
+
+    return unified

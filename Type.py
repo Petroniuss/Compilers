@@ -11,7 +11,7 @@ class Type:
     def type(self):
         return unitTypeHash()
 
-    def unifyBinary(self, other: 'Type') -> ([str], 'Type'):
+    def unifyBinary(self, ops, other: 'Type') -> ([str], 'Type'):
         """
             When performing binary operation we get new type
         """
@@ -21,16 +21,13 @@ class Type:
         if type(self) != type(other):
             return ([f"Cannot unify these two types {t1} and {t2}!"], None)
 
-        return self.__unifyBinary(other)
-
-    # def matches(self, other: 'Type'):
-    #     if type(self) != type(other):
+        return self._unifyBinary(ops, other)
 
     def __unifyBinary(self, ops: str, other: 'Type'):
         return ([], self)
 
 
-class Primitive(Type):
+class PrimitiveType(Type):
     """
         Primitive type like 'int'
     """
@@ -41,7 +38,7 @@ class Primitive(Type):
     def type(self):
         return self.t
 
-    def __unifyBinary(self, ops: str, other: 'Primitive'):
+    def _unifyBinary(self, ops: str, other: 'Primitive'):
         return typeCheckPrimitiveBinaryOp(ops, self, other)
 
 
@@ -74,14 +71,15 @@ stringTypeHash = 'String'
 floatTypeHash = 'Float'
 unitTypeHash = 'Unit'
 
-booleanType = Primitive(booleanTypeHash)
-intType = Primitive(intTypeHash)
-stringType = Primitive(stringTypeHash)
-floatType = Primitive(floatTypeHash)
-unitType = Primitive(unitTypeHash)
+booleanType = PrimitiveType(booleanTypeHash)
+intType = PrimitiveType(intTypeHash)
+stringType = PrimitiveType(stringTypeHash)
+floatType = PrimitiveType(floatTypeHash)
+unitType = PrimitiveType(unitTypeHash)
 
 
 def typeCheckPrimitiveBinaryOp(ops: str, t1: Type, t2: Type):
+    print('foo!')
     if ops in typeTable:
         table = typeTable[ops]
         if t1 in table:
@@ -104,19 +102,9 @@ binaryOpsTypeTable = {
 }
 
 typeTable = {
-    '=': {
-        binaryOpsTypeTable
-    },
-    '+': {
-        binaryOpsTypeTable
-    },
-    '-': {
-        binaryOpsTypeTable
-    },
-    '/': {
-        binaryOpsTypeTable
-    },
-    '*': {
-        binaryOpsTypeTable
-    }
+    '=': binaryOpsTypeTable,
+    '+': binaryOpsTypeTable,
+    '-': binaryOpsTypeTable,
+    '/': binaryOpsTypeTable,
+    '*': binaryOpsTypeTable
 }

@@ -119,7 +119,7 @@ def p_assignment(p):
     exp = p[3]
     opp = p[2]
     # We break down '+=' into id = (id + exp)
-    if p[1] != '=':
+    if p[2] != '=':
         opp = p[2][0]  # in order to get'+' out of '+='
         exp = BinaryOp(opp, idd, exp, lineno=p.lineno(2))
 
@@ -195,6 +195,14 @@ def p_expression_relational_ops(p):
                    | expression LTE term 
     """
     p[0] = RelationalExp(p[2], p[1], p[3], lineno=p.lineno(2))
+
+
+def p_expression_id_slice(p):
+    """
+        expression : ID slice
+    """
+    idd = Identifier(p[1], p.lineno(1))
+    p[0] = SlicedVector(idd, p[2], lineno=p.lineno(1))
 
 
 def p_expression_unary(p):

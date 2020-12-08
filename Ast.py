@@ -11,19 +11,6 @@ class Ast:
         return str(self.type)
 
 
-class BinaryExpression(Ast):
-    def __init__(self, operator, leftOperand, rightOperand, lineno=0):
-        super().__init__(operator,
-                         children=[leftOperand, rightOperand], lineno=lineno)
-        self.operator = operator
-
-    def leftOperand(self):
-        return self.children[0]
-
-    def rightOperand(self):
-        return self.children[1]
-
-
 class For(Ast):
     def __init__(self, id, range, body, lineno=0):
         super().__init__('For', children=[id, range, body], lineno=lineno)
@@ -98,6 +85,11 @@ class Vector(Ast):
         super().__init__('Vector', children=elements, lineno=lineno)
 
 
+class SlicedVector(Ast):
+    def __init__(self, id, slice, lineno=0):
+        super().__init__('Vector', children=[id, slice], lineno=lineno)
+
+
 class Slice(Ast):
     def __init__(self, ranges, lineno=0):
         super().__init__('Slice', children=ranges, lineno=lineno)
@@ -131,7 +123,7 @@ class Bind(Ast):
             id, expression], lineno=lineno)
 
     def name(self):
-        return self.children[0].id()
+        return self.children[0].name()
 
     def expression(self):
         return self.children[1]
@@ -253,8 +245,8 @@ class Identifier(Ast):
     def __init__(self, id, lineno=0):
         super().__init__('ID', children=[Leaf(id)], lineno=lineno)
 
-    def id(self):
-        return self.children[0].value
+    def name(self):
+        return self.children[0].value()
 
 
 class Primitive(Ast):
