@@ -9,21 +9,21 @@ class SymbolTable:
         self.currentScope.put(name, symbol)
 
     def get(self, name):
-        self.currentScope.get(name)
+        return self.currentScope.get(name)
 
     def pushScope(self):
         self.currentScope = ScopedTable(self.currentScope)
 
     def popScope(self):
-        self.currentScope = self.currentScope.parent()
+        self.currentScope = self.currentScope.parentTable()
 
 
 class ScopedTable:
-    def __init__(self, parent: ScopedTable):
+    def __init__(self, parent: 'ScopedTable'):
         self.parent = parent
         self.tbl = {}
 
-    def parent(self):
+    def parentTable(self):
         return self.parent
 
     def lookup(self, name):

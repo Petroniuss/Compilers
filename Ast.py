@@ -130,11 +130,14 @@ class Bind(Ast):
         super().__init__(assignOperator, children=[
             id, expression], lineno=lineno)
 
-    def id(self):
-        return self.children[0]
+    def name(self):
+        return self.children[0].id()
 
     def expression(self):
         return self.children[1]
+
+    def operator(self):
+        return self.type
 
 
 class BindWithSlice(Ast):
