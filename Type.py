@@ -54,15 +54,20 @@ class VectorType(Type):
         if self.size == other.size:
             return []
 
-        return [f'Sizes dont match: {self.size} and {other.size}!']
+        return [f'Dimensions are not the same: {self.size} and {other.size}!']
 
-    def __unifyBinary(self, ops: str, other: 'VectorType'):
+    def _unifyBinary(self, ops: str, other: 'VectorType'):
         errorMsgs, unifiedType = typeCheckPrimitiveBinaryOp(
             ops, self.eType, other.eType)
 
         errorMsgs += self.sizesMatch(other)
 
         return (errorMsgs, VectorType(unifiedType, self.size) if unifiedType is not None else None)
+
+
+class AnyType(Type):
+    def type(self):
+        return 'Any'
 
 
 booleanTypeHash = 'Boolean'
@@ -76,10 +81,11 @@ intType = PrimitiveType(intTypeHash)
 stringType = PrimitiveType(stringTypeHash)
 floatType = PrimitiveType(floatTypeHash)
 unitType = PrimitiveType(unitTypeHash)
+anyType = AnyType()
+emptyVectorType = VectorType(anyType, [0])
 
 
 def typeCheckPrimitiveBinaryOp(ops: str, t1: Type, t2: Type):
-    print('foo!')
     if ops in typeTable:
         table = typeTable[ops]
         if t1 in table:

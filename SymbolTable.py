@@ -59,7 +59,3 @@ class ScopedTable:
             return self.tbl[name]
 
         return self.parentTable().get(name)
-
-
-class Type:
-    pass

@@ -65,7 +65,6 @@ def typecheck(self: Bind, meta: dict, symbolTable: SymbolTable):
     expr = self.expression()
 
     exprType = expr.typecheck(meta, symbolTable)
-    print('Bind name ' + name)
 
     if symbolTable.contains(name):
         nameType = symbolTable.get(name)
@@ -78,8 +77,8 @@ def typecheck(self: Bind, meta: dict, symbolTable: SymbolTable):
     else:
         if exprType is not None:
             symbolTable.put(name, exprType)
-        else:
-            logErrors(meta, self.lineno, ["Bad assignment!"])
+        # else:
+            # logErrors(meta, self.lineno, ["Bad assignment!"])
 
     return unitType
 
@@ -105,10 +104,41 @@ def typecheck(self: BinaryOp, meta: dict, symbolTable: SymbolTable):
     leftType = self.left().typecheck(meta, symbolTable)
     rightType = self.right().typecheck(meta, symbolTable)
 
-    op = self.operator()
+    if leftType is None or rightType is None:
+        return None
 
+    op = self.operator()
     errors, unified = leftType.unifyBinary(op, rightType)
-    print(errors, unified)
     logErrors(meta, self.lineno, errors)
 
     return unified
+
+
+@add_method(Vector)
+def typecheck(self: Vector, meta: dict, symbolTable: SymbolTable):
+    if len(self.children) < 1:
+        return emptyVectorType
+
+    typesSet = set()
+    ttypes = []
+    for e in self.children:
+        ttype = e.typecheck(meta, symbolTable)
+        if ttype is None:
+            return None
+
+        typesSet.add(ttype.type())
+        ttypes.append(ttype)
+
+    if len(typesSet) > 1:
+        errors = [f'Vector contains elements of multiple types: {typesSet}!']
+        logErrors(meta, self.lineno, errors)
+        return None
+
+    acc = ttypes[0]
+    sizes = [len(self.children)]
+    innerType = acc
+    if type(acc) is VectorType:
+        sizes += acc.size
+        innerType = acc.eType
+
+    return VectorType(innerType, sizes)
