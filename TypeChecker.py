@@ -1,5 +1,5 @@
 from Ast import *
-from Type import Type
+from Type import *
 from SymbolTable import SymbolTable
 
 from functools import wraps
@@ -26,11 +26,15 @@ typeTable = {
 class TypeChecker:
     def __init__(self, ast: Ast):
         self.symbolTable = SymbolTable()
-        self.meta = {}
+        self.meta = {'errors': []}
         self.ast = ast
 
     def typecheck(self):
         return self.ast.typecheck(self.meta, self.symbolTable)
+
+
+def logError(meta: dict, lineno, msg):
+    meta['errors'].append((lineno, 'Wrong assignment!'))
 
 
 @add_method(Ast)
@@ -39,24 +43,38 @@ def typecheck(self: Ast, meta: dict, symbolTable: SymbolTable):
         Basic text tree representation.
     """
     for child in self.children:
-        symbolTable.pushScope()
         child.typecheck(meta, symbolTable)
-        symbolTable.popScope()
+
+    return unitType
 
 
 @add_method(CodeBlock)
 def typecheck(self: CodeBlock, meta: dict, symbolTable: SymbolTable):
+    symbolTable.pushScope()
+
     for stmt in self.children:
         stmt.typecheck(meta, symbolTable)
+
+    symbolTable.popScope()
+
+    return unitType
 
 
 @add_method(Bind)
 def typecheck(self: Bind, meta: dict, symbolTable: SymbolTable):
     op = self.operator()
+    name = self.name()
+    expr = self.expression()
 
-    # init bind
-    if op == '=':
-        name = self.name()
-    # update bind
+    if symbolTable.contains(name):
+        nameType = symbolTable.get(name)
+        exprType = expr.typecheck(meta, symbolTable)
+
     else:
-        pass
+        if op != '=':
+            logError(meta, self.lineno, 'Wrong assignment!')
+        else:
+            exprType = expr.typecheck(meta, symbolTable)
+            symbolTable.put(name, exprType)
+
+    return unitType

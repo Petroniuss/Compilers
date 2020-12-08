@@ -289,15 +289,15 @@ class CodeBlock(Ast):
 
 
 def String(value, lineno=0):
-    return Primitive(stringType(), value, lineno=lineno)
+    return Primitive(stringType, value, lineno=lineno)
 
 
 def Int(value, lineno=0):
-    return Primitive(intType(), value, lineno=lineno)
+    return Primitive(intType, value, lineno=lineno)
 
 
 def Float(value, lineno=0):
-    return Primitive(floatType(), value, lineno=lineno)
+    return Primitive(floatType, value, lineno=lineno)
 
 
 def emptyVector():

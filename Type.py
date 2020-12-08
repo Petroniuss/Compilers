@@ -1,9 +1,30 @@
+from typing import List
+
+
 class Type:
     def __init__(self):
         super().__init__()
 
+    def __str__(self):
+        return self.type()
+
     def type(self):
-        return unitType()
+        return unitTypeHash()
+
+    def unifyBinary(self, other: 'Type') -> ([str], 'Type'):
+        """
+            When performing binary operation we get new type
+        """
+        t1 = self.type()
+        t2 = other.type()
+
+        if type(self) != type(other):
+            return ([f"Cannot unify these two types {t1} and {t2}!"], None)
+
+        return self.__unifyBinary(other)
+
+    def __unifyBinary(self, ops: str, other: 'Type'):
+        return ([], self)
 
 
 class Primitive(Type):
@@ -11,53 +32,106 @@ class Primitive(Type):
         Primitive type like 'int'
     """
 
-    def __init__(self, t: str):
-        self.t = t
+    def __init__(self, thash: str):
+        self.t = thash
 
     def type(self):
         return self.t
 
+    def __unifyBinary(self, ops: str, other: 'Primitive'):
+        return typeCheckPrimitiveBinaryOp(ops, self, other)
 
-class Arrow(Type):
-    """
-        t -> tNext 
 
-        tNext can either be an arrow or primitive type.
-    """
-
-    def __init__(self, t: str, tNext: Type):
-        super().__init__()
-        self.t = t
-        self.tNext = tNext
+class Vector(Type):
+    def __init__(self, eType: Type, size: List[int]):
+        self.eType = eType
+        self.size = size
 
     def type(self):
-        return self.t + ' -> ' + self.tNext.type()
+        return f'Vector<{self.eType.type()}>{self.size}'
 
-    def apply(self):
-        """
-            Returns type after application of first argument.
-        """
-        return self.tNext
+    def sizesMatch(self, other: 'Vector'):
+        if self.size == other.size:
+            return []
 
+        return [f'Sizes dont match: {self.size} and {other.size}!']
 
-def typecheck(t1: Type, t2: Type):
-    """
-        Since we don't allow any polymorphism this is simple..
-    """
-    return t1.type() == t2.type()
+    def __unifyBinary(self, ops: str, other: 'Vector'):
+        errorMsgs, unifiedType = typeCheckPrimitiveBinaryOp(
+            ops, self.eType, other.eType)
 
+        errorMsgs += self.sizesMatch(other)
 
-def intType():
-    return 'Int'
+        return (errorMsgs, unifiedType)
 
 
-def stringType():
-    return 'String'
+# class Arrow(Type):
+#     """
+#         t -> tNext
+
+#         tNext can either be an arrow or primitive type.
+#     """
+
+#     def __init__(self, t: str, tNext: Type):
+#         super().__init__()
+#         self.t = t
+#         self.tNext = tNext
+
+#     def type(self):
+#         return self.t + ' -> ' + self.tNext.type()
+
+#     def apply(self):
+#         """
+#             Returns type after application of first argument.
+#         """
+#         return self.tNext
+
+booleanTypeHash = 'Boolean'
+intTypeHash = 'Int'
+stringTypeHash = 'String'
+floatTypeHash = 'Float'
+unitTypeHash = 'Unit'
+
+booleanType = Primitive(booleanTypeHash)
+intType = Primitive(intTypeHash)
+stringType = Primitive(stringTypeHash)
+floatType = Primitive(floatTypeHash)
+unitType = Primitive(unitTypeHash)
 
 
-def floatType():
-    return 'Float'
+def typeCheckPrimitiveBinaryOp(ops: str, t1: Type, t2: Type):
+    if ops in typeTable:
+        table = typeTable[ops]
+        if t1 in table:
+            table = table[t1]
+            if t2 in table:
+                return ([], table[t2])
+
+    return ([f'Cannot unify types {t1} and {t2} via {ops} operation!'], None)
 
 
-def unitType():
-    return 'Unit'
+binaryOpsTypeTable = {
+    intType: {
+        intType: intType,
+        floatType: floatType
+    },
+    floatType: {
+        intType: floatType,
+        floatType: floatType
+    }
+}
+
+typeTable = {
+    '+': {
+        binaryOpsTypeTable
+    },
+    '-': {
+        binaryOpsTypeTable
+    },
+    '/': {
+        binaryOpsTypeTable
+    },
+    '*': {
+        binaryOpsTypeTable
+    }
+}

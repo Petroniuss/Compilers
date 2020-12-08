@@ -1,9 +1,16 @@
 class SymbolTable:
+    """
+        'Symbol' is simply a type. 
+    """
+
     def __init__(self):
         super().__init__()
 
         self.globalTable = ScopedTable(None)
         self.currentScope = self.globalTable
+
+    def contains(self, name):
+        return self.currentScope.contains(name)
 
     def put(self, name, symbol):
         self.currentScope.put(name, symbol)
@@ -26,12 +33,12 @@ class ScopedTable:
     def parentTable(self):
         return self.parent
 
-    def lookup(self, name):
+    def contains(self, name):
         if name in self.tbl:
             return True
 
-        if self.parent() is not None:
-            return self.parent.lookup(name)
+        if self.parentTable() is not None:
+            return self.parentTable().contains(name)
         else:
             return False
 
@@ -42,7 +49,7 @@ class ScopedTable:
         if name in self.tbl:
             return self.tbl[name]
 
-        return self.parent().get(name)
+        return self.parentTable().get(name)
 
 
 class Type:

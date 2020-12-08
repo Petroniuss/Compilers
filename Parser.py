@@ -115,14 +115,22 @@ def p_assignment(p):
     """
         assignment : ID assign_symbol expression
     """
-    p[0] = Bind(Identifier(p[1], lineno=p.lineno(1)),
-                p[2], p[3], lineno=p.lineno(1))
+    idd = Identifier(p[1], lineno=p.lineno(1))
+    exp = p[3]
+    opp = p[2]
+    # We break down '+=' into id = (id + exp)
+    if p[1] != '=':
+        opp = p[2][0]  # in order to get'+' out of '+='
+        exp = BinaryOp(opp, idd, exp, lineno=p.lineno(2))
+
+    p[0] = Bind(idd, '=', exp, lineno=p.lineno(1))
 
 
 def p_slice_assignment(p):
     """
         assignment : ID slice assign_symbol expression
     """
+    # todo
     p[0] = BindWithSlice(Identifier(p[1]), p[2], p[3],
                          p[4], lineno=p.lineno(1))
 
