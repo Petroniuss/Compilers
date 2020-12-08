@@ -6,19 +6,16 @@ class SymbolTable:
         self.currentScope = self.globalTable
 
     def put(self, name, symbol):
-        pass
+        self.currentScope.put(name, symbol)
 
     def get(self, name):
-        pass
+        self.currentScope.get(name)
 
-    def getParentScope(self):
-        pass
-
-    def pushScope(self, name):
-        pass
+    def pushScope(self):
+        self.currentScope = ScopedTable(self.currentScope)
 
     def popScope(self):
-        pass
+        self.currentScope = self.currentScope.parent()
 
 
 class ScopedTable:
@@ -33,16 +30,19 @@ class ScopedTable:
         if name in self.tbl:
             return True
 
-        if self.parent is not None:
+        if self.parent() is not None:
             return self.parent.lookup(name)
         else:
             return False
+
+    def put(self, name, symbol):
+        self.tbl[name] = symbol
 
     def get(self, name):
         if name in self.tbl:
             return self.tbl[name]
 
-        return self.parent.get(name)
+        return self.parent().get(name)
 
 
 class Type:
