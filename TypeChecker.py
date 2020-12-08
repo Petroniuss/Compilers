@@ -17,12 +17,6 @@ def add_method(cls):
     return decorator
 
 
-typeTable = {
-    'BinaryExpression': 1,
-    'RelationalExpr': 2
-}
-
-
 class TypeChecker:
     def __init__(self, ast: Ast):
         self.symbolTable = SymbolTable()
@@ -33,8 +27,10 @@ class TypeChecker:
         return self.ast.typecheck(self.meta, self.symbolTable)
 
 
-def logError(meta: dict, lineno, msg):
-    meta['errors'].append((lineno, 'Wrong assignment!'))
+def logErrors(meta: dict, lineno, msgs):
+    errors = meta['errors']
+    for msg in msgs:
+        errors.append((lineno, msg))
 
 
 @add_method(Ast)
@@ -66,15 +62,20 @@ def typecheck(self: Bind, meta: dict, symbolTable: SymbolTable):
     name = self.name()
     expr = self.expression()
 
+    exprType = expr.typecheck(meta, symbolTable)
+
     if symbolTable.contains(name):
         nameType = symbolTable.get(name)
-        exprType = expr.typecheck(meta, symbolTable)
+        errors, newType = nameType.unifyBinary(exprType)
+
+        logErrors(meta, self.lineno, errors)
+        if newType is not None:
+            symbolTable.replace(name, newType)
 
     else:
-        if op != '=':
-            logError(meta, self.lineno, 'Wrong assignment!')
-        else:
-            exprType = expr.typecheck(meta, symbolTable)
+        if exprType is not None:
             symbolTable.put(name, exprType)
+        else:
+            logErrors(meta, self.lineno, ["Bad assignment!"])
 
     return unitType

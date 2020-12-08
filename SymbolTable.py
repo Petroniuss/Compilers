@@ -15,6 +15,9 @@ class SymbolTable:
     def put(self, name, symbol):
         self.currentScope.put(name, symbol)
 
+    def replace(self, name, symbol):
+        self.currentScope.replace(name, symbol)
+
     def get(self, name):
         return self.currentScope.get(name)
 
@@ -44,6 +47,12 @@ class ScopedTable:
 
     def put(self, name, symbol):
         self.tbl[name] = symbol
+
+    def replace(self, name, symbol):
+        if name in self.tbl:
+            self.tbl[name] = symbol
+        else:
+            self.parentTable().replace(name, symbol)
 
     def get(self, name):
         if name in self.tbl:

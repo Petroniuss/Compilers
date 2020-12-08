@@ -23,6 +23,9 @@ class Type:
 
         return self.__unifyBinary(other)
 
+    # def matches(self, other: 'Type'):
+    #     if type(self) != type(other):
+
     def __unifyBinary(self, ops: str, other: 'Type'):
         return ([], self)
 
@@ -42,7 +45,7 @@ class Primitive(Type):
         return typeCheckPrimitiveBinaryOp(ops, self, other)
 
 
-class Vector(Type):
+class VectorType(Type):
     def __init__(self, eType: Type, size: List[int]):
         self.eType = eType
         self.size = size
@@ -50,41 +53,20 @@ class Vector(Type):
     def type(self):
         return f'Vector<{self.eType.type()}>{self.size}'
 
-    def sizesMatch(self, other: 'Vector'):
+    def sizesMatch(self, other: 'VectorType'):
         if self.size == other.size:
             return []
 
         return [f'Sizes dont match: {self.size} and {other.size}!']
 
-    def __unifyBinary(self, ops: str, other: 'Vector'):
+    def __unifyBinary(self, ops: str, other: 'VectorType'):
         errorMsgs, unifiedType = typeCheckPrimitiveBinaryOp(
             ops, self.eType, other.eType)
 
         errorMsgs += self.sizesMatch(other)
 
-        return (errorMsgs, unifiedType)
+        return (errorMsgs, VectorType(unifiedType, self.size) if unifiedType is not None else None)
 
-
-# class Arrow(Type):
-#     """
-#         t -> tNext
-
-#         tNext can either be an arrow or primitive type.
-#     """
-
-#     def __init__(self, t: str, tNext: Type):
-#         super().__init__()
-#         self.t = t
-#         self.tNext = tNext
-
-#     def type(self):
-#         return self.t + ' -> ' + self.tNext.type()
-
-#     def apply(self):
-#         """
-#             Returns type after application of first argument.
-#         """
-#         return self.tNext
 
 booleanTypeHash = 'Boolean'
 intTypeHash = 'Int'
@@ -122,6 +104,9 @@ binaryOpsTypeTable = {
 }
 
 typeTable = {
+    '=': {
+        binaryOpsTypeTable
+    },
     '+': {
         binaryOpsTypeTable
     },
