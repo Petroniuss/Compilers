@@ -89,6 +89,12 @@ class SlicedVector(Ast):
     def __init__(self, id, ranges, lineno=0):
         super().__init__('VectorSlice', children=[id] + ranges, lineno=lineno)
 
+    def ranges(self):
+        return self.children[1:]
+
+    def id(self):
+        return self.children[0]
+
 
 class RelationalExp(Ast):
     def __init__(self, operator, left, right, lineno=0):
@@ -245,7 +251,7 @@ class Primitive(Ast):
         super().__init__(type, children=[Leaf(value)], lineno=lineno)
 
     def value(self):
-        return self.children[0].value
+        return self.children[0].value()
 
 
 class Leaf(Ast):

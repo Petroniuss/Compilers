@@ -186,4 +186,74 @@ def typecheck(self: IfElse, meta: dict, symbolTable: SymbolTable):
 
 @add_method(SlicedVector)
 def typecheck(self: SlicedVector, meta: dict, symbolTable: SymbolTable):
-    pass
+    vectorType = self.id().typecheck(meta, symbolTable)
+    if vectorType is None:
+        return None
+
+    if type(vectorType) is not VectorType:
+        logErrors(meta, self.lineno, [
+                  f'Slicing types other than vector - {vectorType} is forbidden!'])
+
+    invalid = False
+    errors = []
+    newSize = []
+
+    def validateRange(l, r, size):
+        global invalid
+        if r > size and r != -1:
+            errors.append(
+                f'Trying to access elements outside vector [{l}, {r}] from [0, {size}')
+            invalid = True
+
+        newSize.append(r - l)
+
+    ranges = self.ranges()
+    sizes = vectorType.size
+    for i, r in enumerate(ranges):
+        if r.typecheck(meta, symbolTable) is None:
+            invalid = True
+        elif i >= len(sizes):
+            errors.append(
+                f'Trying to access {i + 1} dimension in {len(sizes)} dimensional vector!')
+        elif type(r) is SimpleRange:
+            idx = r.idx()
+            if type(idx) is Primitive:
+                index = idx.value()
+                validateRange(index, index + 1, sizes[i])
+            else:
+                newSize.append(-1)
+
+        elif type(r) is FromStartRange:
+            idx = r.end()
+            if type(idx) is Primitive:
+                index = idx.value()
+                validateRange(0, index, sizes[i])
+            else:
+                newSize.append(-1)
+
+        elif type(r) is EndlessRange:
+            idx = r.begin()
+            if type(idx) is Primitive:
+                index = idx.value()
+                validateRange(index, sizes[i], sizes[i])
+            else:
+                newSize.append(-1)
+
+        elif type(r) is Range:
+            l, r = r.begin(), r.end()
+            if type(l) is Primitive and type(r) is Primitive:
+                l, r = l.value(), r.value()
+                validateRange(l, r, sizes[i])
+            else:
+                newSize.append(-1)
+
+        else:
+            raise Exception('How did we get here!?')
+
+    for i in range(len(ranges), len(sizes)):
+        newSize.append(sizes[i])
+
+    if invalid is True:
+        return None
+
+    return VectorType(vectorType.eType, newSize)
