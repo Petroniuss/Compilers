@@ -53,31 +53,25 @@ class Return(Ast):
 
 class FunctionCall(Ast):
     """
-        there are few already mentioned:
-            - transpose (matrix transpose)
-            - negative (numerical negative)
-            - zeros
-            - ones
+        Built-in functions:
+            - transpose (matrix transpose)  -> take vector<>
+            - negative (numerical negative) -> float, int, vector
+            - zeros -> (List[int]) -> zeros(1, 2, 3)
+            - ones(List[int]) -> ones(1, 2, 3)
+        And also objectCalls like:
+            - .+
+            - .*
     """
 
     def __init__(self, functionName, arglist, lineno=0):
         super().__init__('FunctionCall', children=[
             Leaf(functionName)] + arglist, lineno=lineno)
 
+        def args(self):
+            return self.children[1:]
 
-class ObjectFunctionCall(Ast):
-    def __init__(self, objOrId, functionName, argList, lineno=0):
-        super().__init__('ObjectFunctionCall', children=[
-            Leaf(functionName), objOrId] + argList, lineno=lineno)
-
-    def functionName(self):
-        return self.children[0].value()
-
-    def objectOrId(self):
-        return self.children[1]
-
-    def args(self):
-        return self.children[2:]
+        def functionName(self):
+            return self.children[0].value()
 
 
 class Vector(Ast):

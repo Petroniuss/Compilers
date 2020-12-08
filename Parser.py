@@ -231,14 +231,14 @@ def p_expression_id_func_call(p):
         expression : ID dot_operation term
     """
     id = Identifier(p[1])
-    p[0] = ObjectFunctionCall(id, p[2], [p[3]], lineno=p.lineno(1))
+    p[0] = FunctionCall(p[2], [id, p[3]], lineno=p.lineno(2))
 
 
 def p_expression_vector_func_call(p):
     """
         expression : vector dot_operation term
     """
-    p[0] = ObjectFunctionCall(p[1], p[2], [p[3]], lineno=p.lineno(1))
+    p[0] = FunctionCall(p[2], [p[1], p[3]], lineno=p.lineno(2))
 
 
 def p_dot_operation(p):
