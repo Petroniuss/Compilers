@@ -257,8 +257,68 @@ def typecheck(self: SlicedVector, meta: dict, symbolTable: SymbolTable):
         logErrors(meta, self.lineno, errors)
         return None
 
+    # We pop dimensions
+    i = 0
+    while i < len(newSize) and newSize[i] == 1:
+        i += 1
+
+    newSize = newSize[i:]
+
     # in case we return single element
-    if all(map(lambda x: x == 1, newSize)):
-        vectorType.eType
+    if len(newSize) < 1:
+        return vectorType.eType
 
     return VectorType(vectorType.eType, newSize)
+
+
+@add_method(SimpleRange)
+def typecheck(self: SimpleRange, meta: dict, symbolTable: SymbolTable):
+    id = self.idx()
+    ttype = id.typecheck(meta, symbolTable)
+
+    if ttype != intType:
+        logErrors(meta, self.lineno, [
+                  f'Index can only be of [{intType}] type not [{ttype}] type'])
+        return None
+
+    return unitType
+
+
+@add_method(EndlessRange)
+def typecheck(self: EndlessRange, meta: dict, symbolTable: SymbolTable):
+    id = self.begin()
+    ttype = id.typecheck(meta, symbolTable)
+
+    if ttype != intType:
+        logErrors(meta, self.lineno, [
+                  f'Index can only be of [:{intType}] type not [:{ttype}] type'])
+        return None
+
+    return unitType
+
+
+@add_method(FromStartRange)
+def typecheck(self: FromStartRange, meta: dict, symbolTable: SymbolTable):
+    id = self.end()
+    ttype = id.typecheck(meta, symbolTable)
+
+    if ttype != intType:
+        logErrors(meta, self.lineno, [
+                  f'Index can only be of [{intType}:] type not [{ttype}:] type'])
+        return None
+
+    return unitType
+
+
+@add_method(Range)
+def typecheck(self: Range, meta: dict, symbolTable: SymbolTable):
+    begin, end = self.begin(), self.end()
+    beginType = begin.typecheck(meta, symbolTable)
+    endType = end.typecheck(meta, symbolTable)
+
+    if beginType != intType or endType != intType:
+        logErrors(meta, self.lineno, [
+                  f'Range can only be of [{intType}:{intType}] type not [{beginType}:{endType}] type'])
+        return None
+
+    return unitType
