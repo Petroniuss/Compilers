@@ -86,21 +86,8 @@ class Vector(Ast):
 
 
 class SlicedVector(Ast):
-    def __init__(self, id, slice, lineno=0):
-        super().__init__('Vector', children=[id, slice], lineno=lineno)
-
-
-class Slice(Ast):
-    def __init__(self, ranges, lineno=0):
-        super().__init__('Slice', children=ranges, lineno=lineno)
-
-
-class Condition(Ast):
-    def __init__(self, expression, lineno=0):
-        super().__init__('Condition', children=[expression], lineno=lineno)
-
-    def body(self):
-        return self.children[0]
+    def __init__(self, id, ranges, lineno=0):
+        super().__init__('VectorSlice', children=[id] + ranges, lineno=lineno)
 
 
 class RelationalExp(Ast):
@@ -133,18 +120,18 @@ class Bind(Ast):
 
 
 class BindWithSlice(Ast):
-    def __init__(self, id, slice, assignOperator, expression, lineno=0):
+    def __init__(self, id, ranges, assignOperator, expression, lineno=0):
         super().__init__(assignOperator, children=[
-            id, slice, expression], lineno=lineno)
+            id, expression] + ranges, lineno=lineno)
 
     def id(self):
         return self.children[0]
 
-    def slice(self):
+    def expression(self):
         return self.children[1]
 
-    def expression(self):
-        return self.children[2]
+    def ranges(self):
+        return self.children[2:]
 
 
 class Range(Ast):

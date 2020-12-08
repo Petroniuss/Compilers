@@ -107,10 +107,30 @@ binaryOpsTypeTable = {
     }
 }
 
+relOpsTypeTable = {
+    intType: {
+        intType: booleanType,
+        floatType: booleanType
+    },
+    floatType: {
+        intType: booleanType,
+        floatType: booleanType
+    },
+    booleanType: {
+        booleanType: booleanType,
+    }
+}
+
 typeTable = {
     '=': binaryOpsTypeTable,
     '+': binaryOpsTypeTable,
     '-': binaryOpsTypeTable,
     '/': binaryOpsTypeTable,
-    '*': binaryOpsTypeTable
+    '*': binaryOpsTypeTable,
+    '<': relOpsTypeTable,
+    '<=': relOpsTypeTable,
+    '>': relOpsTypeTable,
+    '>=': relOpsTypeTable,
+    '==': relOpsTypeTable,
+    '!=': relOpsTypeTable
 }

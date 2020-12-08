@@ -284,7 +284,7 @@ def p_slice(p):
     """
         slice : '[' slice_contents ']'
     """
-    p[0] = Slice(p[2], lineno=p.lineno(1))
+    p[0] = p[2]
 
 
 def p_slice_contents(p):
@@ -356,7 +356,7 @@ def p_condition(p):
     """
         condition : '(' expression ')'
     """
-    p[0] = Condition(p[2], lineno=p.lineno(1))
+    p[0] = p[2]
 
 
 def p_nested_statements(p):

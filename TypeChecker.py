@@ -68,7 +68,7 @@ def typecheck(self: Bind, meta: dict, symbolTable: SymbolTable):
 
     if symbolTable.contains(name):
         nameType = symbolTable.get(name)
-        errors, newType = nameType.unifyBinary(exprType)
+        errors, newType = nameType.unifyBinary('=', exprType)
 
         logErrors(meta, self.lineno, errors)
         if newType is not None:
@@ -142,3 +142,48 @@ def typecheck(self: Vector, meta: dict, symbolTable: SymbolTable):
         innerType = acc.eType
 
     return VectorType(innerType, sizes)
+
+
+@add_method(RelationalExp)
+def typecheck(self: RelationalExp, meta: dict, symbolTable: SymbolTable):
+    leftType = self.left().typecheck(meta, symbolTable)
+    rightType = self.right().typecheck(meta, symbolTable)
+
+    if leftType is None or rightType is None:
+        return None
+
+    op = self.operator()
+    errors, unified = leftType.unifyBinary(op, rightType)
+    logErrors(meta, self.lineno, errors)
+
+    return unified
+
+
+@add_method(If)
+def typecheck(self: If, meta: dict, symbolTable: SymbolTable):
+    self.trueBlock().typecheck(meta, symbolTable)
+
+    conditionType = self.condition().typecheck(meta, symbolTable)
+    if conditionType is not None and conditionType != booleanType:
+        logErrors(meta, self.lineno, [
+                  f'Condition in if statement must be of type boolean, not {conditionType}!'])
+
+    return unitType
+
+
+@add_method(IfElse)
+def typecheck(self: IfElse, meta: dict, symbolTable: SymbolTable):
+    self.trueBlock().typecheck(meta, symbolTable)
+    self.falseBlock().typecheck(meta, symbolTable)
+
+    conditionType = self.condition().typecheck(meta, symbolTable)
+    if conditionType is not None and conditionType != booleanType:
+        logErrors(meta, self.lineno, [
+                  f'Condition in if-else statement must be of type {booleanType}, not {conditionType}!'])
+
+    return unitType
+
+
+@add_method(SlicedVector)
+def typecheck(self: SlicedVector, meta: dict, symbolTable: SymbolTable):
+    pass
