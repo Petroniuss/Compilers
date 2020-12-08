@@ -199,10 +199,10 @@ def typecheck(self: SlicedVector, meta: dict, symbolTable: SymbolTable):
     newSize = []
 
     def validateRange(l, r, size):
-        global invalid
+        nonlocal invalid
         if r > size and r != -1:
             errors.append(
-                f'Trying to access elements outside vector [{l}, {r}] from [0, {size}')
+                f'Trying to access elements outside vector - [{l}, {r}) from [0, {size})')
             invalid = True
 
         newSize.append(r - l)
@@ -221,7 +221,7 @@ def typecheck(self: SlicedVector, meta: dict, symbolTable: SymbolTable):
                 index = idx.value()
                 validateRange(index, index + 1, sizes[i])
             else:
-                newSize.append(-1)
+                newSize.append(1)
 
         elif type(r) is FromStartRange:
             idx = r.end()
@@ -254,6 +254,11 @@ def typecheck(self: SlicedVector, meta: dict, symbolTable: SymbolTable):
         newSize.append(sizes[i])
 
     if invalid is True:
+        logErrors(meta, self.lineno, errors)
         return None
+
+    # in case we return single element
+    if all(map(lambda x: x == 1, newSize)):
+        vectorType.eType
 
     return VectorType(vectorType.eType, newSize)
