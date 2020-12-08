@@ -126,18 +126,18 @@ class Bind(Ast):
 
 
 class BindWithSlice(Ast):
-    def __init__(self, id, ranges, assignOperator, expression, lineno=0):
+    def __init__(self, slicedVector, assignOperator, expression, lineno=0):
         super().__init__(assignOperator, children=[
-            id, expression] + ranges, lineno=lineno)
+            slicedVector, expression], lineno=lineno)
 
-    def id(self):
+    def operator(self):
+        return self.type
+
+    def slicedVector(self):
         return self.children[0]
 
     def expression(self):
         return self.children[1]
-
-    def ranges(self):
-        return self.children[2:]
 
 
 class Range(Ast):
@@ -153,7 +153,7 @@ class Range(Ast):
         return self.children[0]
 
     def end(self):
-        return self.children[0]
+        return self.children[1]
 
 
 class FromStartRange(Ast):

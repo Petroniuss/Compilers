@@ -186,6 +186,9 @@ def typecheck(self: IfElse, meta: dict, symbolTable: SymbolTable):
 
 @add_method(SlicedVector)
 def typecheck(self: SlicedVector, meta: dict, symbolTable: SymbolTable):
+    """
+        Boring, error-prone code. To indicate unknown size I use -1 in the unknown dimension.
+    """
     vectorType = self.id().typecheck(meta, symbolTable)
     if vectorType is None:
         return None
@@ -320,5 +323,20 @@ def typecheck(self: Range, meta: dict, symbolTable: SymbolTable):
         logErrors(meta, self.lineno, [
                   f'Range can only be of [{intType}:{intType}] type not [{beginType}:{endType}] type'])
         return None
+
+    return unitType
+
+
+@add_method(BindWithSlice)
+def typecheck(self: BindWithSlice, meta: dict, symbolTable: SymbolTable):
+    vType = self.slicedVector().typecheck(meta, symbolTable)
+    expType = self.expression().typecheck(meta, symbolTable)
+
+    if vType is None or expType is None:
+        return None
+
+    oop = self.operator()
+    errors, newType = vType.unifyBinary(oop, expType)
+    logErrors(meta, self.lineno, errors)
 
     return unitType

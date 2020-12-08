@@ -130,9 +130,16 @@ def p_slice_assignment(p):
     """
         assignment : ID slice assign_symbol expression
     """
-    # todo
-    p[0] = BindWithSlice(Identifier(p[1]), p[2], p[3],
-                         p[4], lineno=p.lineno(1))
+    idd = Identifier(p[1], p.lineno(1))
+    slicedVector = SlicedVector(idd, p[2], lineno=p.lineno(1))
+    exp = p[4]
+
+    opp = p[3]
+    if p[3] != '=':
+        opp = p[3][0]
+        exp = BinaryOp(opp, slicedVector, exp)
+
+    p[0] = BindWithSlice(slicedVector, '=', exp, lineno=p.lineno(1))
 
 
 def p_assign(p):
