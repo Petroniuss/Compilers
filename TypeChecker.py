@@ -395,7 +395,7 @@ def typeCheckNegative(self: FunctionCall, meta: dict, symbolTable: SymbolTable):
     return ttype
 
 
-def typeCheckNegative(self: FunctionCall, meta: dict, symbolTable: SymbolTable):
+def typeCheckOnes(self: FunctionCall, meta: dict, symbolTable: SymbolTable):
     sizes = []
     args = self.args()
 
@@ -415,4 +415,27 @@ def typeCheckNegative(self: FunctionCall, meta: dict, symbolTable: SymbolTable):
         logErrors(meta, self.lineno, errors)
         return None
 
-    return Vector(floatType, sizes)
+    return VectorType(floatType, sizes)
+
+
+def typeCheckZeros(self: FunctionCall, meta: dict, symbolTable: SymbolTable):
+    sizes = []
+    args = self.args()
+
+    errors = []
+    for arg in args:
+        argType = arg.typecheck(meta, symbolTable)
+
+        if argType != intType:
+            errors.append([f'Invalid argument {argType} instead of {intType}'])
+        else:
+            if type(arg) is Primitive:
+                sizes.append(arg.value())
+            else:
+                sizes.append(-1)
+
+    if len(errors) > 0:
+        logErrors(meta, self.lineno, errors)
+        return None
+
+    return VectorType(floatType, sizes)
