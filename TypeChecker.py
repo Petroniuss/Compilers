@@ -197,6 +197,8 @@ def typecheck(self: SlicedVector, meta: dict, symbolTable: SymbolTable):
         logErrors(meta, self.lineno, [
                   f'Slicing types other than vector - {vectorType} is forbidden!'])
 
+        return None
+
     invalid = False
     errors = []
     newSize = []
@@ -340,3 +342,77 @@ def typecheck(self: BindWithSlice, meta: dict, symbolTable: SymbolTable):
     logErrors(meta, self.lineno, errors)
 
     return unitType
+
+
+@add_method(FunctionCall)
+def typecheck(self: FunctionCall, meta: dict, symbolTable: SymbolTable):
+    pass
+
+
+# functionCallTypeCheckers: {
+#     'transpose': foo,
+#     'negative': foo,
+#     'zeros': foo,
+#     'ones': foo,
+#     '.+': foo,
+#     '.-': foo,
+#     '.*': foo,
+#     './': foo
+# }
+
+
+def typeCheckTranspose(self: FunctionCall, meta: dict, symbolTable: SymbolTable):
+    vectorType = self.args()[0].typecheck(meta, symbolTable)
+    if vectorType is None:
+        return None
+
+    if type(vectorType) is not VectorType:
+        logErrors(meta, self.lineno, [
+                  f'Transpose takes matrix not {vectorType}'])
+        return None
+
+    size = vectorType.size
+    if len(size) != 2:
+        logErrors(meta, self.lineno, [f'We can only tranpose matrices!'])
+        return None
+
+    newSize = [size[1], size[0]]
+    eType = vectorType.eType
+
+    return VectorType(eType, newSize)
+
+
+def typeCheckNegative(self: FunctionCall, meta: dict, symbolTable: SymbolTable):
+    ttype = self.args()[0].typecheck(meta, symbolTable)
+    if ttype is None:
+        return None
+
+    if not isNumericType(ttype):
+        logErrors(meta, self.lineno, [
+                  f'We can calculate negative only of numeric types not {ttype}!'])
+        return None
+
+    return ttype
+
+
+def typeCheckNegative(self: FunctionCall, meta: dict, symbolTable: SymbolTable):
+    sizes = []
+    args = self.args()
+
+    errors = []
+    for arg in args:
+        argType = arg.typecheck(meta, symbolTable)
+
+        if argType != intType:
+            errors.append([f'Invalid argument {argType} instead of {intType}'])
+        else:
+            if type(arg) is Primitive:
+                sizes.append(arg.value())
+            else:
+                sizes.append(-1)
+
+    if len(errors) > 0:
+        logErrors(meta, self.lineno, errors)
+        return None
+
+    return Vector(floatType, sizes)

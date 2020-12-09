@@ -29,7 +29,7 @@ class Type:
 
 class PrimitiveType(Type):
     """
-        Primitive type like 'int'
+        Primitive type like 'Int'
     """
 
     def __init__(self, thash: str):
@@ -43,6 +43,10 @@ class PrimitiveType(Type):
 
 
 class VectorType(Type):
+    """
+        Multidimensional vector like 'Vector<float>[2, 3, 5]'
+    """
+
     def __init__(self, eType: Type, size: List[int]):
         self.eType = eType
         self.size = size
@@ -63,6 +67,31 @@ class VectorType(Type):
         errorMsgs += self.sizesMatch(other)
 
         return (errorMsgs, VectorType(unifiedType, self.size) if unifiedType is not None else None)
+
+
+def isNumericType(type: Type):
+    if type(type) is PrimitiveType:
+        return type == intType or type == floatType
+
+    elif type(type) is VectorType:
+        return isNumericType(type.eType)
+
+    return False
+
+
+class Varargs(Type):
+    """
+        Varargs Type like int...
+    """
+
+    def __init__(self, ttype: Type):
+        self.ttype = ttype
+
+    def type(self):
+        return f'{self.ttype}...'
+
+    def _unifyBinary(self, ops: str, other: 'Primitive'):
+        return typeCheckPrimitiveBinaryOp(ops, self, other)
 
 
 class AnyType(Type):

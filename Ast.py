@@ -56,11 +56,13 @@ class FunctionCall(Ast):
         Built-in functions:
             - transpose (matrix transpose)  -> take vector<>
             - negative (numerical negative) -> float, int, vector
-            - zeros -> (List[int]) -> zeros(1, 2, 3)
-            - ones(List[int]) -> ones(1, 2, 3)
+            - zeros -> (int...) -> zeros(1, 2, 3)
+            - ones  -> (int...) -> ones(1, 2, 3)
         And also objectCalls like:
             - .+
+            - .-
             - .*
+            - ./
     """
 
     def __init__(self, functionName, arglist, lineno=0):
