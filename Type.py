@@ -78,7 +78,7 @@ class VectorType(Type):
 
         return []
 
-    def newShape(self, other: 'VectorType'):
+    def newShapeMerged(self, other: 'VectorType'):
         newShape = []
         for s1, s2 in zip(self.shape, other.shape):
             if s1 != s2 and (s1 != -1 or s2 != -1):
@@ -96,7 +96,7 @@ class VectorType(Type):
             ops, other.innerType)
 
         dimensionErrors = self.dimensionsMatch(other)
-        shapeErrors, newShape = self.newShape(other)
+        shapeErrors, newShape = self.newShapeMerged(other)
 
         errors += dimensionErrors
         errors += shapeErrors

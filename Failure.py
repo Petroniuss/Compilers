@@ -1,0 +1,53 @@
+class AnsiColor:
+    RED = '\033[91m'
+    BLUE = '\033[94m'
+    CYAN = '\033[96m'
+    GREEN = '\033[92m'
+
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+    END = '\033[0m'
+
+
+# class LexError:
+#     def __init__(self, value, lineno):
+#         self.value = value
+#         self.lineno = lineno
+
+#     def formatted(self):
+#         return f'{AnsiColor.RED}Lexical Error{AnsiColor.END}: Unexpected character {self.value} at {self.lineno}'
+
+
+class ParserError:
+    def __init__(self, value, lineno):
+        self.value = value
+        self.lineno = lineno
+
+    def formatted(self):
+        return f"{AnsiColor.RED}Syntax Analyzer Error{AnsiColor.END}: '{self.value}' at {self.lineno}"
+
+
+class TypeError:
+    def __init__(self, value, lineno):
+        self.value = value
+        self.lineno = lineno
+
+    def formatted(self):
+        return f"{AnsiColor.RED}Type Error{AnsiColor.END}: '{self.value}' at {self.lineno}"
+
+
+class CompilationFailure(Exception):
+    def __init__(self, message, errors):
+        super().__init__(message)
+        self.message = f'{AnsiColor.BOLD}{message}{AnsiColor.END}'
+        self.errors = errors
+
+    def printTrace(self):
+        print(self.message)
+
+        for error in self.errors:
+            print(error.formatted())

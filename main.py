@@ -1,15 +1,12 @@
 import sys
-import ply.lex as lex
 
-from Lexer import Lexer
-from Parser import LRParser
+from Parser import LALRParser
 from TreePrinter import TreePrinter
 from TypeChecker import TypeChecker
+from Failure import CompilationFailure
 
-import Parser
 
-
-if __name__ == '__main__':
+def readFile():
     try:
         filename = sys.argv[1] if len(sys.argv) > 1 else "./tests/example1.m"
         file = open(filename, "r")
@@ -17,17 +14,15 @@ if __name__ == '__main__':
         print("Cannot open {0} file".format(filename))
         sys.exit(0)
 
-    lexer = Lexer()
-    parser = LRParser()
+    return file.read()
 
-    text = file.read()
-    ast = parser.parse(text, lexer=lexer.lex(), tracking=True)
-    if Parser.parseError is True:
-        print('Error during creating ast..')
-    else:
-        # We can print tree in two formats
-        # ast.printTree()
+
+if __name__ == '__main__':
+    sourceCode = readFile()
+    try:
+        ast = LALRParser(sourceCode)
         ast.printFancyTree()
+        errors = TypeChecker(ast).typecheck()
 
-    typechecker = TypeChecker(ast)
-    typechecker.typecheck()
+    except CompilationFailure as failure:
+        failure.printTrace()

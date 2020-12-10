@@ -1,5 +1,4 @@
 import ply.lex as lex
-from Logger import LexError, AnsiColor
 
 # -------------------------------------------------------------
 # ------------- Lexical Analyzer ------------------------------

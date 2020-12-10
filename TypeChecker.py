@@ -31,6 +31,8 @@ class TypeChecker:
 
         print(self.meta)
 
+        return self.meta['errors']
+
 
 def gatherErrors(meta: dict, lineno, msgs):
     errors = meta['errors']
@@ -408,31 +410,6 @@ def typecheck(self: For, meta: dict, symbolTable: SymbolTable):
 # -------------------------------------------------
 
 
-functionCallTypeCheckDispatcher: {
-    'transpose': typecheckUnaryTwoDimensionalVector,
-    'negative': typeCheckUnaryNumieric,
-    'zeros': typeCheckIntVarargsToVector,
-    'ones': typeCheckIntVarargsToVector,
-    '.+': typecheckVectorDotCall,
-    '.-': typecheckVectorDotCall,
-    '.*': typecheckVectorDotCall,
-    './': typecheckVectorDotCall
-}
-
-
-@add_method(FunctionCall)
-def typecheck(self: FunctionCall, meta: dict, symbolTable: SymbolTable):
-    name = self.functionName()
-    args = self.args()
-
-    typecheckFun = functionCallTypeCheckDispatcher[name]
-
-    errors, ttype = typecheckFun(name, args, meta, symbolTable)
-    gatherErrors(meta, self.lineno, errors)
-
-    return ttype
-
-
 def typecheckUnaryTwoDimensionalVector(fname: str, args: list, meta: dict, symbolTable: SymbolTable):
     """
         Vector<Any>[x, y] -> Vector<Any>[y, x]
@@ -516,3 +493,28 @@ def typecheckVectorDotCall(fname: str, args: list, meta, dict, symbolTable: Symb
         meta, symbolTable), v2.typecheck(meta, symbolTable)
 
     return v1Type.unifyBinary(fname, v2Type)
+
+
+functionCallTypeCheckDispatcher: {
+    'transpose': typecheckUnaryTwoDimensionalVector,
+    'negative': typeCheckUnaryNumieric,
+    'zeros': typeCheckIntVarargsToVector,
+    'ones': typeCheckIntVarargsToVector,
+    '.+': typecheckVectorDotCall,
+    '.-': typecheckVectorDotCall,
+    '.*': typecheckVectorDotCall,
+    './': typecheckVectorDotCall
+}
+
+
+@add_method(FunctionCall)
+def typecheck(self: FunctionCall, meta: dict, symbolTable: SymbolTable):
+    name = self.functionName()
+    args = self.args()
+
+    typecheckFun = functionCallTypeCheckDispatcher[name]
+
+    errors, ttype = typecheckFun(name, args, meta, symbolTable)
+    gatherErrors(meta, self.lineno, errors)
+
+    return ttype

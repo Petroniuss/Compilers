@@ -1,23 +1,35 @@
 import ply.yacc as yacc
+import ply.lex as lex
+
 from ply.yacc import yaccdebug
 
 from Lexer import tokens
 from Lexer import literals
 
+import Lexer
+
 from Ast import *
+from Failure import CompilationFailure, ParserError
 
-yaccdebug = True
-
-parseError = False
-
-
-def LRParser():
-    return yacc.yacc(debug=yaccdebug, start='start', outputdir='./out')
+yaccdebug = False
+parseErrors = []
 
 
-# -------------------------------------------------------------------
-# Parser
-# -------------------------------------------------------------------
+def LALRParser(sourceCode):
+    lexer = lex.lex(module=Lexer)
+    parser = yacc.yacc(debug=yaccdebug, start='start', outputdir='./out')
+
+    ast = parser.parse(sourceCode, lexer=lexer, tracking=True)
+
+    if len(parseErrors) > 0:
+        raise CompilationFailure('Parsing failed', parseErrors)
+
+    return ast
+
+
+# -------------------------------------------------------------
+# ------------- Syntax Analyzer -------------------------------
+# -------------------------------------------------------------
 
 precedence = (
     ("nonassoc", 'IFx'),
@@ -445,7 +457,5 @@ def p_built_in_function(p):
 
 
 def p_error(p):
-    global parseError
-    parseError = True
-
-    print('Error during parsing occured! ~> ' + str(p))
+    err = ParserError(p.value, p.lineno)
+    parseErrors.append(err)
