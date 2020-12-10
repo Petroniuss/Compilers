@@ -1,91 +1,9 @@
 import ply.lex as lex
+from Logger import LexError, AnsiColor
 
 # -------------------------------------------------------------
-# Module contains implementation of a Lexer aka Scanner.
+# ------------- Lexical Analyzer ------------------------------
 # -------------------------------------------------------------
-
-
-class Lexer:
-    def __init__(self, **kwargs):
-        self.lexer = lex.lex()
-        self.text = None
-        self.lexer.errors = []
-        self.parsedTokens = []
-
-    def lex(self):
-        return self.lexer
-
-    def input(self, text):
-        self.text = text
-        self.lexer.input(text)
-
-        return self
-
-    def parseInput(self):
-        if not self.text:
-            raise Exception('There\' no input!')
-
-        tok = self.lexer.token()
-        while tok is not None:
-            lineno, tpe, value = tok.lineno, tok.type, tok.value
-            token = Token(tpe, value, lineno, findColumn(self.text, tok))
-
-            self.parsedTokens.append(token)
-
-            tok = self.lexer.token()
-
-        return self.errors(), self.tokens()
-
-    def tokens(self):
-        return self.parsedTokens
-
-    def errors(self):
-        return self.lexer.errors
-
-
-def findColumn(text, token):
-    lineStart = text.rfind('\n', 0, token.lexpos) + 1
-    return (token.lexpos - lineStart) + 1
-
-
-class AnsiColor:
-    RED = '\033[91m'
-    BLUE = '\033[94m'
-    CYAN = '\033[96m'
-    GREEN = '\033[92m'
-
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
-    END = '\033[0m'
-
-
-class Token:
-    space = 10
-
-    def __init__(self, tpe, value, lineno, colno):
-        self.type = tpe
-        self.value = value
-        self.lineno = lineno
-        self.colno = colno
-
-    def formatted(self):
-        linenoStr = f'({self.lineno}):'.ljust(Token.space)
-        linenoStr = f'({self.lineno}, {self.colno}):'.ljust(Token.space)
-        return linenoStr + ' ' + \
-            f'{AnsiColor.BLUE}{self.type}{AnsiColor.END}( {AnsiColor.GREEN}{self.value}{AnsiColor.END} )'
-
-
-class LexError:
-    def __init__(self, value, lineno):
-        self.value = value
-        self.lineno = lineno
-
-    def formatted(self):
-        return f'{AnsiColor.RED}Error{AnsiColor.END}: Unexpected character {self.value} at {self.lineno}'
 
 
 # -------------------------------------------------------------
