@@ -1,6 +1,6 @@
 class SymbolTable:
     """
-        'Symbol' is simply a type. 
+        'Symbol' is simply a Type. 
     """
 
     def __init__(self):

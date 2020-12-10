@@ -161,6 +161,10 @@ relationalTypeTable = {
 
 binaryOpsTypeTable = {
     '=': arithmeticTypeTable,
+    '.+': arithmeticTypeTable,
+    '.-': arithmeticTypeTable,
+    './': arithmeticTypeTable,
+    '.*': arithmeticTypeTable,
     '+': arithmeticTypeTable,
     '-': arithmeticTypeTable,
     '/': arithmeticTypeTable,

@@ -29,7 +29,7 @@ class TypeChecker:
         print(self.meta)
 
 
-def logErrors(meta: dict, lineno, msgs):
+def gatherErrors(meta: dict, lineno, msgs):
     errors = meta['errors']
     for msg in msgs:
         errors.append((lineno, msg))
@@ -37,9 +37,6 @@ def logErrors(meta: dict, lineno, msgs):
 
 @add_method(Ast)
 def typecheck(self: Ast, meta: dict, symbolTable: SymbolTable):
-    """
-        Basic text tree representation.
-    """
     for child in self.children:
         child.typecheck(meta, symbolTable)
 
@@ -60,25 +57,22 @@ def typecheck(self: CodeBlock, meta: dict, symbolTable: SymbolTable):
 
 @add_method(Bind)
 def typecheck(self: Bind, meta: dict, symbolTable: SymbolTable):
-    op = self.operator()
     name = self.name()
     expr = self.expression()
 
     exprType = expr.typecheck(meta, symbolTable)
+    if exprType is None:
+        return None
 
     if symbolTable.contains(name):
         nameType = symbolTable.get(name)
         errors, newType = nameType.unifyBinary('=', exprType)
 
-        logErrors(meta, self.lineno, errors)
+        gatherErrors(meta, self.lineno, errors)
         if newType is not None:
             symbolTable.replace(name, newType)
-
     else:
-        if exprType is not None:
-            symbolTable.put(name, exprType)
-        # else:
-            # logErrors(meta, self.lineno, ["Bad assignment!"])
+        symbolTable.put(name, exprType)
 
     return unitType
 
@@ -88,7 +82,7 @@ def typecheck(self: Identifier, meta: dict, symbolTable: SymbolTable):
     name = self.name()
 
     if not symbolTable.contains(name):
-        logErrors(meta, self.lineno, [f'Identifier not defined: {name}!'])
+        gatherErrors(meta, self.lineno, [f'Identifier not defined: {name}!'])
         return None
 
     return symbolTable.get(name)
@@ -109,7 +103,7 @@ def typecheck(self: BinaryOp, meta: dict, symbolTable: SymbolTable):
 
     op = self.operator()
     errors, unified = leftType.unifyBinary(op, rightType)
-    logErrors(meta, self.lineno, errors)
+    gatherErrors(meta, self.lineno, errors)
 
     return unified
 
@@ -131,15 +125,16 @@ def typecheck(self: Vector, meta: dict, symbolTable: SymbolTable):
 
     if len(typesSet) > 1:
         errors = [f'Vector contains elements of multiple types: {typesSet}!']
-        logErrors(meta, self.lineno, errors)
+        gatherErrors(meta, self.lineno, errors)
         return None
 
     acc = ttypes[0]
     sizes = [len(self.children)]
     innerType = acc
+    # To handle multidimensional vectors
     if type(acc) is VectorType:
-        sizes += acc.size
-        innerType = acc.eType
+        sizes += acc.shape
+        innerType = acc.innerType
 
     return VectorType(innerType, sizes)
 
@@ -152,9 +147,9 @@ def typecheck(self: RelationalExp, meta: dict, symbolTable: SymbolTable):
     if leftType is None or rightType is None:
         return None
 
-    op = self.operator()
-    errors, unified = leftType.unifyBinary(op, rightType)
-    logErrors(meta, self.lineno, errors)
+    ops = self.operator()
+    errors, unified = leftType.unifyBinary(ops, rightType)
+    gatherErrors(meta, self.lineno, errors)
 
     return unified
 
@@ -165,8 +160,8 @@ def typecheck(self: If, meta: dict, symbolTable: SymbolTable):
 
     conditionType = self.condition().typecheck(meta, symbolTable)
     if conditionType is not None and conditionType != booleanType:
-        logErrors(meta, self.lineno, [
-                  f'Condition in if statement must be of type boolean, not {conditionType}!'])
+        gatherErrors(meta, self.lineno, [
+            f'Condition in if statement must be of type boolean, not {conditionType}!'])
 
     return unitType
 
@@ -178,8 +173,8 @@ def typecheck(self: IfElse, meta: dict, symbolTable: SymbolTable):
 
     conditionType = self.condition().typecheck(meta, symbolTable)
     if conditionType is not None and conditionType != booleanType:
-        logErrors(meta, self.lineno, [
-                  f'Condition in if-else statement must be of type {booleanType}, not {conditionType}!'])
+        gatherErrors(meta, self.lineno, [
+            f'Condition in if-else statement must be of type {booleanType}, not {conditionType}!'])
 
     return unitType
 
@@ -187,21 +182,21 @@ def typecheck(self: IfElse, meta: dict, symbolTable: SymbolTable):
 @add_method(SlicedVector)
 def typecheck(self: SlicedVector, meta: dict, symbolTable: SymbolTable):
     """
-        Boring, error-prone code. To indicate unknown size I use -1 in the unknown dimension.
+            Behold! Black magic ahead..>
     """
     vectorType = self.id().typecheck(meta, symbolTable)
     if vectorType is None:
         return None
 
     if type(vectorType) is not VectorType:
-        logErrors(meta, self.lineno, [
-                  f'Slicing types other than vector - {vectorType} is forbidden!'])
+        gatherErrors(meta, self.lineno, [
+            f'Slicing types other than vector - {vectorType} is forbidden!'])
 
         return None
 
     invalid = False
     errors = []
-    newSize = []
+    newShape = []
 
     def validateRange(l, r, size):
         nonlocal invalid
@@ -210,70 +205,70 @@ def typecheck(self: SlicedVector, meta: dict, symbolTable: SymbolTable):
                 f'Trying to access elements outside vector - [{l}, {r}) from [0, {size})')
             invalid = True
 
-        newSize.append(r - l)
+        newShape.append(r - l)
 
     ranges = self.ranges()
-    sizes = vectorType.size
+    shape = vectorType.shape
     for i, r in enumerate(ranges):
         if r.typecheck(meta, symbolTable) is None:
             invalid = True
-        elif i >= len(sizes):
+        elif i >= len(shape):
             errors.append(
-                f'Trying to access {i + 1} dimension in {len(sizes)} dimensional vector!')
+                f'Trying to access {i + 1} dimension in {len(shape)} dimensional vector!')
         elif type(r) is SimpleRange:
             idx = r.idx()
             if type(idx) is Primitive:
                 index = idx.value()
-                validateRange(index, index + 1, sizes[i])
+                validateRange(index, index + 1, shape[i])
             else:
-                newSize.append(1)
+                newShape.append(1)
 
         elif type(r) is FromStartRange:
             idx = r.end()
             if type(idx) is Primitive:
                 index = idx.value()
-                validateRange(0, index, sizes[i])
+                validateRange(0, index, shape[i])
             else:
-                newSize.append(-1)
+                newShape.append(-1)
 
         elif type(r) is EndlessRange:
             idx = r.begin()
             if type(idx) is Primitive:
                 index = idx.value()
-                validateRange(index, sizes[i], sizes[i])
+                validateRange(index, shape[i], shape[i])
             else:
-                newSize.append(-1)
+                newShape.append(-1)
 
         elif type(r) is Range:
             l, r = r.begin(), r.end()
             if type(l) is Primitive and type(r) is Primitive:
                 l, r = l.value(), r.value()
-                validateRange(l, r, sizes[i])
+                validateRange(l, r, shape[i])
             else:
-                newSize.append(-1)
+                newShape.append(-1)
 
         else:
             raise Exception('How did we get here!?')
 
-    for i in range(len(ranges), len(sizes)):
-        newSize.append(sizes[i])
+    for i in range(len(ranges), len(shape)):
+        newShape.append(shape[i])
 
     if invalid is True:
-        logErrors(meta, self.lineno, errors)
+        gatherErrors(meta, self.lineno, errors)
         return None
 
     # We pop dimensions
     i = 0
-    while i < len(newSize) and newSize[i] == 1:
+    while i < len(newShape) and newShape[i] == 1:
         i += 1
 
-    newSize = newSize[i:]
+    newShape = newShape[i:]
 
     # in case we return single element
-    if len(newSize) < 1:
-        return vectorType.eType
+    if len(newShape) < 1:
+        return vectorType.innerType
 
-    return VectorType(vectorType.eType, newSize)
+    return VectorType(vectorType.innerType, newShape)
 
 
 @add_method(SimpleRange)
@@ -282,8 +277,8 @@ def typecheck(self: SimpleRange, meta: dict, symbolTable: SymbolTable):
     ttype = id.typecheck(meta, symbolTable)
 
     if ttype != intType:
-        logErrors(meta, self.lineno, [
-                  f'Index can only be of [{intType}] type not [{ttype}] type'])
+        gatherErrors(meta, self.lineno, [
+            f'Index can only be of [{intType}] type not [{ttype}] type'])
         return None
 
     return unitType
@@ -295,8 +290,8 @@ def typecheck(self: EndlessRange, meta: dict, symbolTable: SymbolTable):
     ttype = id.typecheck(meta, symbolTable)
 
     if ttype != intType:
-        logErrors(meta, self.lineno, [
-                  f'Index can only be of [:{intType}] type not [:{ttype}] type'])
+        gatherErrors(meta, self.lineno, [
+            f'Index can only be of [:{intType}] type not [:{ttype}] type'])
         return None
 
     return unitType
@@ -308,8 +303,8 @@ def typecheck(self: FromStartRange, meta: dict, symbolTable: SymbolTable):
     ttype = id.typecheck(meta, symbolTable)
 
     if ttype != intType:
-        logErrors(meta, self.lineno, [
-                  f'Index can only be of [{intType}:] type not [{ttype}:] type'])
+        gatherErrors(meta, self.lineno, [
+            f'Index can only be of [{intType}:] type not [{ttype}:] type'])
         return None
 
     return unitType
@@ -322,8 +317,8 @@ def typecheck(self: Range, meta: dict, symbolTable: SymbolTable):
     endType = end.typecheck(meta, symbolTable)
 
     if beginType != intType or endType != intType:
-        logErrors(meta, self.lineno, [
-                  f'Range can only be of [{intType}:{intType}] type not [{beginType}:{endType}] type'])
+        gatherErrors(meta, self.lineno, [
+            f'Range can only be of [{intType}:{intType}] type not [{beginType}:{endType}] type'])
         return None
 
     return unitType
@@ -337,105 +332,122 @@ def typecheck(self: BindWithSlice, meta: dict, symbolTable: SymbolTable):
     if vType is None or expType is None:
         return None
 
-    oop = self.operator()
-    errors, newType = vType.unifyBinary(oop, expType)
-    logErrors(meta, self.lineno, errors)
+    ops = self.operator()
+    errors, newType = vType.unifyBinary(ops, expType)
+    gatherErrors(meta, self.lineno, errors)
 
     return unitType
 
 
+# -------------------------------------------------
+# ---- Typechecking built-in functions -------------
+# -------------------------------------------------
+
+functionCallTypeCheckDispatcher: {
+    'transpose': typecheckUnaryTwoDimensionalVector,
+    'negative': typeCheckUnaryNumieric,
+    'zeros': typeCheckIntVarargsToVector,
+    'ones': typeCheckIntVarargsToVector,
+    '.+': typecheckVectorDotCall,
+    '.-': typecheckVectorDotCall,
+    '.*': typecheckVectorDotCall,
+    './': typecheckVectorDotCall
+}
+
+
 @add_method(FunctionCall)
 def typecheck(self: FunctionCall, meta: dict, symbolTable: SymbolTable):
-    pass
+    name = self.functionName()
+    args = self.args()
 
+    typecheckFun = functionCallTypeCheckDispatcher[name]
 
-# functionCallTypeCheckers: {
-#     'transpose': foo,
-#     'negative': foo,
-#     'zeros': foo,
-#     'ones': foo,
-#     '.+': foo,
-#     '.-': foo,
-#     '.*': foo,
-#     './': foo
-# }
-
-
-def typeCheckTranspose(self: FunctionCall, meta: dict, symbolTable: SymbolTable):
-    vectorType = self.args()[0].typecheck(meta, symbolTable)
-    if vectorType is None:
-        return None
-
-    if type(vectorType) is not VectorType:
-        logErrors(meta, self.lineno, [
-                  f'Transpose takes matrix not {vectorType}'])
-        return None
-
-    size = vectorType.size
-    if len(size) != 2:
-        logErrors(meta, self.lineno, [f'We can only tranpose matrices!'])
-        return None
-
-    newSize = [size[1], size[0]]
-    eType = vectorType.eType
-
-    return VectorType(eType, newSize)
-
-
-def typeCheckNegative(self: FunctionCall, meta: dict, symbolTable: SymbolTable):
-    ttype = self.args()[0].typecheck(meta, symbolTable)
-    if ttype is None:
-        return None
-
-    if not isNumericType(ttype):
-        logErrors(meta, self.lineno, [
-                  f'We can calculate negative only of numeric types not {ttype}!'])
-        return None
+    errors, ttype = typecheckFun(name, args, meta, symbolTable)
+    gatherErrors(meta, self.lineno, errors)
 
     return ttype
 
 
-def typeCheckOnes(self: FunctionCall, meta: dict, symbolTable: SymbolTable):
-    sizes = []
-    args = self.args()
+def typecheckUnaryTwoDimensionalVector(fname: str, args: list, meta: dict, symbolTable: SymbolTable):
+    """
+        Vector<Any>[x, y] -> Vector<Any>[y, x]
+    """
+    if len(args) < 1:
+        return [f'Function {fname} takes one argument, zero given'], None
 
-    errors = []
+    vectorType = args[0].typecheck(meta, symbolTable)
+    if vectorType is None:
+        return [], None
+
+    if type(vectorType) is not VectorType:
+        return [f'Function {fname} takes matrix not {vectorType}'], None
+
+    if vectorType.dimensions() != 2:
+        return [f'We can only tranpose 2-dimensional vectors aka matrices!'], None
+
+    shape = vectorType.shape
+    newShape = [shape[1], shape[0]]
+    innerType = vectorType.innerType
+
+    return [], VectorType(innerType, newShape)
+
+
+def typeCheckUnaryNumieric(fname: str, args: list, meta: dict, symbolTable: SymbolTable):
+    """
+        Numeric -> Numeric 
+    """
+    if len(args) != 1:
+        return [f'Function {fname} takes exactly one argument'], None
+
+    ttype = args[0].typecheck(meta, symbolTable)
+    if ttype is None:
+        return [], None
+
+    if not isNumericType(ttype):
+        return [f'Function {fname} takes numeric type not {ttype}!'], None
+
+    return [], ttype
+
+
+def typeCheckIntVarargsToVector(fname: str, args: list, meta: dict, symbolTable: SymbolTable):
+    """
+        [Int...] -> Vector
+    """
+    if len(args) < 1:
+        return [f'Function {fname} takes at least one argument!'], None
+
+    invalid = False
+    newShape = []
+    argTypes = []
     for arg in args:
         argType = arg.typecheck(meta, symbolTable)
 
         if argType != intType:
-            errors.append([f'Invalid argument {argType} instead of {intType}'])
+            invalid = True
         else:
             if type(arg) is Primitive:
-                sizes.append(arg.value())
+                newShape.append(arg.value())
             else:
-                sizes.append(-1)
+                newShape.append(-1)
 
-    if len(errors) > 0:
-        logErrors(meta, self.lineno, errors)
-        return None
+        argTypes.append(argType)
 
-    return VectorType(floatType, sizes)
+    if invalid:
+        correct = [intType] * len(args)
+        return [f'Invalid arguments to function {fname}: expected {correct}, got {argTypes}'], None
+
+    return [], VectorType(floatType, newShape)
 
 
-def typeCheckZeros(self: FunctionCall, meta: dict, symbolTable: SymbolTable):
-    sizes = []
-    args = self.args()
+def typecheckVectorDotCall(fname: str, args: list, meta, dict, symbolTable: SymbolTable):
+    """
+        [Vector, Vector] -> Vector
+    """
+    if len(args) != 2:
+        return [f'Function {fname} takes two arguments not {len(args)}!']
 
-    errors = []
-    for arg in args:
-        argType = arg.typecheck(meta, symbolTable)
+    v1, v2 = args
+    v1Type, v2Type = v1.typcheck(
+        meta, symbolTable), v2.typecheck(meta, symbolTable)
 
-        if argType != intType:
-            errors.append([f'Invalid argument {argType} instead of {intType}'])
-        else:
-            if type(arg) is Primitive:
-                sizes.append(arg.value())
-            else:
-                sizes.append(-1)
-
-    if len(errors) > 0:
-        logErrors(meta, self.lineno, errors)
-        return None
-
-    return VectorType(floatType, sizes)
+    return v1Type.unifyBinary(fname, v2Type)
