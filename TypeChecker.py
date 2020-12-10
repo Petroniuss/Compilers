@@ -20,7 +20,10 @@ def add_method(cls):
 class TypeChecker:
     def __init__(self, ast: Ast):
         self.symbolTable = SymbolTable()
-        self.meta = {'errors': []}
+        self.meta = {
+            'errors': [],
+            'loop': 0
+        }
         self.ast = ast
 
     def typecheck(self):
@@ -339,9 +342,71 @@ def typecheck(self: BindWithSlice, meta: dict, symbolTable: SymbolTable):
     return unitType
 
 
+@add_method(Return)
+def typecheck(self: Return, meta: dict, symbolTable: SymbolTable):
+    if meta.get('loop', 0) == 0:
+        gatherErrors(meta, self.lineno, [
+                     f'Return keyword not allowed since there\'re no user defined functions!'])
+
+    return unitType
+
+
+@add_method(Continue)
+def typecheck(self: Continue, meta: dict, symbolTable: SymbolTable):
+    if meta.get('loop', 0) == 0:
+        gatherErrors(meta, self.lineno, [
+                     f'Continue keyword only allowed within a loop!'])
+
+    return unitType
+
+
+@add_method(Break)
+def typecheck(self: Break, meta: dict, symbolTable: SymbolTable):
+    if meta.get('loop', 0) == 0:
+        gatherErrors(meta, self.lineno, [
+                     f'Break keyword only allowed within a loop!'])
+
+    return unitType
+
+
+@add_method(While)
+def typecheck(self: While, meta: dict, symbolTable: SymbolTable):
+    conditionType = self.condition().typecheck(meta, symbolTable)
+
+    if conditionType is not None and conditionType != booleanType:
+        gatherErrors(meta, self.lineno, [
+            f'Condition in while statement must be of type boolean, not {conditionType}!'])
+
+    meta['loop'] += 1
+    self.body().typecheck(meta, symbolTable)
+    meta['loop'] -= 1
+
+    return unitType
+
+
+@add_method(For)
+def typecheck(self: For, meta: dict, symbolTable: SymbolTable):
+    conditionType = self.condition().typecheck(meta, symbolTable)
+    self.range().typecheck(meta, symbolTable)
+    self.id().typecheck(meta, symbolTable)
+
+    name = self.id().name()
+    symbolTable.put(name, intType)
+
+    if conditionType is not None and conditionType != booleanType:
+        gatherErrors(meta, self.lineno, [
+            f'Condition in for statement must be of type boolean, not {conditionType}!'])
+
+    meta['loop'] += 1
+    self.body().typecheck(meta, symbolTable)
+    meta['loop'] -= 1
+
+    return unitType
+
 # -------------------------------------------------
-# ---- Typechecking built-in functions -------------
+# ---- Typechecking built-in functions ------------
 # -------------------------------------------------
+
 
 functionCallTypeCheckDispatcher: {
     'transpose': typecheckUnaryTwoDimensionalVector,

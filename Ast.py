@@ -32,7 +32,7 @@ class While(Ast):
     def condition(self):
         return self.children[0]
 
-    def block(self):
+    def body(self):
         return self.children[1]
 
 
