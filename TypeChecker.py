@@ -1,6 +1,7 @@
 from Ast import *
 from Type import *
 from SymbolTable import SymbolTable
+from Failure import TypeError, CompilationFailure
 
 from functools import wraps
 
@@ -29,9 +30,11 @@ class TypeChecker:
     def typecheck(self):
         self.ast.typecheck(self.meta, self.symbolTable)
 
-        print(self.meta)
+        if len(self.meta['errors']) > 1:
+            errors = map(lambda tpl: TypeError(
+                tpl[1], tpl[0]), self.meta['errors'])
 
-        return self.meta['errors']
+            raise CompilationFailure('Type checking failed', errors)
 
 
 def gatherErrors(meta: dict, lineno, msgs):

@@ -21,8 +21,8 @@ if __name__ == '__main__':
     sourceCode = readFile()
     try:
         ast = LALRParser(sourceCode)
-        ast.printFancyTree()
-        errors = TypeChecker(ast).typecheck()
+        TypeChecker(ast).typecheck()
 
+        ast.printFancyTree()
     except CompilationFailure as failure:
         failure.printTrace()
