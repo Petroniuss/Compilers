@@ -13,15 +13,6 @@ class AnsiColor:
     END = '\033[0m'
 
 
-# class LexError:
-#     def __init__(self, value, lineno):
-#         self.value = value
-#         self.lineno = lineno
-
-#     def formatted(self):
-#         return f'{AnsiColor.RED}Lexical Error{AnsiColor.END}: Unexpected character {self.value} at {self.lineno}'
-
-
 class ParserError:
     def __init__(self, value, lineno):
         self.value = value
@@ -43,7 +34,10 @@ class TypeError:
 class CompilationFailure(Exception):
     def __init__(self, message, errors):
         super().__init__(message)
-        self.message = f'{AnsiColor.BOLD}{message}{AnsiColor.END}'
+        dashes = 24 * '-'
+
+        self.message = f"{AnsiColor.BOLD}{dashes} {message}  {dashes}{AnsiColor.END}"
+        self.endMessage = f"{AnsiColor.BOLD}{dashes} {len(message) * '-'}  {dashes}{AnsiColor.END}"
         self.errors = errors
 
     def printTrace(self):
@@ -51,3 +45,5 @@ class CompilationFailure(Exception):
 
         for error in self.errors:
             print(error.formatted())
+
+        print(self.endMessage)

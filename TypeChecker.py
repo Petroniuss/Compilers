@@ -29,12 +29,13 @@ class TypeChecker:
 
     def typecheck(self):
         self.ast.typecheck(self.meta, self.symbolTable)
+        errors = self.meta['errors']
 
-        if len(self.meta['errors']) > 1:
+        if len(errors) >= 1:
             errors = map(lambda tpl: TypeError(
-                tpl[1], tpl[0]), self.meta['errors'])
+                tpl[1], tpl[0]), errors)
 
-            raise CompilationFailure('Type checking failed', errors)
+            raise CompilationFailure('Type checking failed', list(errors))
 
 
 def gatherErrors(meta: dict, lineno, msgs):
