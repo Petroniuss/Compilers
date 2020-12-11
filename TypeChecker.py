@@ -485,7 +485,7 @@ def typeCheckIntVarargsToVector(fname: str, args: list, meta: dict, symbolTable:
     return [], VectorType(floatType, newShape)
 
 
-def typecheckVectorDotCall(fname: str, args: list, meta, dict, symbolTable: SymbolTable):
+def typecheckVectorDotCall(fname: str, args: list, meta: dict, symbolTable: SymbolTable):
     """
         [Vector, Vector] -> Vector
     """
@@ -499,11 +499,37 @@ def typecheckVectorDotCall(fname: str, args: list, meta, dict, symbolTable: Symb
     return v1Type.unifyBinary(fname, v2Type)
 
 
-functionCallTypeCheckDispatcher: {
+def typecheckEye(fname: str, args: list, meta: dict, symbolTable: SymbolTable):
+    """
+        Int -> Vector<Float>[Int, Int] 
+    """
+    if len(args) < 1:
+        return [f'Function {fname} takes one argument, zero given'], None
+
+    arg = args[0]
+    argType = arg.typecheck(meta, symbolTable)
+
+    if argType is None:
+        return [], None
+
+    if argType != intType:
+        return [f'Function {fname} takes {intType} not {argType}'], None
+
+    newShape = [-1, -1]
+    if type(arg) is Primitive:
+        newShape = [arg.value(), arg.value()]
+
+    innerType = floatType
+
+    return [], VectorType(innerType, newShape)
+
+
+functionCallTypeCheckDispatcher = {
     'transpose': typecheckUnaryTwoDimensionalVector,
     'negative': typeCheckUnaryNumieric,
     'zeros': typeCheckIntVarargsToVector,
     'ones': typeCheckIntVarargsToVector,
+    'eye': typecheckEye,
     '.+': typecheckVectorDotCall,
     '.-': typecheckVectorDotCall,
     '.*': typecheckVectorDotCall,

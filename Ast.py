@@ -69,11 +69,11 @@ class FunctionCall(Ast):
         super().__init__('FunctionCall', children=[
             Leaf(functionName)] + arglist, lineno=lineno)
 
-        def args(self):
-            return self.children[1:]
+    def args(self):
+        return self.children[1:]
 
-        def functionName(self):
-            return self.children[0].value()
+    def functionName(self):
+        return self.children[0].value()
 
 
 class Vector(Ast):
