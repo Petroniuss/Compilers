@@ -74,7 +74,7 @@ class VectorType(Type):
 
     def dimensionsMatch(self, other: 'VectorType'):
         if self.dimensions() != other.dimensions():
-            return [f'Vector have different number of dimensions: {self.dimensions()} and {other.dimensions}']
+            return [f'Vector have different number of dimensions: {self.dimensions()} and {other.dimensions()}']
 
         return []
 

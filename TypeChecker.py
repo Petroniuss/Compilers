@@ -203,6 +203,12 @@ def typecheck(self: SlicedVector, meta: dict, symbolTable: SymbolTable):
 
         return None
 
+    if vectorType.dimensions() < len(self.ranges()):
+        gatherErrors(meta, self.lineno, [
+            f'Slice has more dimensions than this vector has {vectorType.dimensions()} and {len(self.ranges())}'])
+
+        return None
+
     invalid = False
     errors = []
     newShape = []
