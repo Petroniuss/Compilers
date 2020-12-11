@@ -107,12 +107,12 @@ class VectorType(Type):
         return errors, newType
 
 
-def isNumericType(type: Type):
-    if type(type) is PrimitiveType:
-        return type == intType or type == floatType
+def isNumericType(ttype: Type):
+    if type(ttype) is PrimitiveType:
+        return ttype == intType or ttype == floatType
 
-    elif type(type) is VectorType:
-        return isNumericType(type.innerType)
+    elif type(ttype) is VectorType:
+        return isNumericType(ttype.innerType)
 
     return False
 

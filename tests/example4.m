@@ -1,4 +1,7 @@
-if (foo == "str") 
+x = 1;
+foo = 2;
+
+if (foo == 3) 
     foo = 12;
 else if (foo == 12) {
     if (x == 1) {

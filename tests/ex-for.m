@@ -1,3 +1,6 @@
+N = 3;
+M = 5;
+
 for i = -1:2 - N {
     if(i<=(N/16))
         print i;

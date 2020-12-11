@@ -2,6 +2,9 @@
 # binary operators
 # transposition
 
+A = zeros(3, 3);
+B = ones(3, 3);
+
 C = -A;     # assignemnt with unary expression
 C = B' ;    # assignemnt with matrix transpose
 C = A+B ;   # assignemnt with binary addition

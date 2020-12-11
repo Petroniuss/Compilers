@@ -331,6 +331,9 @@ def typecheck(self: Range, meta: dict, symbolTable: SymbolTable):
     beginType = begin.typecheck(meta, symbolTable)
     endType = end.typecheck(meta, symbolTable)
 
+    if beginType is None or endType is None:
+        return None
+
     if beginType != intType or endType != intType:
         gatherErrors(meta, self.lineno, [
             f'Range can only be of [{intType}:{intType}] type not [{beginType}:{endType}] type'])
@@ -398,16 +401,10 @@ def typecheck(self: While, meta: dict, symbolTable: SymbolTable):
 
 @add_method(For)
 def typecheck(self: For, meta: dict, symbolTable: SymbolTable):
-    conditionType = self.condition().typecheck(meta, symbolTable)
     self.range().typecheck(meta, symbolTable)
-    self.id().typecheck(meta, symbolTable)
 
     name = self.id().name()
     symbolTable.put(name, intType)
-
-    if conditionType is not None and conditionType != booleanType:
-        gatherErrors(meta, self.lineno, [
-            f'Condition in for statement must be of type boolean, not {conditionType}!'])
 
     meta['loop'] += 1
     self.body().typecheck(meta, symbolTable)
@@ -499,8 +496,11 @@ def typecheckVectorDotCall(fname: str, args: list, meta: dict, symbolTable: Symb
         return [f'Function {fname} takes two arguments not {len(args)}!']
 
     v1, v2 = args
-    v1Type, v2Type = v1.typcheck(
+    v1Type, v2Type = v1.typecheck(
         meta, symbolTable), v2.typecheck(meta, symbolTable)
+
+    if v1Type is None or v2Type is None:
+        return [], None
 
     return v1Type.unifyBinary(fname, v2Type)
 
@@ -530,12 +530,26 @@ def typecheckEye(fname: str, args: list, meta: dict, symbolTable: SymbolTable):
     return [], VectorType(innerType, newShape)
 
 
+def typecheckPrint(fname: str, args: list, meta: dict, symbolTable: SymbolTable):
+    """
+        [Any...] -> Vector
+    """
+    if len(args) < 1:
+        return [f'Function {fname} takes at least one argument!']
+
+    for arg in args:
+        arg.typecheck(meta, symbolTable)
+
+    return [], unitType
+
+
 functionCallTypeCheckDispatcher = {
     'transpose': typecheckUnaryTwoDimensionalVector,
     'negative': typeCheckUnaryNumieric,
     'zeros': typeCheckIntVarargsToVector,
     'ones': typeCheckIntVarargsToVector,
     'eye': typecheckEye,
+    'print': typecheckPrint,
     '.+': typecheckVectorDotCall,
     '.-': typecheckVectorDotCall,
     '.*': typecheckVectorDotCall,
