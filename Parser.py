@@ -457,5 +457,10 @@ def p_built_in_function(p):
 
 
 def p_error(p):
-    err = ParserError(p.value, p.lineno)
+    err = None
+    if p == None:
+        err = ParserError("Unexpected end of file", -1)
+    else:
+        err = ParserError(p.value, p.lineno)
+
     parseErrors.append(err)

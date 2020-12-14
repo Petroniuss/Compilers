@@ -54,7 +54,7 @@ class PrimitiveType(Type):
 
 class VectorType(Type):
     """
-        Multidimensional vector like 'Vector<Float>[2, 3, 5]'
+        Multidimensional vector like 'Vector<Int>[2, 3, 5]'
 
         Shape contains sizes along each dimensio of our vector.
 

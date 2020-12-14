@@ -175,8 +175,14 @@ def t_COMMENT(t):
 
 def t_error(t):
     # We could maybe combine errors into one msg instead of reporting single characters.
+    print(t)
+    t.type = t.value[0]
+    t.value = t.value[0]
+    print(t)
     t.lexer.errors.append(LexError(t.value[0], t.lineno))
     t.lexer.skip(1)
+
+    return t
 
 
 def t_eof(t):
