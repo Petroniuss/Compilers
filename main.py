@@ -1,10 +1,6 @@
 import sys
 
-from Parser import LALRParser
-from TreePrinter import TreePrinter
-from TypeChecker import TypeChecker
-from Failure import CompilationFailure
-from CodeGenerator import LLVMCodeGenerator
+from Evaluator import Evaluator
 
 
 def readFile():
@@ -20,11 +16,4 @@ def readFile():
 
 if __name__ == '__main__':
     sourceCode = readFile()
-    try:
-        ast = LALRParser(sourceCode)
-        TypeChecker(ast).typecheck()
-
-        ast.printFancyTree()
-        ir = LLVMCodeGenerator(ast).generateIR()
-    except CompilationFailure as failure:
-        failure.printTrace()
+    Evaluator().run(sourceCode)

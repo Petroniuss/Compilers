@@ -13,6 +13,11 @@ class AnsiColor:
     END = '\033[0m'
 
 
+def formatMessageBoldTitle(msg):
+    dashes = 24 * '-'
+    return f"{AnsiColor.BOLD}{dashes} {msg}  {dashes}{AnsiColor.END}"
+
+
 class ParserError:
     def __init__(self, value, lineno):
         self.value = value

@@ -1,9 +1,10 @@
 from Ast import Ast
 from treelib import Node, Tree
 from decorators import addToClass
+from Failure import formatMessageBoldTitle
 
 
-class TreePrinter:
+class AstPrinter:
     separator = ' | '
 
     @addToClass(Ast)
@@ -11,7 +12,7 @@ class TreePrinter:
         """
             Basic text tree representation.
         """
-        print(TreePrinter.separator * indent + str(self))
+        print(AstPrinter.separator * indent + str(self))
         for child in self.children:
             child.printTree(indent + 1)
 
@@ -34,4 +35,5 @@ class TreePrinter:
 
             parents = nextParents
 
+        print(formatMessageBoldTitle('Abstract Syntax Tree'))
         tree.show(line_type="ascii-ex", reverse=False)

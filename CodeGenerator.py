@@ -8,14 +8,13 @@ from Type import *
 
 
 class LLVMCodeGenerator:
-    def __init__(self, ast: Ast):
+    def __init__(self):
         self.module = ir.Module()
         self.builder = None
         self.errors = []
-        self.astRoot = ast
 
-    def generateIR(self):
-        self.astRoot.codegen(self)
+    def generateIR(self, ast: Ast):
+        ast.codegen(self)
 
         if len(self.errors) > 0:
             raise CompilationFailure('Code generation stage', self.errors)
