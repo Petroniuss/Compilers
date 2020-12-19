@@ -4,6 +4,7 @@ from Parser import LALRParser
 from TreePrinter import TreePrinter
 from TypeChecker import TypeChecker
 from Failure import CompilationFailure
+from CodeGenerator import LLVMCodeGenerator
 
 
 def readFile():
@@ -24,5 +25,6 @@ if __name__ == '__main__':
         TypeChecker(ast).typecheck()
 
         ast.printFancyTree()
+        ir = LLVMCodeGenerator(ast).generateIR()
     except CompilationFailure as failure:
         failure.printTrace()

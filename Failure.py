@@ -31,6 +31,15 @@ class TypeError:
         return f"{AnsiColor.RED}Type Error{AnsiColor.END}: '{self.value}' at {self.lineno}"
 
 
+class CodegenError:
+    def __init__(self, value, lineno):
+        self.value = value
+        self.lineno = lineno
+
+    def formatted(self):
+        return f"{AnsiColor.RED}Codegen Error{AnsiColor.END}: '{self.value}' at {self.lineno}"
+
+
 class CompilationFailure(Exception):
     def __init__(self, message, errors):
         super().__init__(message)
