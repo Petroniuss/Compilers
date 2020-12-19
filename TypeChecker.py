@@ -2,20 +2,7 @@ from Ast import *
 from Type import *
 from SymbolTable import SymbolTable
 from Failure import TypeError, CompilationFailure
-
-from functools import wraps
-
-
-def add_method(cls):
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            return func(*args, **kwargs)
-
-        setattr(cls, func.__name__, wrapper)
-        return wrapper
-
-    return decorator
+from decorators import addMethod
 
 
 class TypeChecker:
@@ -44,7 +31,7 @@ def gatherErrors(meta: dict, lineno, msgs):
         errors.append((lineno, msg))
 
 
-@add_method(Ast)
+@addMethod(Ast)
 def typecheck(self: Ast, meta: dict, symbolTable: SymbolTable):
     for child in self.children:
         child.typecheck(meta, symbolTable)
@@ -52,7 +39,7 @@ def typecheck(self: Ast, meta: dict, symbolTable: SymbolTable):
     return unitType
 
 
-@add_method(CodeBlock)
+@addMethod(CodeBlock)
 def typecheck(self: CodeBlock, meta: dict, symbolTable: SymbolTable):
     symbolTable.pushScope()
 
@@ -64,7 +51,7 @@ def typecheck(self: CodeBlock, meta: dict, symbolTable: SymbolTable):
     return unitType
 
 
-@add_method(Bind)
+@addMethod(Bind)
 def typecheck(self: Bind, meta: dict, symbolTable: SymbolTable):
     name = self.name()
     expr = self.expression()
@@ -86,7 +73,7 @@ def typecheck(self: Bind, meta: dict, symbolTable: SymbolTable):
     return unitType
 
 
-@add_method(Identifier)
+@addMethod(Identifier)
 def typecheck(self: Identifier, meta: dict, symbolTable: SymbolTable):
     name = self.name()
 
@@ -97,12 +84,12 @@ def typecheck(self: Identifier, meta: dict, symbolTable: SymbolTable):
     return symbolTable.get(name)
 
 
-@add_method(Primitive)
+@addMethod(Primitive)
 def typecheck(self: Primitive, meta: dict, symbolTable: SymbolTable):
     return self.type
 
 
-@add_method(BinaryOp)
+@addMethod(BinaryOp)
 def typecheck(self: BinaryOp, meta: dict, symbolTable: SymbolTable):
     leftType = self.left().typecheck(meta, symbolTable)
     rightType = self.right().typecheck(meta, symbolTable)
@@ -117,7 +104,7 @@ def typecheck(self: BinaryOp, meta: dict, symbolTable: SymbolTable):
     return unified
 
 
-@add_method(Vector)
+@addMethod(Vector)
 def typecheck(self: Vector, meta: dict, symbolTable: SymbolTable):
     if len(self.children) < 1:
         return emptyVectorType
@@ -148,7 +135,7 @@ def typecheck(self: Vector, meta: dict, symbolTable: SymbolTable):
     return VectorType(innerType, sizes)
 
 
-@add_method(RelationalExp)
+@addMethod(RelationalExp)
 def typecheck(self: RelationalExp, meta: dict, symbolTable: SymbolTable):
     leftType = self.left().typecheck(meta, symbolTable)
     rightType = self.right().typecheck(meta, symbolTable)
@@ -163,7 +150,7 @@ def typecheck(self: RelationalExp, meta: dict, symbolTable: SymbolTable):
     return unified
 
 
-@add_method(If)
+@addMethod(If)
 def typecheck(self: If, meta: dict, symbolTable: SymbolTable):
     self.trueBlock().typecheck(meta, symbolTable)
 
@@ -175,7 +162,7 @@ def typecheck(self: If, meta: dict, symbolTable: SymbolTable):
     return unitType
 
 
-@add_method(IfElse)
+@addMethod(IfElse)
 def typecheck(self: IfElse, meta: dict, symbolTable: SymbolTable):
     self.trueBlock().typecheck(meta, symbolTable)
     self.falseBlock().typecheck(meta, symbolTable)
@@ -188,7 +175,7 @@ def typecheck(self: IfElse, meta: dict, symbolTable: SymbolTable):
     return unitType
 
 
-@add_method(SlicedVector)
+@addMethod(SlicedVector)
 def typecheck(self: SlicedVector, meta: dict, symbolTable: SymbolTable):
     """
             Behold! Black magic ahead..>
@@ -286,7 +273,7 @@ def typecheck(self: SlicedVector, meta: dict, symbolTable: SymbolTable):
     return VectorType(vectorType.innerType, newShape)
 
 
-@add_method(SimpleRange)
+@addMethod(SimpleRange)
 def typecheck(self: SimpleRange, meta: dict, symbolTable: SymbolTable):
     id = self.idx()
     ttype = id.typecheck(meta, symbolTable)
@@ -299,7 +286,7 @@ def typecheck(self: SimpleRange, meta: dict, symbolTable: SymbolTable):
     return unitType
 
 
-@add_method(EndlessRange)
+@addMethod(EndlessRange)
 def typecheck(self: EndlessRange, meta: dict, symbolTable: SymbolTable):
     id = self.begin()
     ttype = id.typecheck(meta, symbolTable)
@@ -312,7 +299,7 @@ def typecheck(self: EndlessRange, meta: dict, symbolTable: SymbolTable):
     return unitType
 
 
-@add_method(FromStartRange)
+@addMethod(FromStartRange)
 def typecheck(self: FromStartRange, meta: dict, symbolTable: SymbolTable):
     id = self.end()
     ttype = id.typecheck(meta, symbolTable)
@@ -325,7 +312,7 @@ def typecheck(self: FromStartRange, meta: dict, symbolTable: SymbolTable):
     return unitType
 
 
-@add_method(Range)
+@addMethod(Range)
 def typecheck(self: Range, meta: dict, symbolTable: SymbolTable):
     begin, end = self.begin(), self.end()
     beginType = begin.typecheck(meta, symbolTable)
@@ -342,7 +329,7 @@ def typecheck(self: Range, meta: dict, symbolTable: SymbolTable):
     return unitType
 
 
-@add_method(BindWithSlice)
+@addMethod(BindWithSlice)
 def typecheck(self: BindWithSlice, meta: dict, symbolTable: SymbolTable):
     vType = self.slicedVector().typecheck(meta, symbolTable)
     expType = self.expression().typecheck(meta, symbolTable)
@@ -357,7 +344,7 @@ def typecheck(self: BindWithSlice, meta: dict, symbolTable: SymbolTable):
     return unitType
 
 
-@add_method(Return)
+@addMethod(Return)
 def typecheck(self: Return, meta: dict, symbolTable: SymbolTable):
     if meta.get('loop', 0) == 0:
         gatherErrors(meta, self.lineno, [
@@ -366,7 +353,7 @@ def typecheck(self: Return, meta: dict, symbolTable: SymbolTable):
     return unitType
 
 
-@add_method(Continue)
+@addMethod(Continue)
 def typecheck(self: Continue, meta: dict, symbolTable: SymbolTable):
     if meta.get('loop', 0) == 0:
         gatherErrors(meta, self.lineno, [
@@ -375,7 +362,7 @@ def typecheck(self: Continue, meta: dict, symbolTable: SymbolTable):
     return unitType
 
 
-@add_method(Break)
+@addMethod(Break)
 def typecheck(self: Break, meta: dict, symbolTable: SymbolTable):
     if meta.get('loop', 0) == 0:
         gatherErrors(meta, self.lineno, [
@@ -384,7 +371,7 @@ def typecheck(self: Break, meta: dict, symbolTable: SymbolTable):
     return unitType
 
 
-@add_method(While)
+@addMethod(While)
 def typecheck(self: While, meta: dict, symbolTable: SymbolTable):
     conditionType = self.condition().typecheck(meta, symbolTable)
 
@@ -399,7 +386,7 @@ def typecheck(self: While, meta: dict, symbolTable: SymbolTable):
     return unitType
 
 
-@add_method(For)
+@addMethod(For)
 def typecheck(self: For, meta: dict, symbolTable: SymbolTable):
     self.range().typecheck(meta, symbolTable)
 
@@ -557,7 +544,7 @@ functionCallTypeCheckDispatcher = {
 }
 
 
-@add_method(FunctionCall)
+@addMethod(FunctionCall)
 def typecheck(self: FunctionCall, meta: dict, symbolTable: SymbolTable):
     name = self.functionName()
     args = self.args()

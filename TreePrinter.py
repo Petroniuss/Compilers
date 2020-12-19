@@ -1,12 +1,6 @@
 from Ast import Ast
 from treelib import Node, Tree
-
-
-def addToClass(cls):
-    def decorator(func):
-        setattr(cls, func.__name__, func)
-        return func
-    return decorator
+from decorators import addToClass
 
 
 class TreePrinter:
