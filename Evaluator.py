@@ -11,6 +11,19 @@ from TypeChecker import TypeChecker
 from AstPrinter import AstPrinter
 from Failure import CompilationFailure, formatMessageBoldTitle
 
+exampleIR = """
+; ModuleID = "examples/ir_fpadd.py"
+target triple = "x86_64-pc-linux-gnu"
+target datalayout = ""
+
+define i32 @main()
+{
+entry:
+    %0 = add i32 0, 0
+    ret i32 %0
+}
+"""
+
 
 class Evaluator:
     """Evaluator for Kaleidoscope expressions.
@@ -28,6 +41,7 @@ class Evaluator:
         self.codegen = LLVMCodeGenerator()
 
         self.target = llvm.Target.from_default_triple()
+        print(self.target)
 
     def run(self, sourceCode, optimize=True, llvmdump=True, astDump=True):
         """
@@ -41,47 +55,39 @@ class Evaluator:
             if astDump is True:
                 ast.printFancyTree()
 
-            ir = LLVMCodeGenerator().generateIR(ast)
-
-            ir = """
-                    ; ModuleID = "examples/ir_fpadd.py"
-                    target triple = "x86_64-pc-linux-gnu"
-                    target datalayout = ""
-
-                    define i32 @main()
-                    {
-                    entry:
-                        ret i32 1
-                    }
-                """
+            irModule = LLVMCodeGenerator().generateIR(ast)
 
             if llvmdump is True:
                 print(formatMessageBoldTitle('Unoptimized IR'))
-                print(str(ir))
+                print(str(irModule))
 
                 outputFilename = './build/output.ll'
                 with open(outputFilename, 'w') as llFile:
-                    llFile.write(str(ir))
+                    llFile.write(str(irModule))
+
+            # Convert LLVM IR into in-memory representation
+            llvmmod = llvm.parse_assembly(str(irModule))
+
+            # Optimize the module
+            if optimize:
+                pmb = llvm.create_pass_manager_builder()
+                pmb.opt_level = 2
+                pm = llvm.create_module_pass_manager()
+                pmb.populate(pm)
+                pm.run(llvmmod)
+
+                if llvmdump is True:
+                    print(formatMessageBoldTitle('Optimized IR'))
+                    print(str(llvmmod))
+
+            outputFilename = './build/output.o'
+            with open(outputFilename, 'wb') as objectFile:
+                target_machine = self.target.create_target_machine(
+                    codemodel='small')
+
+                # Convert LLVM IR into in-memory representation
+                objectCode = target_machine.emit_object(llvmmod)
+                objectFile.write(objectCode)
 
         except CompilationFailure as failure:
             failure.printTrace()
-
-    def compileToObjectCode(self):
-        """Compile previously evaluated code into an object file.
-        The object file is created for the native target, and its contents are
-        returned as a bytes object.
-        """
-        # We use the small code model here, rather than the default one
-        # `jitdefault`.
-        #
-        # The reason is that only ELF format is supported under the `jitdefault`
-        # code model on Windows. However, COFF is commonly used by compilers on
-        # Windows.
-        #
-        # Please refer to https://github.com/numba/llvmlite/issues/181
-        # for more information about this issue.
-        target_machine = self.target.create_target_machine(codemodel='small')
-
-        # Convert LLVM IR into in-memory representation
-        llvmmod = llvm.parse_assembly(str(self.codegen.module))
-        return target_machine.emit_object(llvmmod)

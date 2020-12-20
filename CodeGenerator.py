@@ -12,7 +12,7 @@ class LLVMCodeGenerator:
     def __init__(self):
         self.module = ir.Module('Main')
         self.errors = []
-        # contains pointers!
+        # contains pointers/and functions!
         self.symbolTable = SymbolTable()
 
         # This thing should be accessible within some scope!
