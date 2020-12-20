@@ -19,6 +19,7 @@ target datalayout = ""
 declare void @printHello() #1
 
 define i32 @main() #0 {
+    %tmp = add i32 1, 2
     call void () @printHello()
     ret i32 0
 }
