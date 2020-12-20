@@ -43,9 +43,25 @@ class Evaluator:
 
             ir = LLVMCodeGenerator().generateIR(ast)
 
+            ir = """
+                    ; ModuleID = "examples/ir_fpadd.py"
+                    target triple = "x86_64-pc-linux-gnu"
+                    target datalayout = ""
+
+                    define i32 @main()
+                    {
+                    entry:
+                        ret i32 1
+                    }
+                """
+
             if llvmdump is True:
                 print(formatMessageBoldTitle('Unoptimized IR'))
                 print(str(ir))
+
+                outputFilename = './build/output.ll'
+                with open(outputFilename, 'w') as llFile:
+                    llFile.write(str(ir))
 
             # output object code to file
             print(formatMessageBoldTitle('Object Code'))
