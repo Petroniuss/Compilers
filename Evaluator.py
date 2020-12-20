@@ -63,15 +63,6 @@ class Evaluator:
                 with open(outputFilename, 'w') as llFile:
                     llFile.write(str(ir))
 
-            # output object code to file
-            print(formatMessageBoldTitle('Object Code'))
-            objectCode = self.compileToObjectCode()
-            outputFilename = './build/output.o'
-            with open(outputFilename, 'wb') as objFile:
-                objFile.write(objectCode)
-
-            print(f'\tWritten to {outputFilename}')
-
         except CompilationFailure as failure:
             failure.printTrace()
 
