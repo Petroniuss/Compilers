@@ -19,7 +19,20 @@ class LLVMCodeGenerator:
         self.builder = ir.IRBuilder()
 
     def generateIR(self, ast: Ast):
+        # start by generating main function
+        functionName = 'main'
+        functionType = ir.FunctionType(ir.IntType(32), [], False)
+        func = ir.Function(self.module, functionType, functionName)
+        self.symbolTable.put(functionName, func)
+
+        entryBlock = func.append_basic_block('entry')
+        self.builder = ir.IRBuilder(entryBlock)
+
+        # traverse ast and generate code
         ast.codegen(self)
+
+        retVal = ir.Constant(ir.IntType(32), 0)
+        self.builder.ret(retVal)
 
         if len(self.errors) > 0:
             raise CompilationFailure('Code generation stage', self.errors)
@@ -34,6 +47,7 @@ class LLVMCodeGenerator:
 
 @addMethod(Ast)
 def codegen(self: Ast, generator: LLVMCodeGenerator):
+    # todo I guess we should generate main function at the root
     for child in self.children:
         child.codegen(generator)
 
@@ -101,13 +115,12 @@ def codegen(self: Primitive, generator: LLVMCodeGenerator):
 
 @addMethod(CodeBlock)
 def codegen(self: CodeBlock, generator: LLVMCodeGenerator):
-    anonymousFunction = Function.anonymous(self.children)
-
     generator.symbolTable.pushScope()
-    fun = anonymousFunction.codegen(generator)
+    for node in self.children:
+        node.codegen(generator)
     generator.symbolTable.popScope()
 
-    return fun
+    return ir.VoidType()
 
 
 @addMethod(Prototype)

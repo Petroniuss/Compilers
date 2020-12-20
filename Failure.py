@@ -15,7 +15,7 @@ class AnsiColor:
 
 def formatMessageBoldTitle(msg):
     dashes = 24 * '-'
-    return f"{AnsiColor.BOLD}{dashes} {msg}  {dashes}{AnsiColor.END}"
+    return f"{AnsiColor.BOLD}{AnsiColor.GREEN}{dashes} {msg}  {dashes}{AnsiColor.END}"
 
 
 class ParserError:
