@@ -47,7 +47,11 @@ def codegen(self: Bind, generator: LLVMCodeGenerator):
     expr = self.expression().codegen(generator)
 
     if op == '=':
-        alloca = generator.builder.alloca(ir.DoubleType(), name=name)
+        if not generator.symbolTable.contains(name):
+            alloca = generator.builder.alloca(ir.DoubleType(), name=name)
+        else:
+            alloca = generator.symbolTable.get(name)
+
         generator.builder.store(expr, alloca)
         generator.symbolTable.put(name, alloca)
     else:
