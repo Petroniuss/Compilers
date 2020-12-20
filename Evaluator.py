@@ -26,13 +26,6 @@ entry:
 
 
 class Evaluator:
-    """Evaluator for Kaleidoscope expressions.
-    Once an object is created, calls to evaluate() add new expressions to the
-    module. Definitions (including externs) are only added into the IR - no
-    JIT compilation occurs. When a toplevel expression is evaluated, the whole
-    module is JITed and the result of the expression is returned.
-    """
-
     def __init__(self):
         llvm.initialize()
         llvm.initialize_native_target()
