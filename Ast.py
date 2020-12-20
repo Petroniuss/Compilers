@@ -257,6 +257,8 @@ class Leaf(Ast):
     def value(self):
         return self.type
 
+# todo - figure out how to connect codeblock with prototype and function
+
 
 class CodeBlock(Ast):
     def __init__(self, statements, lineno=0):
@@ -267,6 +269,34 @@ class CodeBlock(Ast):
             nestedCodeBlock = statements[0]
             statements = nestedCodeBlock.children
         super().__init__('CodeBlock', children=statements, lineno=lineno)
+
+
+class Prototype(Ast):
+    def __init__(self, name, args):
+        super.__init__('Prototype', children=[name] + args, lineno=-1)
+
+    def name(self):
+        return self.children[0]
+
+    def args(self):
+        return self.children[1:]
+
+
+class Function(Ast):
+    _anonymous_function_counter = 0
+
+    def __init__(self, proto, body):
+        self.proto = proto
+        self.body = body
+
+    @classmethod
+    def anonymous(cls, expr):
+        cls._anonymous_function_counter += 1
+        proto = Prototype(f'_anon_{cls._anonymous_function_counter}', [])
+        return cls(proto, expr)
+
+    def isAnonymous(self):
+        return self.proto.name().startswith('_anon_')
 
 
 def String(value, lineno=0):

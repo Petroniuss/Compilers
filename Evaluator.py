@@ -45,7 +45,7 @@ class Evaluator:
 
             if llvmdump is True:
                 print(formatMessageBoldTitle('Unoptimized IR'))
-                print(str(self.codegen.module))
+                print(str(ir))
 
         except CompilationFailure as failure:
             failure.printTrace()
