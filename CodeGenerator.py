@@ -13,7 +13,7 @@ class LLVMCodeGenerator:
         self.errors = []
 
         # This thing should be accessible within some scope!
-        self.builder = None
+        self.builder = ir.IRBuilder()
 
     def generateIR(self, ast: Ast):
         ast.codegen(self)
@@ -36,12 +36,6 @@ def codegen(self: Ast, generator: LLVMCodeGenerator):
     return None
 
 
-@addMethod(CodeBlock)
-def codegen(self: CodeBlock, generator: LLVMCodeGenerator):
-    # Figure out how to emit phi!
-    pass
-
-
 @addMethod(BinaryOp)
 def codegen(self: BinaryOp, generator: LLVMCodeGenerator):
     op = self.operator()
@@ -50,15 +44,13 @@ def codegen(self: BinaryOp, generator: LLVMCodeGenerator):
     right = self.right().codegen(generator)
 
     if op == '+':
-        pass
+        return generator.builder.fadd(left, right, 'addTmp')
     elif op == '-':
-        pass
+        return generator.builder.fsub(left, right, 'addTmp')
     elif op == '*':
-        pass
+        return generator.builder.fsub(left, right, 'multTmp')
     elif op == '/':
-        pass
-
-    return None
+        return generator.builder.fdiv(left, right, 'divTmp')
 
 
 @addMethod(Primitive)
@@ -66,7 +58,41 @@ def codegen(self: Primitive, generator: LLVMCodeGenerator):
     if self.type == floatType:
         return ir.Constant(ir.DoubleType(), float(self.value()))
     elif self.type == intType:
-        return ir.Constant(ir.IntType(32), int(self.value()))
+        # Just to make things simple!
+        return ir.Constant(ir.IntType(32), float(self.value()))
     else:
         generator.logError(
             'Only intType and floatType are supported for primitive types!', self.lineno)
+
+
+@addMethod(CodeBlock)
+def codegen(self: CodeBlock, generator: LLVMCodeGenerator):
+    anonymousFunction = Function.anonymous(self.children)
+    return anonymousFunction.codegen(generator)
+
+
+@addMethod(Prototype)
+def codegen(self: Prototype, generator: LLVMCodeGenerator):
+    # FIXME -> This function only handles anonymous functions! aka those from codeblocks!
+    functionName = self.name
+    functionType = ir.FunctionType(ir.VoidType(), self.args, False)
+    irFunction = ir.Function(generator.module, functionType, functionName)
+
+    return irFunction
+
+
+@addMethod(Function)
+def codegen(self: Function, generator: LLVMCodeGenerator):
+    # FIXME scoping comes into play! There should be a symbol table somewhere...
+    func = self.proto.codegen(generator)
+    entryBlock = func.append_basic_block('entry')
+    generator.builder = ir.IRBuilder(entryBlock)
+
+    # generate code
+    for node in self.body:
+        node.codegen(generator)
+
+    retval = ir.VoidType()
+    generator.builder.ret_void()
+
+    return func
