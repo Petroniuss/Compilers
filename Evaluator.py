@@ -47,5 +47,34 @@ class Evaluator:
                 print(formatMessageBoldTitle('Unoptimized IR'))
                 print(str(ir))
 
+            # output object code to file
+            print(formatMessageBoldTitle('Object Code'))
+            objectCode = self.compileToObjectCode()
+            outputFilename = './build/output.o'
+            with open(outputFilename, 'wb') as objFile:
+                objFile.write(objectCode)
+
+            print(f'\tWritten to {outputFilename}')
+
         except CompilationFailure as failure:
             failure.printTrace()
+
+    def compileToObjectCode(self):
+        """Compile previously evaluated code into an object file.
+        The object file is created for the native target, and its contents are
+        returned as a bytes object.
+        """
+        # We use the small code model here, rather than the default one
+        # `jitdefault`.
+        #
+        # The reason is that only ELF format is supported under the `jitdefault`
+        # code model on Windows. However, COFF is commonly used by compilers on
+        # Windows.
+        #
+        # Please refer to https://github.com/numba/llvmlite/issues/181
+        # for more information about this issue.
+        target_machine = self.target.create_target_machine(codemodel='small')
+
+        # Convert LLVM IR into in-memory representation
+        llvmmod = llvm.parse_assembly(str(self.codegen.module))
+        return target_machine.emit_object(llvmmod)
