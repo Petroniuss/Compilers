@@ -1,8 +1,4 @@
 class SymbolTable:
-    """
-        'Symbol' is simply a Type. 
-    """
-
     def __init__(self):
         super().__init__()
 
