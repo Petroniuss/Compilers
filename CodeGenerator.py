@@ -20,6 +20,9 @@ class LLVMCodeGenerator:
 
     def generateIR(self, ast: Ast):
         # start by generating main function
+        # since we don't have any other...
+
+        # we should also generate declaration for standard library
         functionName = 'main'
         functionType = ir.FunctionType(ir.IntType(32), [], False)
         func = ir.Function(self.module, functionType, functionName)

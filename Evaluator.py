@@ -12,15 +12,15 @@ from AstPrinter import AstPrinter
 from Failure import CompilationFailure, formatMessageBoldTitle
 
 exampleIR = """
-; ModuleID = "examples/ir_fpadd.py"
+; ModuleID = "main"
 target triple = "x86_64-pc-linux-gnu"
 target datalayout = ""
 
-define i32 @main()
-{
-entry:
-    %0 = add i32 0, 0
-    ret i32 %0
+declare void @printHello() #1
+
+define i32 @main() #0 {
+    call void () @printHello()
+    ret i32 0
 }
 """
 
@@ -49,6 +49,7 @@ class Evaluator:
                 ast.printFancyTree()
 
             irModule = LLVMCodeGenerator().generateIR(ast)
+            irModule = exampleIR
 
             if llvmdump is True:
                 print(formatMessageBoldTitle('Unoptimized IR'))
