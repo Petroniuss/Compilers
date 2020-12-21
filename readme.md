@@ -2,7 +2,7 @@
 
 Repository contains finished exercises from laboratories during `Compilers` course at AGH UST.
 
-Matlab-like language compiled using LLVM compiler infrstructure.
+Untyped Matlab-like language compiled using LLVM compiler infrstructure.
 
 Libraries used:
 
