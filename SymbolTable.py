@@ -54,4 +54,6 @@ class ScopedTable:
         if name in self.tbl:
             return self.tbl[name]
 
+        if self.parentTable() is None:
+            raise Exception('Name not found - ' + name)
         return self.parentTable().get(name)

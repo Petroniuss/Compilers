@@ -14,8 +14,12 @@ class LLVMCodeGenerator:
     # place for defining more functions accessibe by runtime!
     # they're impemented in cpp!
     standardLibraryFunctions = [
+        ('formatDouble', ir.FunctionType(
+            irCharType().as_pointer(), [irDoubleType()], False)),
         ('freeString', ir.FunctionType(
             irVoidType(), [irCharType().as_pointer()], False)),
+        ('putLn', ir.FunctionType(
+            irVoidType(), [], False)),
         ('putStrLn', ir.FunctionType(
             irVoidType(), [irCharType().as_pointer()], False))
     ]
@@ -28,6 +32,7 @@ class LLVMCodeGenerator:
 
         # This thing should be accessible within some scope!
         self.builder = ir.IRBuilder()
+        self.globalNameGen = self.globalNameGenerator()
 
     def generateIR(self, ast: Ast):
         # we should also generate declaration for standard library
@@ -59,6 +64,16 @@ class LLVMCodeGenerator:
         error = CodegenError(msg, lineno)
         raise CompilationFailure('Code generation stage', self.errors)
         self.errors.append(error)
+
+    def nextGlobalName(self):
+        return next(self.globalNameGen)
+
+    def globalNameGenerator(self):
+        s = 'global_'
+        counter = -1
+        while True:
+            counter += 1
+            yield s + str(counter)
 
 
 @ addMethod(Ast)
@@ -139,27 +154,41 @@ def codegen(self: CodeBlock, generator: LLVMCodeGenerator):
     return irVoidType()
 
 
+def handlePrint(arg, generator: LLVMCodeGenerator):
+    arg = arg.codegen(generator)
+    formatFunc = generator.symbolTable.get('formatDouble')
+    arg = generator.builder.call(formatFunc, [arg])
+
+    printFunc = generator.symbolTable.get('putStrLn')
+    generator.builder.call(printFunc, [arg])
+
+    freeStrFunc = generator.symbolTable.get('freeString')
+
+    generator.builder.call(freeStrFunc, [arg])
+
+
+def gep():
+    pass
+    # literaprzetrogę dziś ci daję i nadstawiaj uszy bolArray = ir.Constant.literal_array(
+    #     [ir.Constant(irCharType(), c) for c in arguments])
+
+    # varName = generator.nextGlobalName()
+    # glo = ir.GlobalVariable(
+    #     generator.module, literalArray.type, varName)
+    # glo.global_constant = True
+    # glo.initializer = literalArray
+    # ptr = glo.gep([ir.Constant(irIntType(), 0),
+    #                ir.Constant(irIntType(), 0)])
+
+
 @addMethod(FunctionCall)
 def codegen(self: FunctionCall, generator: LLVMCodeGenerator):
     name = self.functionName()
     if name == 'print':
-        args = self.args()
-        if len(args) == 0:
-            return generator.builder.call('printHello', [])
-        else:
-            arguments = [arg.codegen(generator) for arg in args]
-            fmt = [ord('f')] * len(arguments)
-            literalArray = ir.Constant.literal_array(
-                [ir.Constant(irCharType(), c) for c in fmt])
-
-            glo = ir.GlobalVariable(generator.module, literalArray.type, 'fo!')
-            glo.global_constant = True
-            glo.initializer = literalArray
-            ptr = glo.gep([ir.Constant(irIntType(), 0),
-                           ir.Constant(irIntType(), 0)])
-
-            function = generator.symbolTable.get('putStrLn')
-            return generator.builder.call(function, [ptr])
+        for arg in self.args():
+            handlePrint(arg, generator)
+        putLnFunction = generator.symbolTable.get('putLn')
+        return generator.builder.call(putLnFunction, [])
 
 
 @ addMethod(Prototype)
