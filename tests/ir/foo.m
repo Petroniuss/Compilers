@@ -1,2 +1,5 @@
-x = 1 - 2;
-print x, 123.2;
+x = 1.0 - 2.0;
+y = x + 1.0;
+
+print x;
+print y;

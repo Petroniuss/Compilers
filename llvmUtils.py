@@ -6,10 +6,21 @@ charType = ir.IntType(8)
 doubleType = ir.DoubleType()
 voidType = ir.VoidType()
 
+intPointerType = intType.as_pointer()
+charPointerType = charType.as_pointer()
+doublePointerType = doubleType.as_pointer()
 
-# def getValue(foo):
-# foo is either a pointer or literal
-# if foo.type == irDoubleType
+
+def irIntPointerType():
+    return intPointerType
+
+
+def irCharPointerType():
+    return charPointerType
+
+
+def irDoublePointerType():
+    return doublePointerType
 
 
 def irVoidType():
@@ -29,7 +40,38 @@ def irCharType():
 
 
 def isDouble(arg):
-    if type(arg) == str:
-        return arg == 'double'
+    return type(arg.type) == ir.DoubleType
 
-    return type(arg.type) == irDoubleType
+
+def isInt(arg):
+    return type(arg.type) == ir.IntType
+
+
+def isString(arg):
+    pass
+    return False
+
+
+def isVector(arg):
+    # here fun begins
+    return False
+
+
+def stringLiteral(literal):
+    return ir.Constant.literal_array(
+        [ir.Constant(irCharType(), c) for c in literal])
+
+
+def namedGlobalStringLiteral(module, literal, varName):
+    literalArray = stringLiteral(literal)
+    glo = ir.GlobalVariable(
+        module, literalArray.type, varName)
+    glo.global_constant = True
+    glo.initializer = literalArray
+
+    return glo
+
+
+def globalStringPointer(globl):
+    return globl.gep([ir.Constant(irIntType(), 0),
+                      ir.Constant(irIntType(), 0)])
