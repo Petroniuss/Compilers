@@ -26,7 +26,7 @@ define i32 @main() #0 {
 """
 
 
-class Evaluator:
+class Compiler:
     def __init__(self):
         llvm.initialize()
         llvm.initialize_native_target()
@@ -38,11 +38,6 @@ class Evaluator:
         print(self.target)
 
     def run(self, sourceCode, optimize=True, llvmdump=True, astDump=True):
-        """
-            Evaluate code in codestr.
-            Returns None for definitions and externs, and the evaluated expression
-            value for toplevel expressions.
-        """
         try:
             ast = LALRParser(sourceCode)
             TypeChecker(ast).typecheck()
@@ -50,7 +45,7 @@ class Evaluator:
                 ast.printFancyTree()
 
             irModule = LLVMCodeGenerator().generateIR(ast)
-            irModule = exampleIR
+            # irModule = exampleIR
 
             if llvmdump is True:
                 print(formatMessageBoldTitle('Unoptimized IR'))

@@ -1,5 +1,6 @@
 import llvmlite.ir as ir
 import llvmlite.binding as llvm
+from llvmUtils import *
 
 from decorators import addMethod
 from Failure import CodegenError, CompilationFailure
@@ -9,6 +10,16 @@ from Type import *
 
 
 class LLVMCodeGenerator:
+
+    # place for defining more functions accessibe by runtime!
+    # they're impemented in cpp!
+    standardLibraryFunctions = [
+        ('freeString', ir.FunctionType(
+            irVoidType(), [irCharType().as_pointer()], False)),
+        ('putStrLn', ir.FunctionType(
+            irVoidType(), [irCharType().as_pointer()], False))
+    ]
+
     def __init__(self):
         self.module = ir.Module('Main')
         self.errors = []
@@ -19,12 +30,14 @@ class LLVMCodeGenerator:
         self.builder = ir.IRBuilder()
 
     def generateIR(self, ast: Ast):
-        # start by generating main function
-        # since we don't have any other...
-
         # we should also generate declaration for standard library
+        for funcName, funcType in LLVMCodeGenerator.standardLibraryFunctions:
+            func = ir.Function(self.module, funcType, funcName)
+            self.symbolTable.put(funcName, func)
+
+        # start by generating main function
         functionName = 'main'
-        functionType = ir.FunctionType(ir.IntType(32), [], False)
+        functionType = ir.FunctionType(irIntType(), [], False)
         func = ir.Function(self.module, functionType, functionName)
         self.symbolTable.put(functionName, func)
 
@@ -34,7 +47,7 @@ class LLVMCodeGenerator:
         # traverse ast and generate code
         ast.codegen(self)
 
-        retVal = ir.Constant(ir.IntType(32), 0)
+        retVal = ir.Constant(irIntType(), 0)
         self.builder.ret(retVal)
 
         if len(self.errors) > 0:
@@ -48,7 +61,7 @@ class LLVMCodeGenerator:
         self.errors.append(error)
 
 
-@addMethod(Ast)
+@ addMethod(Ast)
 def codegen(self: Ast, generator: LLVMCodeGenerator):
     # todo I guess we should generate main function at the root
     for child in self.children:
@@ -57,7 +70,7 @@ def codegen(self: Ast, generator: LLVMCodeGenerator):
     return None
 
 
-@addMethod(Bind)
+@ addMethod(Bind)
 def codegen(self: Bind, generator: LLVMCodeGenerator):
     op = self.operator()
     name = self.name()
@@ -65,7 +78,7 @@ def codegen(self: Bind, generator: LLVMCodeGenerator):
 
     if op == '=':
         if not generator.symbolTable.contains(name):
-            alloca = generator.builder.alloca(ir.DoubleType(), name=name)
+            alloca = generator.builder.alloca(irDoubleType(), name=name)
         else:
             alloca = generator.symbolTable.get(name)
 
@@ -75,11 +88,11 @@ def codegen(self: Bind, generator: LLVMCodeGenerator):
         generator.logError(f'Only = operator is supported!', self.lineno)
 
 
-@addMethod(Identifier)
+@ addMethod(Identifier)
 def codegen(self: Identifier, generator: LLVMCodeGenerator):
     name = self.name()
     if not generator.symbolTable.contains(name):
-        generator.logError(f'Identifier not definned: {name}!', self.lineno)
+        generator.logError(f'Identifier not defined: {name}!', self.lineno)
         return None
 
     # dereference pointer!
@@ -87,7 +100,7 @@ def codegen(self: Identifier, generator: LLVMCodeGenerator):
     return generator.builder.load(ptr)
 
 
-@addMethod(BinaryOp)
+@ addMethod(BinaryOp)
 def codegen(self: BinaryOp, generator: LLVMCodeGenerator):
     op = self.operator()
 
@@ -104,29 +117,52 @@ def codegen(self: BinaryOp, generator: LLVMCodeGenerator):
         return generator.builder.fdiv(left, right, 'divTmp')
 
 
-@addMethod(Primitive)
+@ addMethod(Primitive)
 def codegen(self: Primitive, generator: LLVMCodeGenerator):
     # Just to make things simple I only have double type for now!
     if self.type == floatType or self.type == intType:
-        return ir.Constant(ir.DoubleType(), float(self.value()))
+        return ir.Constant(irDoubleType(), float(self.value()))
     elif self.type == intType:
-        return ir.Constant(ir.IntType(32), float(self.value()))
+        return ir.Constant(ir.IntType(32), int(self.value()))
     else:
         generator.logError(
             'Only intType and floatType are supported for primitive types!', self.lineno)
 
 
-@addMethod(CodeBlock)
+@ addMethod(CodeBlock)
 def codegen(self: CodeBlock, generator: LLVMCodeGenerator):
     generator.symbolTable.pushScope()
     for node in self.children:
         node.codegen(generator)
     generator.symbolTable.popScope()
 
-    return ir.VoidType()
+    return irVoidType()
 
 
-@addMethod(Prototype)
+@addMethod(FunctionCall)
+def codegen(self: FunctionCall, generator: LLVMCodeGenerator):
+    name = self.functionName()
+    if name == 'print':
+        args = self.args()
+        if len(args) == 0:
+            return generator.builder.call('printHello', [])
+        else:
+            arguments = [arg.codegen(generator) for arg in args]
+            fmt = [ord('f')] * len(arguments)
+            literalArray = ir.Constant.literal_array(
+                [ir.Constant(irCharType(), c) for c in fmt])
+
+            glo = ir.GlobalVariable(generator.module, literalArray.type, 'fo!')
+            glo.global_constant = True
+            glo.initializer = literalArray
+            ptr = glo.gep([ir.Constant(irIntType(), 0),
+                           ir.Constant(irIntType(), 0)])
+
+            function = generator.symbolTable.get('putStrLn')
+            return generator.builder.call(function, [ptr])
+
+
+@ addMethod(Prototype)
 def codegen(self: Prototype, generator: LLVMCodeGenerator):
     # FIXME -> This function only handles anonymous functions! aka those from codeblocks!
     functionName = self.name
@@ -137,7 +173,7 @@ def codegen(self: Prototype, generator: LLVMCodeGenerator):
     return irFunction
 
 
-@addMethod(Function)
+@ addMethod(Function)
 def codegen(self: Function, generator: LLVMCodeGenerator):
     # FIXME scoping comes into play! There should be a symbol table somewhere...
     func = self.proto.codegen(generator)

@@ -1,6 +1,6 @@
 import sys
 
-from Evaluator import Evaluator
+from Compiler import Compiler
 
 
 def readFile():
@@ -16,4 +16,4 @@ def readFile():
 
 if __name__ == '__main__':
     sourceCode = readFile()
-    Evaluator().run(sourceCode)
+    Compiler().run(sourceCode)
