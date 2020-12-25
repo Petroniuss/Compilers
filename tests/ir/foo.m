@@ -1,5 +1,5 @@
 x = 1.0 - 2.0;
 y = x + 1.0;
+z = "Printing works!";
 
-print x;
-print y;
+print z,x,y;

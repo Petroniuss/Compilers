@@ -86,7 +86,15 @@ def codegen(self: Bind, generator: LLVMCodeGenerator):
 
     if op == '=':
         if not generator.symbolTable.contains(name):
-            alloca = generator.builder.alloca(irDoubleType(), name=name)
+            if isDouble(expr):
+                alloca = generator.builder.alloca(irDoubleType(), name=name)
+            elif isInt(expr):
+                alloca = generator.builder.alloca(irIntType(), name=name)
+            elif isString(expr):
+                alloca = generator.builder.alloca(
+                    irCharPointerType(), name=name)
+
+            print(expr, expr.type)
         else:
             alloca = generator.symbolTable.get(name)
 
@@ -133,7 +141,10 @@ def codegen(self: Primitive, generator: LLVMCodeGenerator):
     elif self.type == intType:
         return ir.Constant(ir.IntType(32), int(self.value()))
     elif self.type == stringType:
-        pass
+        globName = generator.nextGlobalName()
+        glob = namedGlobalStringLiteral(
+            generator.module, str(self.value()), globName)
+        return globalToPtr(glob)
     else:
         generator.raiseError(
             'Only intType and floatType are supported for primitive types!', self.lineno)
@@ -154,23 +165,24 @@ def codegen(self: CodeBlock, generator: LLVMCodeGenerator):
 def handlePrint(arg, generator: LLVMCodeGenerator):
     arg = arg.codegen(generator)
     formatFunc = None
-    print(arg, type(arg.type))
     if isDouble(arg):
         formatFunc = generator.symbolTable.get('formatDouble')
     elif isInt(arg):
         formatFunc = generator.symbolTable.get('formatInt')
-    elif isString(arg):
-        pass
     elif isVector(arg):
         pass
 
-    arg = generator.builder.call(formatFunc, [arg])
-    printFunc = generator.symbolTable.get('putStr')
-    generator.builder.call(printFunc, [arg])
+    if not isString(arg):
+        arg = generator.builder.call(formatFunc, [arg])
 
-    freeStrFunc = generator.symbolTable.get('freeString')
+        printFunc = generator.symbolTable.get('putStr')
+        generator.builder.call(printFunc, [arg])
 
-    generator.builder.call(freeStrFunc, [arg])
+        freeStrFunc = generator.symbolTable.get('freeString')
+        generator.builder.call(freeStrFunc, [arg])
+    else:
+        printFunc = generator.symbolTable.get('putStr')
+        generator.builder.call(printFunc, [arg])
 
 
 @addMethod(FunctionCall)
@@ -183,20 +195,6 @@ def codegen(self: FunctionCall, generator: LLVMCodeGenerator):
         return generator.builder.call(putLnFunction, [])
 
 # --------------------------------------------------------------------
-
-
-def gep():
-    pass
-    # literaprzetrogę dziś ci daję i nadstawiaj uszy bolArray = ir.Constant.literal_array(
-    #     [ir.Constant(irCharType(), c) for c in arguments])
-
-    # varName = generator.nextGlobalName()
-    # glo = ir.GlobalVariable(
-    #     generator.module, literalArray.type, varName)
-    # glo.global_constant = True
-    # glo.initializer = literalArray
-    # ptr = glo.gep([ir.Constant(irIntType(), 0),
-    #                ir.Constant(irIntType(), 0)])
 
 
 # We don't use this kind of stuff!

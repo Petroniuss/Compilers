@@ -40,16 +40,15 @@ def irCharType():
 
 
 def isDouble(arg):
-    return type(arg.type) == ir.DoubleType
+    return arg.type == irDoubleType()
 
 
 def isInt(arg):
-    return type(arg.type) == ir.IntType
+    return arg.type == irIntType()
 
 
 def isString(arg):
-    pass
-    return False
+    return arg.type == irCharPointerType()
 
 
 def isVector(arg):
@@ -59,7 +58,7 @@ def isVector(arg):
 
 def stringLiteral(literal):
     return ir.Constant.literal_array(
-        [ir.Constant(irCharType(), c) for c in literal])
+        [ir.Constant(irCharType(), ord(c)) for c in literal])
 
 
 def namedGlobalStringLiteral(module, literal, varName):
@@ -72,6 +71,6 @@ def namedGlobalStringLiteral(module, literal, varName):
     return glo
 
 
-def globalStringPointer(globl):
+def globalToPtr(globl):
     return globl.gep([ir.Constant(irIntType(), 0),
                       ir.Constant(irIntType(), 0)])
