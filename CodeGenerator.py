@@ -143,7 +143,7 @@ def codegen(self: Primitive, generator: LLVMCodeGenerator):
     elif self.type == stringType:
         globName = generator.nextGlobalName()
         glob = namedGlobalStringLiteral(
-            generator.module, str(self.value()), globName)
+            generator.module, str(self.value() + '\x00'), globName)
         return globalToPtr(glob)
     else:
         generator.raiseError(
