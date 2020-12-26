@@ -103,19 +103,16 @@ def codegen(self: Bind, generator: LLVMCodeGenerator):
     expr = self.expression().codegen(generator)
 
     if op == '=':
-        if not generator.symbolTable.contains(name):
-            if isDouble(expr):
-                alloca = generator.builder.alloca(irDoubleType(), name=name)
-            elif isInt(expr):
-                alloca = generator.builder.alloca(irIntType(), name=name)
-            elif isString(expr):
-                alloca = generator.builder.alloca(
-                    irCharPointerType(), name=name)
-            else:
-                alloca = generator.builder.alloca(
-                    irNVectorPointerType(), name=name)
+        if isDouble(expr):
+            alloca = generator.builder.alloca(irDoubleType(), name=name)
+        elif isInt(expr):
+            alloca = generator.builder.alloca(irIntType(), name=name)
+        elif isString(expr):
+            alloca = generator.builder.alloca(
+                irCharPointerType(), name=name)
         else:
-            alloca = generator.symbolTable.get(name)
+            alloca = generator.builder.alloca(
+                irNVectorPointerType(), name=name)
 
         generator.builder.store(expr, alloca)
         generator.symbolTable.put(name, alloca)
@@ -135,11 +132,45 @@ def codegen(self: Identifier, generator: LLVMCodeGenerator):
 
 @ addMethod(BinaryOp)
 def codegen(self: BinaryOp, generator: LLVMCodeGenerator):
+    """
+        Emitting operations based on type of operands..
+    """
     op = self.operator()
 
     left = self.left().codegen(generator)
     right = self.right().codegen(generator)
-    # here we should check types and promote ints to doubles
+
+    if isVector(left) and isVector(right):
+        fname = None
+        if op == '+':
+            fname = 'dotAdd'
+        elif op == '-':
+            fname = 'dotMinus'
+        elif op == '*':
+            fname = 'dotMult'
+        elif op == '/':
+            fname = 'dotDiv'
+
+        fn = generator.symbolTable.get(fname)
+        return generator.builder.call(fn, [left, right])
+
+    if isInt(left) and isInt(right):
+        if op == '+':
+            return generator.builder.add(left, right, 'addTmp')
+        elif op == '-':
+            return generator.builder.sub(left, right, 'addTmp')
+        elif op == '*':
+            return generator.builder.mul(left, right, 'multTmp')
+        elif op == '/':
+            left = generator.builder.sitofp(left, irDoubleType())
+            right = generator.builder.sitofp(right, irDoubleType())
+
+            return generator.builder.fdiv(left, right, 'divTmp')
+
+    if isInt(left) and isDouble(right):
+        left = generator.builder.sitofp(left, irDoubleType())
+    elif isDouble(left) and isInt(right):
+        right = generator.builder.sitofp(right, irDoubleType())
 
     if op == '+':
         return generator.builder.fadd(left, right, 'addTmp')

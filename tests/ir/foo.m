@@ -9,6 +9,11 @@ x = y;
 vector = [[y, x], [2.0, 1.0]];
 print vector;
 
+v1 = zeros(5, 5);
+v2 = ones(5, 5);
 
-v = zeros(5, 5);
-print v;
+print v1;
+print v2;
+
+v3 = v1 + v2 + v2;
+print v3;
