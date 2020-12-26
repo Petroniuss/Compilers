@@ -83,6 +83,21 @@ class Vector(Ast):
     def elements(self):
         return self.children
 
+    def dimensions(self):
+        node = self
+        dims = []
+        while type(node) is Vector:
+            dims.append(len(node.children))
+            if len(node.children) > 0:
+                node = node.children[0]
+            else:
+                break
+
+        return dims
+
+    def hasNestedVectors(self):
+        return len(self.children) > 0 and type(self.children[0]) is Vector
+
 
 class SlicedVector(Ast):
     def __init__(self, id, ranges, lineno=0):

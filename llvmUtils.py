@@ -63,7 +63,17 @@ def isString(arg):
 
 
 def isVector(arg):
-    arg.type == irNVectorPointerType()
+    return arg.type == irNVectorPointerType()
+
+
+def zeroDoubleArrayInitializer(count):
+    return ir.Constant.literal_array(
+        [ir.Constant(irDoubleType(), 0.0) for _ in range(count)])
+
+
+def intArrayLiteral(literal):
+    return ir.Constant.literal_array(
+        [ir.Constant(irIntType(), int(c)) for c in literal])
 
 
 def stringLiteral(literal):
@@ -81,6 +91,26 @@ def namedGlobalStringLiteral(module, literal, varName):
     return glo
 
 
+def namedIntArrayLiteral(module, literal, varName):
+    literalArray = intArrayLiteral(literal)
+    glo = ir.GlobalVariable(
+        module, literalArray.type, varName)
+    glo.global_constant = True
+    glo.initializer = literalArray
+
+    return glo
+
+
 def arrayPtr(array):
     return array.gep([ir.Constant(irIntType(), 0),
                       ir.Constant(irIntType(), 0)])
+
+
+def gepArray(array, index):
+    return array.gep([ir.Constant(irIntType(), 0),
+                      ir.Constant(irIntType(), int(index))])
+
+
+def gepArrayBuilder(builder, array, index):
+    return builder.gep(array, [ir.Constant(irIntType(), 0),
+                               ir.Constant(irIntType(), int(index))])

@@ -23,6 +23,8 @@ class LLVMCodeGenerator:
             irVoidType(), [irCharPointerType()], False)),
         ('putStr', ir.FunctionType(
             irVoidType(), [irCharPointerType()], False)),
+        ('putVectorLn', ir.FunctionType(
+            irVoidType(), [irNVectorPointerType()], False)),
         ('literalNVector', ir.FunctionType(
             irNVectorPointerType(), [irIntType(), irIntPointerType(), irDoublePointerType()], False))
     ]
@@ -97,8 +99,9 @@ def codegen(self: Bind, generator: LLVMCodeGenerator):
             elif isString(expr):
                 alloca = generator.builder.alloca(
                     irCharPointerType(), name=name)
-
-            print(expr, expr.type)
+            else:
+                alloca = generator.builder.alloca(
+                    irNVectorPointerType(), name=name)
         else:
             alloca = generator.symbolTable.get(name)
 
@@ -124,7 +127,6 @@ def codegen(self: BinaryOp, generator: LLVMCodeGenerator):
 
     left = self.left().codegen(generator)
     right = self.right().codegen(generator)
-    # print(left.type, right)
     # here we should check types and promote ints to doubles
 
     if op == '+':
@@ -139,11 +141,29 @@ def codegen(self: BinaryOp, generator: LLVMCodeGenerator):
 
 @ addMethod(Vector)
 def codegen(self: Vector, generator: LLVMCodeGenerator):
-    elems = [e.codegen(generator) for e in self.elements()]
-    dims = []
-    # not sure how to do that... :/
-    # problematic stuff!
-    # we need to flatten the vector!
+    # flatten the vector by performing bfs
+    q = [self]
+    vals = []
+    dims = self.dimensions()
+    while len(q) > 0:
+        popped = q.pop()
+        if type(popped) is Vector:
+            for child in popped.children:
+                q.append(child)
+        else:
+            vals.append(child)
+
+    list.reverse(vals)
+
+    valuesArrPtr = doubleArray(vals, generator)
+    dimensionsNumber = ir.Constant(irIntType(), int(len(dims)))
+
+    intArry = namedIntArrayLiteral(
+        generator.module, dims, generator.nextGlobalName())
+    dimensionsPtr = arrayPtr(intArry)
+
+    func = generator.symbolTable.get('literalNVector')
+    return generator.builder.call(func, [dimensionsNumber, dimensionsPtr, valuesArrPtr])
 
 
 @ addMethod(Primitive)
@@ -174,15 +194,11 @@ def codegen(self: CodeBlock, generator: LLVMCodeGenerator):
 
 def handlePrint(arg, generator: LLVMCodeGenerator):
     arg = arg.codegen(generator)
-    formatFunc = None
-    if isDouble(arg):
-        formatFunc = generator.symbolTable.get('formatDouble')
-    elif isInt(arg):
-        formatFunc = generator.symbolTable.get('formatInt')
-    elif isVector(arg):
-        pass
-
-    if not isString(arg):
+    if isDouble(arg) or isInt(arg):
+        if isDouble(arg):
+            formatFunc = generator.symbolTable.get('formatDouble')
+        elif isInt(arg):
+            formatFunc = generator.symbolTable.get('formatInt')
         arg = generator.builder.call(formatFunc, [arg])
 
         printFunc = generator.symbolTable.get('putStr')
@@ -190,12 +206,15 @@ def handlePrint(arg, generator: LLVMCodeGenerator):
 
         freeStrFunc = generator.symbolTable.get('freeString')
         generator.builder.call(freeStrFunc, [arg])
-    else:
+    elif isString(arg):
         printFunc = generator.symbolTable.get('putStr')
+        generator.builder.call(printFunc, [arg])
+    elif isVector(arg):
+        printFunc = generator.symbolTable.get('putVectorLn')
         generator.builder.call(printFunc, [arg])
 
 
-@addMethod(FunctionCall)
+@ addMethod(FunctionCall)
 def codegen(self: FunctionCall, generator: LLVMCodeGenerator):
     name = self.functionName()
     if name == 'print':
@@ -204,21 +223,39 @@ def codegen(self: FunctionCall, generator: LLVMCodeGenerator):
         putLnFunction = generator.symbolTable.get('putLn')
         return generator.builder.call(putLnFunction, [])
 
+#----------------- arrays required by runtime --------------------- #
 
-def intArray(elements, generator: LLVMCodeGenerator):
-    # TODO HERE WE ARE generating int and double arrays on the stack!
-    # TODO same thing for doubles!
+
+# def intArray(elements, generator: LLVMCodeGenerator):
+#     builder = generator.builder
+#     arrType = ir.ArrayType(irIntType(), len(elements))
+
+#     arrAlloca = builder.alloca(arrType)
+
+#     # calculate index and gep!
+#     for i, e in enumerate(elements):
+#         v = e.codegen(generator)
+#         ptr = gepArray(arrAlloca, i)
+#         builder.store(v, ptr)
+
+#     return arrayPtr(arrAlloca)
+
+
+def doubleArray(elements, generator: LLVMCodeGenerator):
     builder = generator.builder
-    arrType = ir.ArrayType(irIntType(), len(elements))
+    arrType = ir.ArrayType(irDoubleType(), len(elements))
 
-    arrAlloca = builder.alloca(arrType)
-    arrPtr = arrayPtr(arrAlloca)
+    glob = ir.GlobalVariable(generator.module, arrType,
+                             generator.nextGlobalName())
+    glob.initializer = zeroDoubleArrayInitializer(len(elements))
 
     # calculate index and gep!
-    for e in elements:
+    for i, e in enumerate(elements):
         v = e.codegen(generator)
+        ptr = gepArray(glob, i)
+        store = builder.store(v, ptr)
 
-    builder.alloca()
+    return arrayPtr(glob)
 
 
 # --------------------------------------------------------------------

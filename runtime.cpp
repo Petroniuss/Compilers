@@ -76,6 +76,7 @@ struct NVector {
                 printf("\n");
             }
         } else {
+            printf("[ ");
             int count = elementsNumber();
             for (int i = 0; i < count; i++) {
                 index += 1;
@@ -89,6 +90,7 @@ struct NVector {
 
                 free(formatted);
             }
+            printf("   ]");
         }
     }
 
