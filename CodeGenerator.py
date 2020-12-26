@@ -22,7 +22,9 @@ class LLVMCodeGenerator:
         ('putStrLn', ir.FunctionType(
             irVoidType(), [irCharPointerType()], False)),
         ('putStr', ir.FunctionType(
-            irVoidType(), [irCharPointerType()], False))
+            irVoidType(), [irCharPointerType()], False)),
+        ('literalNVector', ir.FunctionType(
+            irNVectorPointerType(), [irIntType(), irIntPointerType(), irDoublePointerType()], False))
     ]
 
     def __init__(self):
@@ -37,6 +39,8 @@ class LLVMCodeGenerator:
         for funcName, funcType in LLVMCodeGenerator.standardLibraryFunctions:
             func = ir.Function(self.module, funcType, funcName)
             self.symbolTable.put(funcName, func)
+
+        # declare extern NVector struct (empty it's defined in runtime library)
 
         # start by generating main function
         functionName = 'main'
@@ -133,6 +137,15 @@ def codegen(self: BinaryOp, generator: LLVMCodeGenerator):
         return generator.builder.fdiv(left, right, 'divTmp')
 
 
+@ addMethod(Vector)
+def codegen(self: Vector, generator: LLVMCodeGenerator):
+    elems = [e.codegen(generator) for e in self.elements()]
+    dims = []
+    # not sure how to do that... :/
+    # problematic stuff!
+    # we need to flatten the vector!
+
+
 @ addMethod(Primitive)
 def codegen(self: Primitive, generator: LLVMCodeGenerator):
     # Just to make things simple I only have double type for now!
@@ -144,10 +157,7 @@ def codegen(self: Primitive, generator: LLVMCodeGenerator):
         globName = generator.nextGlobalName()
         glob = namedGlobalStringLiteral(
             generator.module, str(self.value() + '\x00'), globName)
-        return globalToPtr(glob)
-    else:
-        generator.raiseError(
-            'Vectors not yet supported :/', self.lineno)
+        return arrayPtr(glob)
 
 
 @ addMethod(CodeBlock)
@@ -193,6 +203,23 @@ def codegen(self: FunctionCall, generator: LLVMCodeGenerator):
             handlePrint(arg, generator)
         putLnFunction = generator.symbolTable.get('putLn')
         return generator.builder.call(putLnFunction, [])
+
+
+def intArray(elements, generator: LLVMCodeGenerator):
+    # TODO HERE WE ARE generating int and double arrays on the stack!
+    # TODO same thing for doubles!
+    builder = generator.builder
+    arrType = ir.ArrayType(irIntType(), len(elements))
+
+    arrAlloca = builder.alloca(arrType)
+    arrPtr = arrayPtr(arrAlloca)
+
+    # calculate index and gep!
+    for e in elements:
+        v = e.codegen(generator)
+
+    builder.alloca()
+
 
 # --------------------------------------------------------------------
 

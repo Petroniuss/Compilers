@@ -5,10 +5,12 @@ intType = ir.IntType(32)
 charType = ir.IntType(8)
 doubleType = ir.DoubleType()
 voidType = ir.VoidType()
+nVectorStructType = ir.LiteralStructType([])
 
 intPointerType = intType.as_pointer()
 charPointerType = charType.as_pointer()
 doublePointerType = doubleType.as_pointer()
+nVectorStructPointerType = nVectorStructType.as_pointer()
 
 
 def irIntPointerType():
@@ -39,6 +41,15 @@ def irCharType():
     return charType
 
 
+def irNVectorType():
+    # this one should not be used! we're operating only on pointers here!
+    return nVectorStructType
+
+
+def irNVectorPointerType():
+    return nVectorStructPointerType
+
+
 def isDouble(arg):
     return arg.type == irDoubleType()
 
@@ -52,8 +63,7 @@ def isString(arg):
 
 
 def isVector(arg):
-    # here fun begins
-    return False
+    arg.type == irNVectorPointerType()
 
 
 def stringLiteral(literal):
@@ -71,6 +81,6 @@ def namedGlobalStringLiteral(module, literal, varName):
     return glo
 
 
-def globalToPtr(globl):
-    return globl.gep([ir.Constant(irIntType(), 0),
+def arrayPtr(array):
+    return array.gep([ir.Constant(irIntType(), 0),
                       ir.Constant(irIntType(), 0)])

@@ -100,27 +100,28 @@ extern "C" void putStr(char* str);
 extern "C" void putStrLn(char* str);
 extern "C" void putLn();
 extern "C" void putVectorLn(NVector* nvector);
-// --------------------------------------------------------
 
 // -------------------- strings ---------------------------
 extern "C" char* formatInt(int x);
 extern "C" void freeString(char* str);
-// --------------------------------------------------------
-
-// --------------------- vectors ---------------------------
 extern "C" char* formatDouble(double x);
 extern "C" char* formatInt(int x);
 extern "C" void freeString(char* str);
 
+// --------------------- vectors ---------------------------
 // Note that they're allocated on the heap!
-
-extern "C" NVector* literal(int dimsNumber, int* dims, double* values);
-
+extern "C" NVector* literalNVector(int dimsNumber, int* dims, double* values);
 extern "C" void assignValue(NVector* nvector, int* dims, double value);
-
 extern "C" double readValue(NVector* nvector, int* dims);
+// extern "C" int* allocIntArray
+extern "C" NVector* ones(int dimsNumber, int* dims);
 
-NVector* literal(int dimsNumber, int* dims, double* values) {
+NVector* ones(int dimsNumber, int* dims) {
+    // ez ...
+    return nullptr;
+}
+
+NVector* literalNVector(int dimsNumber, int* dims, double* values) {
     int elementCount = 1;
     vector<int> dimsVector(dimsNumber);
     for (int i = 0; i < dimsNumber; i++) {

@@ -80,6 +80,9 @@ class Vector(Ast):
     def __init__(self, elements, lineno=0):
         super().__init__('Vector', children=elements, lineno=lineno)
 
+    def elements(self):
+        return self.children
+
 
 class SlicedVector(Ast):
     def __init__(self, id, ranges, lineno=0):
