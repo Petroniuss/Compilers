@@ -271,8 +271,7 @@ def codegen(self: FunctionCall, generator: LLVMCodeGenerator):
 
         fn = generator.symbolTable.get(name)
         return generator.builder.call(fn, [n, ints])
-
-    if name in ['.+', '.-', '.*', './']:
+    elif name in ['.+', '.-', '.*', './']:
         fn = None
         if name == '.+':
             fn = generator.symbolTable.get('dotAdd')
@@ -287,6 +286,9 @@ def codegen(self: FunctionCall, generator: LLVMCodeGenerator):
         one, other = args[0].codegen(generator), args[1].codegen(generator)
 
         return generator.builder.call(fn, [one, other])
+    else:
+        generator.raiseError(
+            f'Other functions are not yet implemented!', self.lineno)
 
 
 #----------------- arrays required by runtime --------------------- #
