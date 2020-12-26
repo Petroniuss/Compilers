@@ -5,7 +5,8 @@ from Compiler import Compiler
 
 def readFile():
     try:
-        filename = sys.argv[1] if len(sys.argv) > 1 else "./tests/ir/foo.m"
+        filename = sys.argv[1] if len(
+            sys.argv) > 1 else "./tests/ir/arithm.m"
         file = open(filename, "r")
     except IOError:
         print("Cannot open {0} file".format(filename))

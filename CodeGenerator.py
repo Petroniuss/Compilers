@@ -177,7 +177,7 @@ def codegen(self: BinaryOp, generator: LLVMCodeGenerator):
     elif op == '-':
         return generator.builder.fsub(left, right, 'addTmp')
     elif op == '*':
-        return generator.builder.fsub(left, right, 'multTmp')
+        return generator.builder.fmul(left, right, 'multTmp')
     elif op == '/':
         return generator.builder.fdiv(left, right, 'divTmp')
 
