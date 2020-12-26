@@ -132,6 +132,11 @@ def typecheck(self: Vector, meta: dict, symbolTable: SymbolTable):
         sizes += acc.shape
         innerType = acc.innerType
 
+    if not (innerType == intType or innerType == floatType):
+        errors = [f'We only have numeric vectors not {innerType}!']
+        gatherErrors(meta, self.lineno, errors)
+        return None
+
     return VectorType(innerType, sizes)
 
 

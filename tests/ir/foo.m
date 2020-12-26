@@ -1,9 +1,10 @@
-# x = 1.0 - 2.0;
-# y = x + 1.0;
-# z = "Printing works!";
+x = 1.0 - 2.0;
+y = x + 1.0;
+z = "Printing works!";
 
-# print z, " x: ", x, " y: ", y;
+print z, " x: ", x, " y: ", y;
 
+x = y;
 
-vector = [1.0, 2.0, 3.0];
+vector = [[y, x], [2.0, 1.0]];
 print vector;

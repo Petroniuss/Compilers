@@ -151,7 +151,7 @@ def codegen(self: Vector, generator: LLVMCodeGenerator):
             for child in popped.children:
                 q.append(child)
         else:
-            vals.append(child)
+            vals.append(popped)
 
     list.reverse(vals)
 
@@ -252,7 +252,9 @@ def doubleArray(elements, generator: LLVMCodeGenerator):
     # calculate index and gep!
     for i, e in enumerate(elements):
         v = e.codegen(generator)
-        ptr = gepArray(glob, i)
+        if isInt(v):
+            v = builder.sitofp(v, irDoubleType())
+        ptr = gepArrayBuilder(builder, glob, i)
         store = builder.store(v, ptr)
 
     return arrayPtr(glob)

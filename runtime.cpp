@@ -61,6 +61,7 @@ struct NVector {
         int index = -1;
         if (dimensionsNumber() == 2) {
             for (int i = 0; i < dims[0]; i++) {
+                printf("[");
                 for (int j = 0; j < dims[1]; j++) {
                     index += 1;
                     double value = values[index];
@@ -73,7 +74,7 @@ struct NVector {
 
                     free(formatted);
                 }
-                printf("\n");
+                printf("    ]\n");
             }
         } else {
             printf("[ ");
