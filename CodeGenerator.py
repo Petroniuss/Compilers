@@ -139,7 +139,7 @@ def codegen(self: Primitive, generator: LLVMCodeGenerator):
     if self.type == floatType:
         return ir.Constant(irDoubleType(), float(self.value()))
     elif self.type == intType:
-        return ir.Constant(ir.IntType(32), int(self.value()))
+        return ir.Constant(irIntType(), int(self.value()))
     elif self.type == stringType:
         globName = generator.nextGlobalName()
         glob = namedGlobalStringLiteral(
@@ -147,7 +147,7 @@ def codegen(self: Primitive, generator: LLVMCodeGenerator):
         return globalToPtr(glob)
     else:
         generator.raiseError(
-            'Only intType and floatType are supported for primitive types!', self.lineno)
+            'Vectors not yet supported :/', self.lineno)
 
 
 @ addMethod(CodeBlock)
