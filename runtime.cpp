@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -13,11 +14,20 @@ extern "C" char* formatDouble(double x);
 //                      RUNTIME
 // -------------------------------------------------------
 
+double add(double one, double other) { return one + other; }
+
+double subtract(double one, double other) { return one - other; }
+
+double mult(double one, double other) { return one * other; }
+
+double divi(double one, double other) { return one / other; }
+
 extern "C" {
 struct NVector {
     vector<double> values;
     vector<int> dims;
-    // int refcounter = 0; // not sure if I am going to implement this bit
+    // int refcounter = 0; // not sure if I am going to implement reference
+    // counting garbage collector..
 
     NVector(vector<int> dimsVector, vector<double> valuesVector)
         : values(valuesVector), dims(dimsVector) {}
@@ -45,6 +55,29 @@ struct NVector {
 
         return counter;
     }
+
+    NVector* combineElements(NVector* other,
+                             function<double(double, double)> combiner) {
+        // if we were serious we should check if dimensions match
+        // throw exception if they don't
+
+        // But since we're not ..
+        NVector* result = new NVector(*this);
+        for (int i = 0; i < elementsNumber(); i++) {
+            result->values[i] = combiner(values[i], other->values[i]);
+        }
+        return result;
+    }
+
+    NVector* dotAdd(NVector* other) { return combineElements(other, add); }
+
+    NVector* dotMinus(NVector* other) {
+        return combineElements(other, subtract);
+    }
+
+    NVector* dotDiv(NVector* other) { return combineElements(other, divi); }
+
+    NVector* dotMult(NVector* other) { return combineElements(other, mult); }
 
     void assignValue(int* indices, double value) {
         const int index = flatIndex(indices);
@@ -113,12 +146,27 @@ extern "C" void freeString(char* str);
 
 // --------------------- vectors ---------------------------
 // Note that they're allocated on the heap!
+// So if we were serious we could implement reference counting garbage
+// collector.
 extern "C" NVector* literalNVector(int dimsNumber, int* dims, double* values);
 extern "C" void assignValue(NVector* nvector, int* dims, double value);
 extern "C" double readValue(NVector* nvector, int* dims);
-// extern "C" int* allocIntArray
+
 extern "C" NVector* ones(int dimsNumber, int* dims);
 extern "C" NVector* zeros(int dimsNumber, int* dims);
+
+extern "C" NVector* dotAdd(NVector* one, NVector* other);
+extern "C" NVector* dotMinus(NVector* one, NVector* other);
+extern "C" NVector* dotDiv(NVector* one, NVector* other);
+extern "C" NVector* dotMult(NVector* one, NVector* other);
+
+NVector* dotAdd(NVector* one, NVector* other) { return one->dotAdd(other); }
+
+NVector* dotMinus(NVector* one, NVector* other) { return one->dotMinus(other); }
+
+NVector* dotDiv(NVector* one, NVector* other) { return one->dotDiv(other); }
+
+NVector* dotMult(NVector* one, NVector* other) { return one->dotMult(other); }
 
 NVector* initWithValue(int dimsNumber, int* dims, double value) {
     vector<int> dimensions(dimsNumber);

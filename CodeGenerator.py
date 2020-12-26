@@ -27,6 +27,14 @@ class LLVMCodeGenerator:
             irNVectorPointerType(), [irIntType(), irIntPointerType()], False)),
         ('ones', ir.FunctionType(
             irNVectorPointerType(), [irIntType(), irIntPointerType()], False)),
+        ('dotAdd', ir.FunctionType(
+            irNVectorPointerType(), [irNVectorPointerType(), irNVectorPointerType()], False)),
+        ('dotMinus', ir.FunctionType(
+            irNVectorPointerType(), [irNVectorPointerType(), irNVectorPointerType()], False)),
+        ('dotMult', ir.FunctionType(
+            irNVectorPointerType(), [irNVectorPointerType(), irNVectorPointerType()], False)),
+        ('dotDiv', ir.FunctionType(
+            irNVectorPointerType(), [irNVectorPointerType(), irNVectorPointerType()], False)),
         ('putVectorLn', ir.FunctionType(
             irVoidType(), [irNVectorPointerType()], False)),
         ('literalNVector', ir.FunctionType(
@@ -232,6 +240,22 @@ def codegen(self: FunctionCall, generator: LLVMCodeGenerator):
 
         fn = generator.symbolTable.get(name)
         return generator.builder.call(fn, [n, ints])
+
+    if name in ['.+', '.-', '.*', './']:
+        fn = None
+        if name == '.+':
+            fn = generator.symbolTable.get('dotAdd')
+        elif name == '.-':
+            fn = generator.symbolTable.get('dotMinus')
+        elif name == '.*':
+            fn = generator.symbolTable.get('dotMult')
+        elif name == './':
+            fn = generator.symbolTable.get('dotDiv')
+
+        args = self.args()
+        one, other = args[0].codegen(generator), args[1].codegen(generator)
+
+        return generator.builder.call(fn, [one, other])
 
 
 #----------------- arrays required by runtime --------------------- #
