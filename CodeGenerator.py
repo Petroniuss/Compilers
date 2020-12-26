@@ -23,6 +23,10 @@ class LLVMCodeGenerator:
             irVoidType(), [irCharPointerType()], False)),
         ('putStr', ir.FunctionType(
             irVoidType(), [irCharPointerType()], False)),
+        ('zeros', ir.FunctionType(
+            irNVectorPointerType(), [irIntType(), irIntPointerType()], False)),
+        ('ones', ir.FunctionType(
+            irNVectorPointerType(), [irIntType(), irIntPointerType()], False)),
         ('putVectorLn', ir.FunctionType(
             irVoidType(), [irNVectorPointerType()], False)),
         ('literalNVector', ir.FunctionType(
@@ -222,23 +226,33 @@ def codegen(self: FunctionCall, generator: LLVMCodeGenerator):
             handlePrint(arg, generator)
         putLnFunction = generator.symbolTable.get('putLn')
         return generator.builder.call(putLnFunction, [])
+    elif name == 'ones' or name == 'zeros':
+        n = ir.Constant(irIntType(), len(self.args()))
+        ints = intArray(self.args(), generator)
+
+        fn = generator.symbolTable.get(name)
+        return generator.builder.call(fn, [n, ints])
+
 
 #----------------- arrays required by runtime --------------------- #
 
+def intArray(elements, generator: LLVMCodeGenerator):
+    builder = generator.builder
+    arrType = ir.ArrayType(irIntType(), len(elements))
 
-# def intArray(elements, generator: LLVMCodeGenerator):
-#     builder = generator.builder
-#     arrType = ir.ArrayType(irIntType(), len(elements))
+    glob = ir.GlobalVariable(generator.module, arrType,
+                             generator.nextGlobalName())
+    glob.initializer = intArrayInitializer(len(elements))
 
-#     arrAlloca = builder.alloca(arrType)
+    # calculate index and gep!
+    for i, e in enumerate(elements):
+        v = e.codegen(generator)
+        if isDouble(v):
+            v = builder.fptosi(v, irIntType())
+        ptr = gepArrayBuilder(builder, glob, i)
+        store = builder.store(v, ptr)
 
-#     # calculate index and gep!
-#     for i, e in enumerate(elements):
-#         v = e.codegen(generator)
-#         ptr = gepArray(arrAlloca, i)
-#         builder.store(v, ptr)
-
-#     return arrayPtr(arrAlloca)
+    return arrayPtr(glob)
 
 
 def doubleArray(elements, generator: LLVMCodeGenerator):
@@ -247,7 +261,7 @@ def doubleArray(elements, generator: LLVMCodeGenerator):
 
     glob = ir.GlobalVariable(generator.module, arrType,
                              generator.nextGlobalName())
-    glob.initializer = zeroDoubleArrayInitializer(len(elements))
+    glob.initializer = doubleArrayInitializer(len(elements))
 
     # calculate index and gep!
     for i, e in enumerate(elements):
@@ -258,36 +272,3 @@ def doubleArray(elements, generator: LLVMCodeGenerator):
         store = builder.store(v, ptr)
 
     return arrayPtr(glob)
-
-
-# --------------------------------------------------------------------
-
-
-# We don't use this kind of stuff!
-
-# @ addMethod(Prototype)
-# def codegen(self: Prototype, generator: LLVMCodeGenerator):
-#     # FIXME -> This function only handles anonymous functions! aka those from codeblocks!
-#     functionName = self.name
-#     functionType = ir.FunctionType(ir.VoidType(), self.args, False)
-#     irFunction = ir.Function(generator.module, functionType, functionName)
-#     generator.symbolTable.put(functionName, irFunction)
-
-#     return irFunction
-
-
-# @ addMethod(Function)
-# def codegen(self: Function, generator: LLVMCodeGenerator):
-#     # FIXME scoping comes into play! There should be a symbol table somewhere...
-#     func = self.proto.codegen(generator)
-#     entryBlock = func.append_basic_block('entry')
-#     generator.builder = ir.IRBuilder(entryBlock)
-
-#     # generate code
-#     for node in self.body:
-#         node.codegen(generator)
-
-#     retval = ir.VoidType()
-#     generator.builder.ret_void()
-
-#     return func

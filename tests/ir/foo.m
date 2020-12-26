@@ -8,3 +8,7 @@ x = y;
 
 vector = [[y, x], [2.0, 1.0]];
 print vector;
+
+
+v = zeros(5, 5);
+print v;

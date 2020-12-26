@@ -118,10 +118,26 @@ extern "C" void assignValue(NVector* nvector, int* dims, double value);
 extern "C" double readValue(NVector* nvector, int* dims);
 // extern "C" int* allocIntArray
 extern "C" NVector* ones(int dimsNumber, int* dims);
+extern "C" NVector* zeros(int dimsNumber, int* dims);
+
+NVector* initWithValue(int dimsNumber, int* dims, double value) {
+    vector<int> dimensions(dimsNumber);
+    int elems = 1;
+    for (int i = 0; i < dimsNumber; i++) {
+        elems *= dims[i];
+        dimensions[i] = dims[i];
+    }
+    vector<double> values(elems, value);
+
+    return new NVector(dimensions, values);
+}
 
 NVector* ones(int dimsNumber, int* dims) {
-    // ez ...
-    return nullptr;
+    return initWithValue(dimsNumber, dims, 1.0);
+}
+
+NVector* zeros(int dimsNumber, int* dims) {
+    return initWithValue(dimsNumber, dims, 0.0);
 }
 
 NVector* literalNVector(int dimsNumber, int* dims, double* values) {

@@ -66,9 +66,14 @@ def isVector(arg):
     return arg.type == irNVectorPointerType()
 
 
-def zeroDoubleArrayInitializer(count):
+def doubleArrayInitializer(count):
     return ir.Constant.literal_array(
         [ir.Constant(irDoubleType(), 0.0) for _ in range(count)])
+
+
+def intArrayInitializer(count):
+    return ir.Constant.literal_array(
+        [ir.Constant(irIntType(), 0) for _ in range(count)])
 
 
 def intArrayLiteral(literal):
