@@ -124,25 +124,29 @@ def codegen(self: Bind, generator: LLVMCodeGenerator):
 def codegen(self: If, generator: LLVMCodeGenerator):
     builder = generator.builder
     cmp = self.condition().codegen(generator)
-    thenBlock = builder.function.append_basic_block('then')
-    elseBlock = ir.Block(builder.function, 'else')
-    mergeBlock = ir.Block(builder.function, 'merged')
 
-    builder.cbranch(cmp, thenBlock, elseBlock)
+    trueBlock = builder.function.append_basic_block('true-block')
+    falseBlock = ir.Block(builder.function, 'false-block')
+    mergedBlock = ir.Block(builder.function, 'merged')
 
-    builder.position_at_start(thenBlock)
-    thenValue = self.trueBlock().codegen(generator)
+    builder.cbranch(cmp, trueBlock, falseBlock)
 
-    builder.branch(mergeBlock)
+    # true block
+    builder.position_at_start(trueBlock)
+    self.trueBlock().codegen(generator)
+    builder.branch(mergedBlock)
+    trueBlock = generator.builder.block
 
-    thenBlock = generator.builder.block
+    # false block (which just branches to merged section)
+    builder.function.basic_blocks.append(falseBlock)
+    builder.position_at_start(falseBlock)
+    builder.branch(mergedBlock)
+    falseBlock = generator.builder.block
 
-    builder.function.basic_blocks.append(mergeBlock)
-    builder.position_at_start(mergeBlock)
-    phi = builder.phi(irVoidType(), 'if-phi')
-    phi.add_incoming(thenValue, thenBlock)
+    builder.function.basic_blocks.append(mergedBlock)
+    builder.position_at_start(mergedBlock)
 
-    return phi
+    return mergedBlock
 
 
 @addMethod(IfElse)
