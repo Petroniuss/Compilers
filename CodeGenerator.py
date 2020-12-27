@@ -75,7 +75,7 @@ class LLVMCodeGenerator:
 
     def raiseError(self, msg, lineno):
         error = CodegenError(msg, lineno)
-        raise CompilationFailure('Code generation stage', self.errors)
+        raise CompilationFailure('Code generation stage', [error])
 
     def nextGlobalName(self):
         return next(self.globalNameGen)
@@ -222,21 +222,21 @@ def codegen(self: For, generator: LLVMCodeGenerator):
     builder = generator.builder
 
     initBlock = builder.function.append_basic_block(
-        'for-condition-block')
+        'for-init-block')
     conditionBlock = ir.Block(builder.function, 'for-condition')
     bodyBlock = ir.Block(builder.function, 'for-body-block')
     mergedBlock = ir.Block(builder.function, 'for-merged')
 
     builder.branch(initBlock)
-    left, right = self.range().codegen(generator)
 
     # init block
     builder.position_at_start(initBlock)
     left, right = self.range().codegen(generator)
-    name = self.id()
+    name = self.id().name()
     alloca = builder.alloca(irIntType(), name=name)
     builder.store(left, alloca)
     generator.symbolTable.put(name, alloca)
+    builder.branch(conditionBlock)
     initBlock = generator.builder.block
 
     # condition block
@@ -244,7 +244,7 @@ def codegen(self: For, generator: LLVMCodeGenerator):
     builder.position_at_start(conditionBlock)
     current = builder.load(alloca)
     current = generator.builder.sitofp(current, irDoubleType())
-    limit = generator.builder.sitofp(limit, irDoubleType())
+    limit = generator.builder.sitofp(right, irDoubleType())
     cmp = generator.builder.fcmp_unordered('<=', current, limit, 'for-cmp')
     builder.cbranch(cmp, bodyBlock, mergedBlock)
     conditionBlock = generator.builder.block
@@ -252,6 +252,7 @@ def codegen(self: For, generator: LLVMCodeGenerator):
     # body block
     builder.function.basic_blocks.append(bodyBlock)
     builder.position_at_start(bodyBlock)
+    self.body().codegen(generator)
     current = builder.load(alloca)
     current = builder.add(current, ir.Constant(irIntType(), 1))
     builder.store(current, alloca)
