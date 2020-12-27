@@ -120,6 +120,61 @@ def codegen(self: Bind, generator: LLVMCodeGenerator):
         generator.raiseError(f'Only = operator is supported!', self.lineno)
 
 
+@addMethod(If)
+def codegen(self: If, generator: LLVMCodeGenerator):
+    builder = generator.builder
+    cmp = self.condition().codegen(generator)
+    thenBlock = builder.function.append_basic_block('then')
+    elseBlock = ir.Block(builder.function, 'else')
+    mergeBlock = ir.Block(builder.function, 'merged')
+
+    builder.cbranch(cmp, thenBlock, elseBlock)
+
+    builder.position_at_start(thenBlock)
+    thenValue = self.trueBlock().codegen(generator)
+
+    builder.branch(mergeBlock)
+
+    thenBlock = generator.builder.block
+
+    builder.function.basic_blocks.append(mergeBlock)
+    builder.position_at_start(mergeBlock)
+    phi = builder.phi(irVoidType(), 'if-phi')
+    phi.add_incoming(thenValue, thenBlock)
+
+    return phi
+
+
+@addMethod(IfElse)
+def codegen(self: IfElse, generator: LLVMCodeGenerator):
+    builder = generator.builder
+    cmp = self.condition().codegen(generator)
+
+    trueBlock = builder.function.append_basic_block('true-block')
+    falseBlock = ir.Block(builder.function, 'false-block')
+    mergedBlock = ir.Block(builder.function, 'merged')
+
+    builder.cbranch(cmp, trueBlock, falseBlock)
+
+    # true block
+    builder.position_at_start(trueBlock)
+    self.trueBlock().codegen(generator)
+    builder.branch(mergedBlock)
+    trueBlock = generator.builder.block
+
+    # false block
+    builder.function.basic_blocks.append(falseBlock)
+    builder.position_at_start(falseBlock)
+    self.falseBlock().codegen(generator)
+    builder.branch(mergedBlock)
+    falseBlock = generator.builder.block
+
+    builder.function.basic_blocks.append(mergedBlock)
+    builder.position_at_start(mergedBlock)
+
+    return mergedBlock
+
+
 @ addMethod(Identifier)
 def codegen(self: Identifier, generator: LLVMCodeGenerator):
     name = self.name()
@@ -135,6 +190,7 @@ def codegen(self: BinaryOp, generator: LLVMCodeGenerator):
     """
         Emitting operations based on type of operands..
     """
+
     op = self.operator()
 
     left = self.left().codegen(generator)
@@ -165,7 +221,10 @@ def codegen(self: BinaryOp, generator: LLVMCodeGenerator):
             left = generator.builder.sitofp(left, irDoubleType())
             right = generator.builder.sitofp(right, irDoubleType())
 
-            return generator.builder.fdiv(left, right, 'divTmp')
+        elif op in ['<', '<=', '>', '>=', '==', '!=']:
+            left = generator.builder.sitofp(left, irDoubleType())
+            right = generator.builder.sitofp(right, irDoubleType())
+            return generator.builder.fcmp_unordered(op, left, right, 'cmp')
 
     if isInt(left) and isDouble(right):
         left = generator.builder.sitofp(left, irDoubleType())
@@ -180,6 +239,8 @@ def codegen(self: BinaryOp, generator: LLVMCodeGenerator):
         return generator.builder.fmul(left, right, 'multTmp')
     elif op == '/':
         return generator.builder.fdiv(left, right, 'divTmp')
+    elif op in ['<', '<=', '>', '>=', '==', '!=']:
+        return generator.builder.fcmp_unordered(op, left, right, 'cmp')
 
 
 @ addMethod(Vector)
@@ -211,7 +272,6 @@ def codegen(self: Vector, generator: LLVMCodeGenerator):
 
 @ addMethod(Primitive)
 def codegen(self: Primitive, generator: LLVMCodeGenerator):
-    # Just to make things simple I only have double type for now!
     if self.type == floatType:
         return ir.Constant(irDoubleType(), float(self.value()))
     elif self.type == intType:

@@ -213,7 +213,7 @@ def p_expression_relational_ops(p):
                    | expression LT term
                    | expression LTE term 
     """
-    p[0] = RelationalExp(p[2], p[1], p[3], lineno=p.lineno(2))
+    p[0] = BinaryOp(p[2], p[1], p[3], lineno=p.lineno(2))
 
 
 def p_expression_id_slice(p):

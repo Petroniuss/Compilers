@@ -140,19 +140,19 @@ def typecheck(self: Vector, meta: dict, symbolTable: SymbolTable):
     return VectorType(innerType, sizes)
 
 
-@addMethod(RelationalExp)
-def typecheck(self: RelationalExp, meta: dict, symbolTable: SymbolTable):
-    leftType = self.left().typecheck(meta, symbolTable)
-    rightType = self.right().typecheck(meta, symbolTable)
+# @addMethod(RelationalExp)
+# def typecheck(self: RelationalExp, meta: dict, symbolTable: SymbolTable):
+#     leftType = self.left().typecheck(meta, symbolTable)
+#     rightType = self.right().typecheck(meta, symbolTable)
 
-    if leftType is None or rightType is None:
-        return None
+#     if leftType is None or rightType is None:
+#         return None
 
-    ops = self.operator()
-    errors, unified = leftType.unifyBinary(ops, rightType)
-    gatherErrors(meta, self.lineno, errors)
+#     ops = self.operator()
+#     errors, unified = leftType.unifyBinary(ops, rightType)
+#     gatherErrors(meta, self.lineno, errors)
 
-    return unified
+#     return unified
 
 
 @addMethod(If)
