@@ -210,11 +210,70 @@ def codegen(self: While, generator: LLVMCodeGenerator):
     builder.branch(conditionBlock)
     conditionBlock = generator.builder.block
 
-    # false block (which just branches to merged section)
+    # merged section
     builder.function.basic_blocks.append(mergedBlock)
     builder.position_at_start(mergedBlock)
 
     return mergedBlock
+
+
+@addMethod(For)
+def codegen(self: For, generator: LLVMCodeGenerator):
+    builder = generator.builder
+
+    initBlock = builder.function.append_basic_block(
+        'for-condition-block')
+    conditionBlock = ir.Block(builder.function, 'for-condition')
+    bodyBlock = ir.Block(builder.function, 'for-body-block')
+    mergedBlock = ir.Block(builder.function, 'for-merged')
+
+    builder.branch(initBlock)
+    left, right = self.range().codegen(generator)
+
+    # init block
+    builder.position_at_start(initBlock)
+    left, right = self.range().codegen(generator)
+    name = self.id()
+    alloca = builder.alloca(irIntType(), name=name)
+    builder.store(left, alloca)
+    generator.symbolTable.put(name, alloca)
+    initBlock = generator.builder.block
+
+    # condition block
+    builder.function.basic_blocks.append(conditionBlock)
+    builder.position_at_start(conditionBlock)
+    current = builder.load(alloca)
+    current = generator.builder.sitofp(current, irDoubleType())
+    limit = generator.builder.sitofp(limit, irDoubleType())
+    cmp = generator.builder.fcmp_unordered('<=', current, limit, 'for-cmp')
+    builder.cbranch(cmp, bodyBlock, mergedBlock)
+    conditionBlock = generator.builder.block
+
+    # body block
+    builder.function.basic_blocks.append(bodyBlock)
+    builder.position_at_start(bodyBlock)
+    current = builder.load(alloca)
+    current = builder.add(current, ir.Constant(irIntType(), 1))
+    builder.store(current, alloca)
+    builder.branch(conditionBlock)
+    conditionBlock = generator.builder.block
+
+    # merged block
+    builder.function.basic_blocks.append(mergedBlock)
+    builder.position_at_start(mergedBlock)
+
+    return mergedBlock
+
+
+@addMethod(Range)
+def codegen(self: Range, generator: LLVMCodeGenerator):
+    left, right = self.begin().codegen(generator), self.end().codegen(generator)
+    if isDouble(left):
+        left = generator.builder.fptosi(left)
+    if isDouble(right):
+        right = generator.builder.fptosi(right)
+
+    return left, right
 
 
 @ addMethod(Identifier)
