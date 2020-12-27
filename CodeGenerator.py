@@ -448,6 +448,13 @@ def codegen(self: FunctionCall, generator: LLVMCodeGenerator):
         one, other = args[0].codegen(generator), args[1].codegen(generator)
 
         return generator.builder.call(fn, [one, other])
+    elif name == 'negative':
+        arg = self.args()[0].codegen(generator)
+        if isInt(arg):
+            return generator.builder.neg(arg)
+        elif isDouble(arg):
+            # This might not work!
+            return generator.builder.neg(arg)
     else:
         generator.raiseError(
             f'Other functions are not yet implemented!', self.lineno)
