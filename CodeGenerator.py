@@ -103,16 +103,23 @@ def codegen(self: Bind, generator: LLVMCodeGenerator):
     expr = self.expression().codegen(generator)
 
     if op == '=':
-        if isDouble(expr):
-            alloca = generator.builder.alloca(irDoubleType(), name=name)
-        elif isInt(expr):
-            alloca = generator.builder.alloca(irIntType(), name=name)
-        elif isString(expr):
-            alloca = generator.builder.alloca(
-                irCharPointerType(), name=name)
+        if not generator.symbolTable.contains(name):
+            if isDouble(expr):
+                alloca = generator.builder.alloca(irDoubleType(), name=name)
+            elif isInt(expr):
+                alloca = generator.builder.alloca(irIntType(), name=name)
+            elif isString(expr):
+                alloca = generator.builder.alloca(
+                    irCharPointerType(), name=name)
+            elif isVector(expr):
+                alloca = generator.builder.alloca(
+                    irNVectorPointerType(), name=name)
+            else:
+                generator.raiseError(
+                    f'Expected something different! {expr}', self.lineno)
+
         else:
-            alloca = generator.builder.alloca(
-                irNVectorPointerType(), name=name)
+            alloca = generator.symbolTable.get(name)
 
         generator.builder.store(expr, alloca)
         generator.symbolTable.put(name, alloca)
@@ -173,6 +180,37 @@ def codegen(self: IfElse, generator: LLVMCodeGenerator):
     builder.branch(mergedBlock)
     falseBlock = generator.builder.block
 
+    builder.function.basic_blocks.append(mergedBlock)
+    builder.position_at_start(mergedBlock)
+
+    return mergedBlock
+
+
+@addMethod(While)
+def codegen(self: While, generator: LLVMCodeGenerator):
+    builder = generator.builder
+
+    conditionBlock = builder.function.append_basic_block(
+        'while-condition-block')
+    bodyBlock = ir.Block(builder.function, 'while-body-block')
+    mergedBlock = ir.Block(builder.function, 'while-merged')
+
+    builder.branch(conditionBlock)
+
+    # condition block
+    builder.position_at_start(conditionBlock)
+    cmp = self.condition().codegen(generator)
+    builder.cbranch(cmp, bodyBlock, mergedBlock)
+    conditionBlock = generator.builder.block
+
+    # body block
+    builder.function.basic_blocks.append(bodyBlock)
+    builder.position_at_start(bodyBlock)
+    self.body().codegen(generator)
+    builder.branch(conditionBlock)
+    conditionBlock = generator.builder.block
+
+    # false block (which just branches to merged section)
     builder.function.basic_blocks.append(mergedBlock)
     builder.position_at_start(mergedBlock)
 

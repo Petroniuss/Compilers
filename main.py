@@ -4,7 +4,7 @@ from Compiler import Compiler
 
 
 def readFile():
-    defaultModule = 'if.m'
+    defaultModule = 'while.m'
     try:
         filename = sys.argv[1] if len(
             sys.argv) > 1 else "./tests/ir/" + defaultModule

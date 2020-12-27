@@ -110,20 +110,6 @@ class SlicedVector(Ast):
         return self.children[0]
 
 
-# class RelationalExp(Ast):
-#     def __init__(self, operator, left, right, lineno=0):
-#         super().__init__(operator, children=[left, right], lineno=lineno)
-
-#     def operator(self):
-#         return self.type
-
-#     def left(self):
-#         return self.children[0]
-
-#     def right(self):
-#         return self.children[1]
-
-
 class Bind(Ast):
     def __init__(self, id, assignOperator, expression, lineno=0):
         super().__init__(assignOperator, children=[
