@@ -18,6 +18,11 @@ def formatMessageBoldTitle(msg):
     return f"{AnsiColor.BOLD}{AnsiColor.GREEN}{dashes} {msg}  {dashes}{AnsiColor.END}"
 
 
+def formatFailure(msg):
+    dashes = 24 * '-'
+    return dashes + '\n' + f'{AnsiColor.RED}{msg}{AnsiColor.END}' + '\n'
+
+
 class ParserError:
     def __init__(self, value, lineno):
         self.value = value

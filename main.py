@@ -1,21 +1,22 @@
 import sys
 
 from Compiler import Compiler
+from Failure import formatFailure
 
 
-def readFile():
+def readInput():
     defaultModule = 'for.m'
     try:
         filename = sys.argv[1] if len(
             sys.argv) > 1 else "./tests/ir/" + defaultModule
         file = open(filename, "r")
     except IOError:
-        print("Cannot open {0} file".format(filename))
+        print(formatFailure("Cannot open {0} file".format(filename)))
         sys.exit(0)
 
-    return file.read()
+    return file.read(), filename
 
 
 if __name__ == '__main__':
-    sourceCode = readFile()
-    Compiler().run(sourceCode)
+    sourceCode, filename = readInput()
+    Compiler().run(sourceCode, filename)

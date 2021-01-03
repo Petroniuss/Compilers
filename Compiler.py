@@ -37,7 +37,9 @@ class Compiler:
         self.target = llvm.Target.from_default_triple()
         print(self.target)
 
-    def run(self, sourceCode, optimize=True, llvmdump=True, astDump=True):
+    def run(self, sourceCode, filename, optimize=True, llvmdump=True, astDump=True):
+        print(formatMessageBoldTitle(f'Compiling {filename}'))
+        print(sourceCode)
         try:
             ast = LALRParser(sourceCode)
             TypeChecker(ast).typecheck()

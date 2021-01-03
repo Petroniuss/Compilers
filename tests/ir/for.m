@@ -1,9 +1,9 @@
 print "-------i  ", "-----j     ";
 
-x = -10;
-y = 3 + 5;
+x = -1;
+y = 1 + 2;
 for i = x:y {
-    for j = 1:5 {
+    for j = 0:2 {
         print i, j;
     }
 }

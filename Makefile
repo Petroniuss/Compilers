@@ -3,9 +3,9 @@ CFLAGS = -shared -fpic -lpthread
 
 .PHONY: all clean
 
-all: compileRuntime
+all: compileRuntime $(arg)
 	@echo "\033[1m\033[92m------------------------ Compiler ------------------------- \033[0m"
-	@python3 main.py 
+	@python3 main.py $(arg)
 	@echo "\033[1m\033[92m------------------------ Linker ------------------------- \033[0m"
 	$(CC) ./build/output.o ./build/runtime.so -o ./build/executable.exe 
 	@echo "\033[1m\033[92m------------------------ Go! ----------------------------- \033[0m"
