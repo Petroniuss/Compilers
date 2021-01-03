@@ -155,11 +155,14 @@ class Range(Ast):
     def end(self):
         return self.children[1]
 
+    def rangeTypeIdentifier(self):
+        return 1
+
 
 class FromStartRange(Ast):
     """
         For example: 
-            '5: ' 
+            ' :5' 
     """
 
     def __init__(self, end, lineno=0):
@@ -172,7 +175,7 @@ class FromStartRange(Ast):
 class EndlessRange(Ast):
     """
         For example: 
-            ' :5' 
+            '5:' 
     """
 
     def __init__(self, begin, lineno=0):
@@ -192,6 +195,9 @@ class SimpleRange(Ast):
 
     def idx(self):
         return self.children[0]
+
+    def rangeTypeIdentifier(self):
+        return 0
 
 
 class BinaryOp(Ast):
@@ -260,8 +266,6 @@ class Leaf(Ast):
 
     def value(self):
         return self.type
-
-# todo - figure out how to connect codeblock with prototype and function
 
 
 class CodeBlock(Ast):

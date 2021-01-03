@@ -21,6 +21,8 @@ class LLVMCodeGenerator:
             irVoidType(), [], False)),
         ('putStrLn', ir.FunctionType(
             irVoidType(), [irCharPointerType()], False)),
+        ('putVectorLn', ir.FunctionType(
+            irVoidType(), [irNVectorPointerType()], False)),
         ('putStr', ir.FunctionType(
             irVoidType(), [irCharPointerType()], False)),
         ('zeros', ir.FunctionType(
@@ -35,8 +37,8 @@ class LLVMCodeGenerator:
             irNVectorPointerType(), [irNVectorPointerType(), irNVectorPointerType()], False)),
         ('dotDiv', ir.FunctionType(
             irNVectorPointerType(), [irNVectorPointerType(), irNVectorPointerType()], False)),
-        ('putVectorLn', ir.FunctionType(
-            irVoidType(), [irNVectorPointerType()], False)),
+        ('readValue', ir.FunctionType(
+            irDoubleType(), [irNVectorPointerType(), irIntPointerType(), irIntType()], False)),
         ('literalNVector', ir.FunctionType(
             irNVectorPointerType(), [irIntType(), irIntPointerType(), irDoublePointerType()], False))
     ]
@@ -98,6 +100,37 @@ def codegen(self: Ast, generator: LLVMCodeGenerator):
 
 @ addMethod(Bind)
 def codegen(self: Bind, generator: LLVMCodeGenerator):
+    op = self.operator()
+    name = self.name()
+    expr = self.expression().codegen(generator)
+
+    if op == '=':
+        if not generator.symbolTable.contains(name):
+            if isDouble(expr):
+                alloca = generator.builder.alloca(irDoubleType(), name=name)
+            elif isInt(expr):
+                alloca = generator.builder.alloca(irIntType(), name=name)
+            elif isString(expr):
+                alloca = generator.builder.alloca(
+                    irCharPointerType(), name=name)
+            elif isVector(expr):
+                alloca = generator.builder.alloca(
+                    irNVectorPointerType(), name=name)
+            else:
+                generator.raiseError(
+                    f'Expected something different! {expr}', self.lineno)
+
+        else:
+            alloca = generator.symbolTable.get(name)
+
+        generator.builder.store(expr, alloca)
+        generator.symbolTable.put(name, alloca)
+    else:
+        generator.raiseError(f'Only = operator is supported!', self.lineno)
+
+
+@addMethod(BindWithSlice)
+def codegen(self: BindWithSlice, generator: LLVMCodeGenerator):
     op = self.operator()
     name = self.name()
     expr = self.expression().codegen(generator)
@@ -264,6 +297,72 @@ def codegen(self: For, generator: LLVMCodeGenerator):
     builder.position_at_start(mergedBlock)
 
     return mergedBlock
+
+
+@addMethod(SlicedVector)
+def codegen(self: SlicedVector, generator: LLVMCodeGenerator):
+    # All the cool stuff happens here:
+    #   - allocating array on the stack
+    #   - geps ...
+    #   - calling runtime functions
+    builder = generator.builder
+    n = len(self.ranges())
+    arraySize = n * 3
+
+    arrTpe = intArrType(arraySize)
+    ptr = builder.alloca(arrTpe)
+    arr = builder.load(ptr)
+
+    i = 0
+    singleReturn = True
+    for rng in self.ranges():
+        v = rng.codegen(generator)
+        if type(rng) is SimpleRange:
+            vPtr = gepArrayBuilder(builder, ptr, i)
+            builder.store(v, vPtr)
+
+            vPtr = gepArrayBuilder(builder, ptr, i + 1)
+            builder.store(v, vPtr)
+        elif type(rng) is Range:
+            left, right = v
+            vPtr = gepArrayBuilder(builder, ptr, i)
+            builder.store(left, vPtr)
+
+            vPtr = gepArrayBuilder(builder, ptr, i + 1)
+            builder.store(right, vPtr)
+            singleReturn = False
+
+        rangeId = intLiteral(rng.rangeTypeIdentifier())
+        vPtr = gepArrayBuilder(builder, ptr, i + 2)
+        builder.store(rangeId, vPtr)
+
+        i += 3
+
+    vecPtr = self.id().codegen(generator)
+
+    if singleReturn is True:
+        fn = generator.symbolTable.get('readValue')
+        rangesSize = intLiteral(arraySize)
+        ptr = gepArrayBuilder(builder, ptr, 0)
+        return builder.call(fn, [vecPtr, ptr, rangesSize])
+
+
+@addMethod(SimpleRange)
+def codegen(self: SimpleRange, generator: LLVMCodeGenerator):
+    idx = self.idx().codegen(generator)
+    if isDouble(idx):
+        idx = generator.builder.fptosi(idx)
+
+    return idx
+
+
+@addMethod(FromStartRange)
+def codegen(self: FromStartRange, generator: LLVMCodeGenerator):
+    right = self.end()
+    if isDouble(right):
+        right = generator.builder.fptosi(right)
+
+    return intLiteral(0), right
 
 
 @addMethod(Range)

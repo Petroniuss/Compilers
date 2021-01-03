@@ -150,7 +150,8 @@ extern "C" void freeString(char* str);
 // collector.
 extern "C" NVector* literalNVector(int dimsNumber, int* dims, double* values);
 extern "C" void assignValue(NVector* nvector, int* dims, double value);
-extern "C" double readValue(NVector* nvector, int* dims);
+extern "C" double readValue(NVector* nvector, int* ranges, int rangesSize);
+extern "C" NVector* readNVector(NVector* nvector, int* ranges, int rangesSize);
 
 extern "C" NVector* ones(int dimsNumber, int* dims);
 extern "C" NVector* zeros(int dimsNumber, int* dims);
@@ -211,8 +212,20 @@ void assignValue(NVector* nvector, int* dims, double value) {
     nvector->assignValue(dims, value);
 }
 
-double readValue(NVector* nvector, int* dims) {
-    return nvector->readValue(dims);
+double readValue(NVector* nvector, int* ranges, int rangesSize) {
+    int* dims = new int[rangesSize / 3];
+    for (int i = 0; i < rangesSize / 3; i++) {
+        dims[i] = ranges[3 * i];
+    }
+    double val = nvector->readValue(dims);
+    free(dims);
+
+    return val;
+}
+
+NVector* readNVector(NVector* nvector, int* ranges, int rangesSize) {
+    // return nvector->readNVector(nvector, ranges, rangesSize);
+    return nullptr;
 }
 
 char* formatDouble(double x) {

@@ -86,6 +86,14 @@ def stringLiteral(literal):
         [ir.Constant(irCharType(), ord(c)) for c in literal])
 
 
+def intLiteral(value):
+    return ir.Constant(irIntType(), int(value))
+
+
+def doubleLiteral(value):
+    return ir.Constant(irDoubleType(), float(value))
+
+
 def namedGlobalStringLiteral(module, literal, varName):
     literalArray = stringLiteral(literal)
     glo = ir.GlobalVariable(
@@ -119,3 +127,7 @@ def gepArray(array, index):
 def gepArrayBuilder(builder, array, index):
     return builder.gep(array, [ir.Constant(irIntType(), 0),
                                ir.Constant(irIntType(), int(index))])
+
+
+def intArrType(size):
+    return ir.ArrayType(irIntType(), size)

@@ -5,7 +5,7 @@ from Failure import formatFailure
 
 
 def readInput():
-    defaultModule = 'for.m'
+    defaultModule = 'slice.m'
     try:
         filename = sys.argv[1] if len(
             sys.argv) > 1 else "./tests/ir/" + defaultModule
