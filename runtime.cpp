@@ -90,6 +90,9 @@ struct NVector {
         return values[index];
     }
 
+    // todo!
+    NVector* slice(int* ranges, int rangesSize) { return nullptr; }
+
     void print() {
         int index = -1;
         if (dimensionsNumber() == 2) {
@@ -234,8 +237,7 @@ double readValue(NVector* nvector, int* ranges, int rangesSize) {
 }
 
 NVector* readNVector(NVector* nvector, int* ranges, int rangesSize) {
-    // return nvector->readNVector(nvector, ranges, rangesSize);
-    return nullptr;
+    return nvector->slice(ranges, rangesSize);
 }
 
 char* formatDouble(double x) {

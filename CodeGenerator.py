@@ -147,6 +147,7 @@ def codegen(self: BindWithSlice, generator: LLVMCodeGenerator):
         fn = generator.symbolTable.get('assignValue')
         builder.call(fn, [vPtr, arrPtr, arrSize, expr])
     elif isVector(expr):
+        # todo handle slices...
         pass
 
 
