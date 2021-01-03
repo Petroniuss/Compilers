@@ -37,6 +37,8 @@ class LLVMCodeGenerator:
             irNVectorPointerType(), [irNVectorPointerType(), irNVectorPointerType()], False)),
         ('dotDiv', ir.FunctionType(
             irNVectorPointerType(), [irNVectorPointerType(), irNVectorPointerType()], False)),
+        ('assignValue', ir.FunctionType(
+            irVoidType(), [irNVectorPointerType(), irIntPointerType(), irIntType(), irDoubleType()], False)),
         ('readValue', ir.FunctionType(
             irDoubleType(), [irNVectorPointerType(), irIntPointerType(), irIntType()], False)),
         ('literalNVector', ir.FunctionType(
@@ -49,6 +51,9 @@ class LLVMCodeGenerator:
 
         self.builder = ir.IRBuilder()
         self.globalNameGen = self.globalNameGenerator()
+        self.flags = {
+            'bind': False
+        }
 
     def generateIR(self, ast: Ast):
         # we should also generate declaration for standard library
@@ -104,60 +109,45 @@ def codegen(self: Bind, generator: LLVMCodeGenerator):
     name = self.name()
     expr = self.expression().codegen(generator)
 
-    if op == '=':
-        if not generator.symbolTable.contains(name):
-            if isDouble(expr):
-                alloca = generator.builder.alloca(irDoubleType(), name=name)
-            elif isInt(expr):
-                alloca = generator.builder.alloca(irIntType(), name=name)
-            elif isString(expr):
-                alloca = generator.builder.alloca(
-                    irCharPointerType(), name=name)
-            elif isVector(expr):
-                alloca = generator.builder.alloca(
-                    irNVectorPointerType(), name=name)
-            else:
-                generator.raiseError(
-                    f'Expected something different! {expr}', self.lineno)
-
+    if not generator.symbolTable.contains(name):
+        if isDouble(expr):
+            alloca = generator.builder.alloca(irDoubleType(), name=name)
+        elif isInt(expr):
+            alloca = generator.builder.alloca(irIntType(), name=name)
+        elif isString(expr):
+            alloca = generator.builder.alloca(
+                irCharPointerType(), name=name)
+        elif isVector(expr):
+            alloca = generator.builder.alloca(
+                irNVectorPointerType(), name=name)
         else:
-            alloca = generator.symbolTable.get(name)
-
-        generator.builder.store(expr, alloca)
-        generator.symbolTable.put(name, alloca)
+            generator.raiseError(
+                f'Expected something different! {expr}', self.lineno)
     else:
-        generator.raiseError(f'Only = operator is supported!', self.lineno)
+        alloca = generator.symbolTable.get(name)
+
+    generator.builder.store(expr, alloca)
+    generator.symbolTable.put(name, alloca)
 
 
 @addMethod(BindWithSlice)
 def codegen(self: BindWithSlice, generator: LLVMCodeGenerator):
+    builder = generator.builder
     op = self.operator()
-    name = self.name()
     expr = self.expression().codegen(generator)
 
-    if op == '=':
-        if not generator.symbolTable.contains(name):
-            if isDouble(expr):
-                alloca = generator.builder.alloca(irDoubleType(), name=name)
-            elif isInt(expr):
-                alloca = generator.builder.alloca(irIntType(), name=name)
-            elif isString(expr):
-                alloca = generator.builder.alloca(
-                    irCharPointerType(), name=name)
-            elif isVector(expr):
-                alloca = generator.builder.alloca(
-                    irNVectorPointerType(), name=name)
-            else:
-                generator.raiseError(
-                    f'Expected something different! {expr}', self.lineno)
+    generator.flags['bind'] = True
+    vPtr, arrPtr, arrSize = self.slicedVector().codegen(generator)
+    generator.flags['bind'] = False
 
-        else:
-            alloca = generator.symbolTable.get(name)
+    if isInt(expr):
+        expr = builder.sitofp(expr)
 
-        generator.builder.store(expr, alloca)
-        generator.symbolTable.put(name, alloca)
-    else:
-        generator.raiseError(f'Only = operator is supported!', self.lineno)
+    if isDouble(expr):
+        fn = generator.symbolTable.get('assignValue')
+        builder.call(fn, [vPtr, arrPtr, arrSize, expr])
+    elif isVector(expr):
+        pass
 
 
 @addMethod(If)
@@ -340,7 +330,12 @@ def codegen(self: SlicedVector, generator: LLVMCodeGenerator):
 
     vecPtr = self.id().codegen(generator)
 
-    if singleReturn is True:
+    if generator.flags['bind'] is True:
+        if singleReturn is True:
+            rangesSize = intLiteral(arraySize)
+            ptr = gepArrayBuilder(builder, ptr, 0)
+            return vecPtr, ptr, rangesSize
+    else:
         fn = generator.symbolTable.get('readValue')
         rangesSize = intLiteral(arraySize)
         ptr = gepArrayBuilder(builder, ptr, 0)
@@ -561,6 +556,7 @@ def codegen(self: FunctionCall, generator: LLVMCodeGenerator):
 
 #----------------- arrays required by runtime --------------------- #
 
+# todo Allocate it on the stack!
 def intArray(elements, generator: LLVMCodeGenerator):
     builder = generator.builder
     arrType = ir.ArrayType(irIntType(), len(elements))

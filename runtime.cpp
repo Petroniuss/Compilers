@@ -149,9 +149,11 @@ extern "C" void freeString(char* str);
 // So if we were serious we could implement reference counting garbage
 // collector.
 extern "C" NVector* literalNVector(int dimsNumber, int* dims, double* values);
-extern "C" void assignValue(NVector* nvector, int* dims, double value);
 extern "C" double readValue(NVector* nvector, int* ranges, int rangesSize);
 extern "C" NVector* readNVector(NVector* nvector, int* ranges, int rangesSize);
+
+extern "C" void assignValue(NVector* nvector, int* ranges, int rangesSize,
+                            double value);
 
 extern "C" NVector* ones(int dimsNumber, int* dims);
 extern "C" NVector* zeros(int dimsNumber, int* dims);
@@ -206,17 +208,25 @@ NVector* literalNVector(int dimsNumber, int* dims, double* values) {
     return new NVector(dimsVector, valuesVector);
 }
 
-void putVectorLn(NVector* nvector) { nvector->print(); }
-
-void assignValue(NVector* nvector, int* dims, double value) {
-    nvector->assignValue(dims, value);
-}
-
-double readValue(NVector* nvector, int* ranges, int rangesSize) {
+int* simpleRangesConv(int* ranges, int rangesSize) {
     int* dims = new int[rangesSize / 3];
     for (int i = 0; i < rangesSize / 3; i++) {
         dims[i] = ranges[3 * i];
     }
+
+    return dims;
+}
+
+void putVectorLn(NVector* nvector) { nvector->print(); }
+
+void assignValue(NVector* nvector, int* ranges, int rangesSize, double value) {
+    int* dims = simpleRangesConv(ranges, rangesSize);
+    nvector->assignValue(dims, value);
+    free(dims);
+}
+
+double readValue(NVector* nvector, int* ranges, int rangesSize) {
+    int* dims = simpleRangesConv(ranges, rangesSize);
     double val = nvector->readValue(dims);
     free(dims);
 
