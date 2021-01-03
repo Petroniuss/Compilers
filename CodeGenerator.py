@@ -301,7 +301,6 @@ def codegen(self: SlicedVector, generator: LLVMCodeGenerator):
 
     arrTpe = intArrType(arraySize)
     ptr = builder.alloca(arrTpe)
-    arr = builder.load(ptr)
 
     i = 0
     singleReturn = True
@@ -556,24 +555,39 @@ def codegen(self: FunctionCall, generator: LLVMCodeGenerator):
 
 #----------------- arrays required by runtime --------------------- #
 
-# todo Allocate it on the stack!
 def intArray(elements, generator: LLVMCodeGenerator):
     builder = generator.builder
-    arrType = ir.ArrayType(irIntType(), len(elements))
+    # Allocation in global data segment..
+    # -----------------------------------
+    # arrType = ir.ArrayType(irIntType(), len(elements))
 
-    glob = ir.GlobalVariable(generator.module, arrType,
-                             generator.nextGlobalName())
-    glob.initializer = intArrayInitializer(len(elements))
+    # glob = ir.GlobalVariable(generator.module, arrType,
+    #                          generator.nextGlobalName())
+    # glob.initializer = intArrayInitializer(len(elements))
 
     # calculate index and gep!
+    # for i, e in enumerate(elements):
+    #     v = e.codegen(generator)
+    #     if isDouble(v):
+    #         v = builder.fptosi(v, irIntType())
+    #     ptr = gepArrayBuilder(builder, glob, i)
+    #     store = builder.store(v, ptr)
+
+    # return arrayPtr(glob)
+
+    # Allocation on the stack..
+    # -----------------------------------
+    arrTpe = intArrType(len(elements))
+    ptr = builder.alloca(arrTpe)
+
     for i, e in enumerate(elements):
         v = e.codegen(generator)
         if isDouble(v):
             v = builder.fptosi(v, irIntType())
-        ptr = gepArrayBuilder(builder, glob, i)
-        store = builder.store(v, ptr)
+        vPtr = gepArrayBuilder(builder, ptr, i)
+        store = builder.store(v, vPtr)
 
-    return arrayPtr(glob)
+    return gepArrayBuilder(builder, ptr, 0)
 
 
 def doubleArray(elements, generator: LLVMCodeGenerator):
