@@ -1,10 +1,14 @@
 # Compilers
 
-Repository contains finished exercises from laboratories during `Compilers` course at AGH UST.
+Repository contains finished project completed during `Compilers` course at AGH UST.
 
-Untyped Matlab-like language compiled using LLVM compiler infrastracture.
+Statically-typed Matlab-like language compiled using LLVM compiler infrastracture.
 
-## Code example
+## Example program
+
+See [Usage example](#Usage-example) below to see generated ir for this code.
+
+Code:
 
 ```
 M = zeros(3, 3);
@@ -26,24 +30,29 @@ for i = 0:2 {
 print M;
 ```
 
-## Libraries used:
+Output:
 
-- Lexer and Parser (LALR) come from PLY.
-- clang - for compiling shared runtime and linking it with object file produced by code generator.
-- llvmlite - provides python bindings to llvm.
+```
+[    0.00,     0.00,     0.00    ]
+[    0.00,     0.00,     0.00    ]
+[    0.00,     0.00,     0.00    ]
 
-## Dependencies:
+x =   69.00
+[    1.00,     0.00,     0.00    ]
+[    0.00,     2.00,     0.00    ]
+[    0.00,     0.00,     3.00    ]
+```
 
-- llvm 10.0.0 (actually I only use clang)
-- ply 3.11
-- llvmlite 0.35.0
+## Usage example
 
 Makefile prints AST, both unoptimized and optimized IR and generates executable file which is automatically executed.
 
-## Example
-
 Command:
-`make all arg=./tests/ir/slice.m`
+
+```
+make all arg=./tests/ir/slice.m
+```
+
 Output:
 
 ```
@@ -468,3 +477,15 @@ x =   69.00
 [    0.00,     0.00,     3.00    ]
 
 ```
+
+## Libraries used:
+
+- Lexer and Parser (LALR) come from PLY.
+- clang - for compiling shared runtime and linking it with object file produced by code generator.
+- llvmlite - provides python bindings to llvm.
+
+## Dependencies:
+
+- llvm 10.0.0 (actually I only use clang)
+- ply 3.11
+- llvmlite 0.35.0
